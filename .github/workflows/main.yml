@@ -1,0 +1,18 @@
+name: Build LaTeX documents
+on: [push]
+jobs:
+  build_latex_fgls_finitary:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: sed -i -e 's/backend=biber/backend=bibtex/' fgls-finitary/main.tex
+    - uses: xu-cheng/latex-action@v4
+      with:
+          root_file: main.tex
+          working_directory: fgls-finitary
+    - run: cp fgls-finitary/main.pdf fgls-finitary.pdf
+    - uses: actions/upload-artifact@v4
+      with:
+          name: PDF
+          path: fgls-finitary.pdf
+          compression-level: 0 # no compression
