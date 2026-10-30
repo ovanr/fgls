@@ -1,0 +1,73 @@
+
+\subsection[Category of Instantiations]{The category of instantiations $\instC$}
+
+The category $\instC$ is defined as
+\begin{itemize}
+    \item Objects: worlds $\vw = \{ \vl_1 : \vC_1, \dots, \vl_\vn : \vC_\vn \}$.
+    \item Morphisms: Injective, sort-preserving $\rho : \vw \to \vw'$ and instantiation data $\mvarM : \dheapF(\vw' \ominus \rho, \vw')$.
+\end{itemize}
+We have a forgetful functor $\instU : \instC \to \worldC$ that forgets the instantiation data.
+
+\begin{definition}[Inhabited Sorts]\label{def:inhabited-sorts}
+    A sort $\vC \in \typeSort$ is said to be \emph{inhabited} if
+    there exists a world $\vw$, renaming $\va : \vC \to \vw$, and $\mvarM : \heapF(\vw)$.
+\end{definition}
+Similarly we say that a set of sorts is inhabited if every sort in the set is inhabited.
+
+\begin{lemma}\label{lem:lic-instC}
+    The local independent structure on $\worldC$ can be directly extended to $\instC$ such that $\instU$ reflects local independent squares.
+\end{lemma}
+
+Recall that the hiding monad $\hideMon$ on $\instC$ is given by the colimit $\hideMon\vA\vw = \Colimit{(\sliceC\vw\instU \xto\vU \instC \xto\vA \setC)}$.
+The following lemma describes the quotienting that happens by this colimit.
+\begin{lemma}[Quotienting in the Hiding Monad]\label{lem:hmon-quotient}
+    For $\sigma_1 : \vw \to \vw_1$, $\va_1 \in \vA(\vw_1)$, and $\sigma_2 : \vw \to \vw_2$, $\va_2 \in \vA(\vw_2)$, 
+    we have that $\eqclass{\sigma_1}\va_1 = \eqclass{\sigma_2}\va_2 \in \hideMon\vA\vw$ iff there exist 
+    \begin{tikzcd}
+        & {\hat\vw}
+    \\ 
+    {\vw_1} 
+        \ar[ur, "\tinstU\me_1'"] 
+            && {\vw_2} 
+                \ar[ul, "\tinstU\me_2'"']
+    \\ 
+        & {\vw} 
+            \ar[ul, "\sigma_1"] \ar[ur, "\sigma_2"']
+    \end{tikzcd}
+    s.t. $\vA(\me_1')(\va_1) = \vA(\me_2')(\va_2)$.
+\end{lemma}
+\begin{proof}
+    We first show that the relation
+    \[ \inj_{\sigma_1}(\va_1) \sim \inj_{\sigma_2}(\va_2) \iff 
+       \ExistsTwo{\me_1'}{\me_2'} \instU\me_1' \comp \sigma_1 = \instU\me_2' \comp \sigma_2 \Land \vA(\me_1')(\va_1) = \vA(\me_2')(\va_2) \]
+    is an equivalence.
+    Reflexivity and symmetry is immediate.
+    For transitivity, we have
+    \begin{center}
+        \begin{tikzcd}
+                && {\vw_{12} \liplus{\vw_2} \vw_{23}}
+        \\
+            & {\vw_{12}} 
+                \ar[ur, "\ext^{\me_{22}}\me_{23}"]
+                    && {\vw_{23}}
+                        \ar[lu, "\ext^{\me_{23}}\me_{22}"']
+        \\
+        {\vw_1}
+            \ar[ur, "\tinstU\me_1"]
+                && {\vw_2}
+                        \ar[ul, "\tinstU\me_{22}"] \ar[ur, "\tinstU\me_{23}"']
+                        && {\vw_3}
+                            \ar[ul, "\tinstU\me_3"']
+        \\\\
+                && {\vw_1}
+                    \ar[uull, "\sigma_1"] \ar[uu, "\sigma_2"] \ar[uurr, "\sigma_3"']
+        \end{tikzcd}
+    \end{center}
+    Notice that the top square commutes by \cref{lem:lic-instC}.
+    which implies that $\inj_{\sigma_1}(\va_1) \sim \inj_{\sigma_3}(\va_3)$.
+
+    To prove that the generated relation by the colimit is exactly $\sim$, one shows direction $\to$ by inducting on the list of related elements,
+    and for $\from$, notice that if $\inj_{\sigma_1}(\va_1) \sim \inj_{\sigma_3}(\va_3)$, then
+    \[ \inj_{\sigma_1}\va_1 \leq \inj_{\instU\me_1 \comp \sigma_1}\vA(\me_1)(\va_1) \ge \inj_{\sigma_2}\va_2 \]
+
+\end{proof}

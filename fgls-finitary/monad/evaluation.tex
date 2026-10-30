@@ -1,0 +1,604 @@
+
+\subsection{Evaluating}
+
+\subsubsection{Allocation Morphisms}
+
+We call morphisms in $\tempC$ and $\tinstC$ that are both variable preserving and reflecting as allocation morphisms.
+We intent to capture the idea that allocations only introduce concrete locations and do not interfere with location variables.
+
+\begin{definition}[Allocation Morphisms]
+    A morphism $\rho : \sigma_1 \to \sigma_2$ is an allocation morphism if it satisfies 
+        $\concL{\sigma_2} \pltimes{\anyL{\sigma_2}} \varL{\sigma_1} = \emptyset$ and
+        $\varL{\sigma_2} \pltimes{\anyL{\sigma_2}} \varL{\sigma_1} = \emptyset$.
+\end{definition}
+\begin{example}
+    The morphism $?_\va \xto{\pair{?_\vb}{\incl^{\va \inclto \va,\vb}}} \incl^{\vb \inclto \va,\vb}$ is an allocation morphism since it does not instantiate nor introduce any variables.
+\end{example}
+
+\begin{notation}
+    An allocation morphism is represented using the arrow $\ato$.
+\end{notation}
+
+\begin{lemma}[Composition of Allocation Morphisms]\label{lem:comp-alloc}
+    Allocation morphisms are closed under composition.
+\end{lemma}
+\begin{proof}
+    Follows from \cref{lem:comp-vpres} and \cref{lem:comp-vrefl}.
+\end{proof}
+
+\begin{lemma}[Codomain of Allocation Morphisms]\label{lem:codomain-alloc}
+    If $\rho : \sigma_1 \to \sigma_2$ is an allocation morphism, then 
+    \[ \sigma_2 \iso \begin{tikzcd}
+                        {\concL{\sigma_2} \mplus \varL{\sigma_1}} \\
+                        {\concL{\sigma_2}} \ar[u, "\incl_1"']
+                    \end{tikzcd}\]
+\end{lemma}
+\begin{proof} We have the canonical isomorphism
+    \[ \sigma_2 \iso \begin{tikzcd}
+                    {\concL{\sigma_2} \mplus \varL{\sigma_2}} \\
+                    {\concL{\sigma_2}} \ar[u, "\incl_1"']
+                 \end{tikzcd}\]
+    and notice that $\varL{\sigma_1} \iso \varL{\sigma_2}$, 
+    from $\varL\rho \comp \inv^{\varL\rho}\res|{\sigma_2} \comp \varL\rho\res|{\sigma_2} = \varL\rho \comp 1$ and
+    $\varL{\sigma_2} \comp \varL\rho\res|{\sigma_2} \comp \inv^{\varL\rho}\res|{\sigma_2} = \varL{\sigma_2} \comp 1$.
+\end{proof}
+\begin{notation}
+    If $\rho$ is an allocation morphism, let $\aiso\rho$ be the isomorphism given by \cref{lem:codomain-alloc}.
+\end{notation}
+
+\begin{lemma}[Local Independent Coproducts and Allocation Morphisms]\label{lem:lic-alloc}
+    In a L.I.C. square where $\rho_2$ is an allocation morphism
+    \begin{center}
+    \begin{tikzcd}[sep=small]     
+                                                     & {\sigma} \ar[ld, "{\rho_1}"'] \ar[-alloctip, rd, "{\rho_2}" black]  & \\
+        {\sigma_1} \ar[rd, "{\ext^{\rho_1}\rho_2}"'] &                                                                     & {\sigma_2} \ar[ld, "{\ext^{\rho_2}\rho_1}"] \\
+                                                     &              {\sigma_1 \liplus\sigma \sigma_2}                          &
+    \end{tikzcd}
+    \end{center}
+    we have that $\ext^{\rho_1}\rho_2$ is an allocation morphism as well.
+\end{lemma}
+\begin{proof}
+    Follows from \cref{lem:lic-vpres} and \cref{lem:lic-vrefl}.
+\end{proof}
+
+\begin{lemma}[Allocation Morphism Cancellation]\label{lem:alloc-cancl}
+    In \begin{tikzcd}
+        {\sigma_1} 
+            \ar[rr, "\rho"] \ar[dr, "\rho_1"']
+                && {\sigma_3}
+        \\
+            & {\sigma_2}
+                \ar[ur, "\rho_2"']
+    \end{tikzcd}
+    if $\rho$ is an allocation morphism then $\rho_1$ is an allocation morphism iff $\rho_2$ is.
+\end{lemma}
+\begin{proof}
+    For ($\to$), it follows from \cref{lem:vrefl-cancl,lem:vpres-vrefl-cancl}, and for ($\from$) it follows from \cref{lem:vpres-cancl,lem:vrefl-vpres-cancl}.
+\end{proof}
+
+\begin{lemma}[Allocation Morphisms and Epis]\label{lem:alloc-epi}
+    Every $\sigma_1 \xato{\me_1} \sigma_2 \xsurjto{\me_2} \sigma_3$ has the following diagram in $\tempC$
+    \begin{center}
+    \begin{tikzcd}
+        {\sigma_{\uncon{\me_2 \comp \me_1}}}
+            \ar[r, dashed, "\exists"] \ar[d, "\compl{\uncon{\me_2 \comp \me_1}}"']
+            & {\sigma_2 \ominus \me_1}
+                \ar[d, "\compl{\me_1}"]
+        \\
+        {\sigma_3}
+            & {\sigma_2}
+                \ar[l, "\me_2"]
+    \end{tikzcd}
+    \end{center}
+\end{lemma}
+\begin{proof}
+    Notice that if it holds at $\anyL\dash$ level it also holds at $\concL\dash$ from 
+    \begin{center}
+    \begin{tikzcd}
+            & {\concL{\sigma_2}}
+                \ar[dr, "\concL{\sigma_2}"]
+        \\
+        {\concL{\sigma_2} \ominus \concL{\me_1}}
+            \ar[ur, "\compl{\concL{\me_1}}"]
+            & {\anyL{\sigma_2} \ominus \anyL{\me_1}}
+                \ar[l, "\inv^{\sigma_2}\res|{\me_1}"'] \ar[r, "\compl{\anyL{\me_1}}"] 
+                & {\anyL{\sigma_2}}
+                    \ar[d, "\anyL{\me_2}"'] 
+        \\
+        {\concL{\sigma_3} \ominus \concL{\uncon{\me_2 \comp \me_1}}}
+            \ar[r, "\concL{\sigma_3}\res|{\uncon{\me_2 \comp \me_1}}"' yshift=-5pt]
+            & {\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}}
+                \ar[u, dashed, "\exists \inv^{\anyL{\me_2}}\res|{\me_1}"]
+                \ar[r, "\compl{\anyL{\uncon{\me_2 \comp \me_1}}}"' yshift=-5pt] 
+                & {\anyL{\sigma_3}}
+    \end{tikzcd}
+    \end{center}
+
+    We construct $\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}} \dashto \anyL{\sigma_2} \ominus \concL{\me_1}$, 
+    using the canonical iso
+    \[ (\anyL{\sigma_{\con{\me_2 \comp \me_1}}} \ominus \anyL{\con{\me_2 \comp \me_1}}) \oplus 
+       (\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}) \iso (\anyL{\sigma_2} \ominus \anyL{\me_1}) \oplus (\anyL{\sigma_3} \ominus \anyL{\me_2}) \]
+    Observe that if there exists $\va, \va' : \vC$ s.t. $\anyL{\compl{\uncon{\me_2 \comp \me_1}}}(\va) = \compl{\anyL{\me_2}}(\va')$
+    then there exists $\vb : \vC$, s.t. $\anyL{\uncon{\me_2}}\compl{\anyL{\con{\me_2}}}(\vb) = \va'$ since $\me_2$ is connected. 
+    As a result, we have a $\vb : \vC$ that is not in the image of $\anyL{\sigma_2}$ and is reachable in $\me_2$.
+    By \cref{def:reach-loc-hwalks}, we have a heap walk that leads to $\vb$ with root location variable in $\varL{\sigma_2}$ and since $\me_1$ is an allocation morphism
+    by \cref{lem:vrefl-prop}, this variable comes from $\varL{\sigma_1}$. 
+    As a result, $\vb$ must be reachable in $\me_2 \comp \me_1$ which is a contradiction as it maps to the unreachable segment by $\anyL{\uncon{\me_2}}\compl{\anyL{\con{\me_2}}}$.
+\end{proof}
+
+\begin{lemma}[Disconnectedness Preservation and L.I.G.U.]\label{lem:dcon-ligu}
+    A diagram of the form
+    \begin{tikzcd}
+        & {\sigma_1} 
+            \ar[dl, twoheadrightarrow, "\me_1'"'] \ar[dr, -alloctip, "\me_1"]
+    \\
+    {\sigma_2'}
+        \ar[dr, -rmonotip, "\me_2'"']
+            && {\sigma_2}
+                    \ar[dl, twoheadrightarrow, "\me_2"]
+    \\
+        & {\sigma_3}
+    \end{tikzcd}
+    s.t. $\me_2$ preserves the disconnectivity of $\me_1$ implies that it is a L.I.G.U.
+\end{lemma}
+\begin{proof}
+    We first show that $\me_2'$ is variable reflecting.
+    From \cref{lem:alloc-epi,lem:vrefl-prop} we have
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL{\sigma_3} \ominus \anyL{\me_2'}} 
+                \ar[r, dashed] 
+                    & {\anyL{\sigma_2} \ominus \anyL{\me_1}}
+                        \ar[d, "\inv^{\concL{\sigma_2}}\res|{\me_1}"]
+            \\
+            {\concL{\sigma_3} \ominus \concL{\me_2'}} 
+                \ar[r, dashed] \ar[u, "\concL{\sigma_3}\res|{\me_2'}"]
+                    & {\concL{\sigma_2} \ominus \concL{\me_1}} 
+    \end{tikzcd}
+    \end{center}
+    which gives us a morphism $\anyL{\sigma_3} \ominus \anyL{\me_2'} \to \concL{\sigma_2} \ominus \concL{\me_1}$ and notice that
+    post-composing this with $\concL{\me_2} \comp \compl{\concL{\me_1}}$ must reside in $\concL{\sigma_3} \ominus \concL{\me_2'}$ 
+    for otherwise the square of $\me_2'$ would not commute.
+
+    By \cref{lem:lic-vpres}, we need to show that both $\concL\dash$ and $\anyL\dash$ images are L.I.C. 
+    Notice that by \cref{lem:dcon-pres-prop-equiv}, its $\anyL\dash$-image is a pullback, 
+    and by \cref{lem:pullback-vpres} we have that the $\tinstU$-image is a pullback in $\tempC$,
+    and so the $\concL\dash$-image is a pullback as well. 
+
+    So it enough to show that the $\concL\dash$ and $\anyL\dash$ images of cospan $\sigma_2' \xto{\me_2'} \sigma_3 \xfrom{\me_2} \sigma_2$ are jointly surjective.
+    We show that $\concL\dash$-image of the cospan is jointly surjective which implies that the $\anyL\dash$-image is jointly surjective
+    by the variable reflecting property of $\me_2'$ (\cref{lem:vrefl-prop}).
+
+    Joint surjectivity at $\concL\dash$ is immediate from \cref{lem:alloc-epi}, every $\va : \vC \in \concL{\sigma_3} \ominus \concL{\uncon{\me_2 \comp \me_1}}$ 
+    factors through $\concL{\sigma_2} \ominus \concL{\me_1}$ and so it is in the image of $\concL{\me_2}$.
+\end{proof}
+
+\begin{definition}[Category of Template Allocations]
+    We consider $\allocC\tempC \subseteq \tempC$, the wide subcategory of $\tempC$ where morphisms are allocation morphisms.
+    Identities are allocation morphisms and by \cref{lem:comp-alloc}, they are also closed under composition.
+    Similarly, we consider $\allocC\tinstC \subseteq \tinstC$ and notice that we have a forgetful functor $\allocC\tinstC \xto{\allocC\tinstU} \allocC\tempC$.
+\end{definition}
+
+\subsubsection{Resultlets}
+
+\emph{Resultlets} represent collections of results in the spirit of the FGLS monad.
+
+\begin{definition}
+    For a $\vA : \tinstC \to \setC$ and template $\sigma$, we define the resultlet functor $\resF\vA_\sigma$ as
+    \[ \resF\vA_\sigma \eqdef \sliceC{\sigma}{\allocC\tinstU} \xto{\vU} \allocC\tinstC \inclto \tinstC \xto\vA \setC \]
+
+    A resultlet $\vr$ over $\pair\sigma\vA$ is an element of $\typeRes\vA\sigma$
+    \[ \vr \in \typeRes\vA\sigma \eqdef \Coprod{\sigma \xato{\rho'} \sigma' \in \sliceC\sigma{\allocC\tinstU}}  \resF\vA_\sigma\rho' = 
+        \Coprod{\sigma \xato{\rho'} \sigma' \in \sliceC\sigma{\allocC\tinstU}} \vA(\sigma') \]
+\end{definition}
+
+\begin{remark}
+For FGLS we are interested in situations where $\vA = \vX\anyL\dash \times \theapF$ for a $\vX : \worldC \to \setC$.
+A resultlet over $\pair\sigma{\vX\anyL\dash \times \theapF}$ then consists of
+\begin{itemize}
+    \item An allocation morphism $\sigma \xato\rho \sigma'$, which by \cref{lem:codomain-alloc} 
+            is determined only by $\concL\sigma \xto{\concL\rho} \concL{\sigma'}$.
+        \item An $\vX$-valued return value $\vx : \vX\anyL{\sigma'}$ which by \cref{lem:codomain-alloc}
+                is isomorphic to a value in $\vX(\concL{\sigma'} \oplus \varL\sigma)$.
+    \item A template heap $\mvarM : \dheapF(\sigma')$, which is isomorphic to 
+            a heaplet $\dheapF(\concL{\sigma'}, \concL{\sigma'} \oplus \varL\sigma)$.
+\end{itemize}
+\end{remark}
+
+We define actions of $\typeRes\relax$ on morphisms in $\funC\tinstC\setC$ and $\tinstC$ but we stress that some of these actions are not functorial.
+In \cref{sec:tinstC-hiding-monad} we quotient $\typeRes\relax$ to form a functor out of it.
+
+\begin{definition}[Action on morphisms in $\funC\tinstC\setC$]
+    For a natural transformation $\alpha : \vA \to \vB$, and every $\sigma \in \objC\tempC$
+    \begin{align*}
+        \typeRes(\alpha)_\sigma & : \typeRes\vA\sigma \to \typeRes\vB\sigma \\
+        \inj_{\sigma \xato{\rho'} \sigma'}(\va) & \mapsto \inj_{\rho'}(\alpha_{\sigma'}(\va)) 
+    \end{align*}
+    It changes a resultlet over $\pair\sigma\vA$ to one over $\pair\sigma\vB$.
+\end{definition}
+
+\begin{definition}[Covariant action on morphisms in $\tinstC$]
+For a $\me : \sigma_1 \to \sigma_2 \in \tinstC$ and a resultlet $\inj_{\sigma_1 \xato{\rho'} \sigma'} \va$
+we consider the following L.I.C. in $\tempC$
+\begin{center}
+\begin{tikzcd}
+        & {\sigma_1} 
+            \ar[ld, "\tinstU\me"'] \ar[-alloctip, rd, "\rho'"] 
+    \\
+    {\sigma_2} 
+        \ar[-alloctip, rd, "\ext^{\tinstU\me}\rho'"'] 
+            && {\sigma'} 
+                \ar[ld, start anchor=south west, "\ext^{\rho'}\me"] 
+    \\
+        & {\sigma_2 \liplus{\sigma_1} \sigma'}
+\end{tikzcd}
+\end{center}
+Notice that by \cref{lem:lic-alloc}, $\ext^{\tinstU\me}\rho'$ is an allocation morphism.
+We further equip $\ext^{\rho'}\me$ with data using \cref{rem:lic-T-data} and so define the covariant action $\typeRes\vA\me$ as
+\begin{align*}
+    \typeRes\vA\me & : \typeRes\vA{\sigma_1} \to \typeRes\vA{\sigma_2} \\
+    \inj_{\rho'}\va & \mapsto \inj_{\ext^{\tinstU\me}{\rho'}} \vA(\ext^{\rho'}\me)(\va)
+\end{align*}
+\end{definition}
+
+\begin{definition}[Contravariant action on allocation morphisms in $\tempC$]
+    For every allocation morphism $\sigma_2 \xato{\rho'} \sigma_1$ in $\tempC$ define
+\begin{align*}
+    \hideRes\vA{\rho'} & : \typeRes\vA\sigma_1 \to \typeRes\vA\sigma_2 \\ 
+    \inj_\rho \va & \mapsto \inj_{\rho \comp \rho'} \va
+\end{align*}
+where $\rho \comp \rho'$ is an allocation morphism itself by \cref{lem:comp-alloc}.
+
+We call this action \emph{hiding} as it forgets some of the public locations.
+\end{definition}
+
+\begin{example}
+    Consider the allocation morphism
+    \[ \incl^{\va \inclto \va,\vc} \xato\rho \incl^{\va,\vb \inclto \va,\vb,\vc} \] 
+    that introduces a new concrete location $\vb$,
+    and a resultlet $\inj_{\rho'}\va$ where $\va : \vA(\incl^{\va,\vb \inclto \va,\vb,\vc})$.
+
+    We can apply the covariant action $\me = \incl^{\va \inclto \va,\vc} \xto{\pair{\incl^{\va \inclto \va,\vc}}{\incl^{\va,\vc \inclto \va,\vc,\vd}}} 1_{\va,\vc}$ that instantiates $\vc$ with some data $\mvarM_\me : \dheapF(\vc, \{\va,\vc,\vd\})$
+
+    \begin{center}
+    \begin{tikzcd}
+            & {\incl^{\va \inclto \va,\vc}} 
+                \ar[dl, "\tinstU\me"'] \ar[dr, "\rho"] 
+        \\
+        {\incl^{\va,\vc \inclto \va,\vc,\vd}} 
+            \ar[dr, "\ext^{\tinstU\me}\rho"']
+                    && {\incl^{\va,\vb \inclto \va,\vb,\vc}} 
+                        \ar[dl, "\ext^\rho\me"] 
+        \\
+        & {\incl^{\va,\vb,\vc \inclto \va,\vb,\vc,\vd}}
+    \end{tikzcd}
+    \end{center}
+    to get the resultlet 
+        \[ \inj_{\ext^{\tinstU\me}\rho} \vA(\ext^\rho\me)(\va) \]
+            with data $\mvarM_{\ext^{\rho}{\me}}$ being $\dheapF(1, \anyL{\ext^{\tinstU\me}\rho})(\mvarM_\me)$.
+
+    Consider the allocation morphism $\rho' = ?_\vc \xto{\pair{?_\va}{\incl^{\vc \inclto \va,\vc}}} \incl^{\va \inclto \va,\vc}$.
+    We can apply the contravariant action $\rho'$ to get the resultlet $\inj_{\pair{?_{\{\va,\vb\}}}{\incl^{\vc \inclto \va,\vb,\vc}}} \va$.
+\end{example}
+
+\paragraph{Monad Structure on Resultlets}
+
+We equip resultlets with unit and multiplication structure.
+
+\begin{definition}[Unit of a Resultlet]
+    We define unit morphisms
+    \begin{align*}
+        \eta^\vA_\sigma & : \vA\sigma \to \typeRes\vA\sigma \\
+        \va & \mapsto \inj_{1_\sigma} \va
+    \end{align*}
+\end{definition}
+
+\begin{definition}[Multiplication of a Resultlet]
+    We define multiplication morphisms
+    \begin{align*}
+        \mu^\vA_\sigma & : \typeRes(\typeRes\vA)\sigma \to \typeRes\vA \\
+        \inj_\rho \vr & \mapsto \hideRes\vA\rho\vr
+    \end{align*}
+\end{definition}
+
+\subsubsection{Hiding Monad on Template Heaps}
+\label{sec:tinstC-hiding-monad}
+
+\begin{definition}[Hiding Monad on Template Heaps]
+We generalise the hiding monad $\hideMon$ from \cite{kammar2017monad} to template heaps by appropriately quotienting the type of resultlets 
+\[\begin{array}{r@{\spac}l@{\spac}l}
+    \thideMon              & : \funC\tinstC\setC \to \funC\tinstC\setC \\
+    (\thideMon\vA)(\sigma) & = \Colimit{(\resF\vA_\sigma)} \ni \eqclass{\sigma \xato{\rho'} \sigma'} \va
+\end{array}\]
+which satisfies the natural (monad) isomorphism for every $\vA : \tinstC \to \setC$
+\[ (\thideMon\vA) \comp \inclITI\dash \hmonIso \hideMon(\vA \comp \inclITI\dash) \;:\; \instC \to \setC \]
+
+We inject resultlets into the monad using the colimit injections $\inj^{\resF\vA_\sigma}_{\rho'} : \resF\vA_\sigma\rho' \to \thideMon\vA\sigma$
+\begin{align*}
+    \quot^\vA_\sigma & : \typeRes\vA\sigma \to \thideMon\vA\sigma \\
+    \inj_{\rho'}\va & \mapsto \inj^{\resF\vA_\sigma}_{\rho'}(\va)
+\end{align*}
+\end{definition}
+
+\begin{lemma}[Quotienting in the Hiding Monad on Template Heaps]\label{lem:thmon-quotient}
+    For $\inj_{\sigma \xato{\rho_1} \sigma_1} \va_1$, and $\inj_{\sigma \xato{\rho_2} \sigma_2} \va_2$, 
+    we have that $\eqclass{\rho_1}\va_1 = \eqclass{\rho_2}\va_2 \in \thideMon\vA\sigma$ iff there exist 
+    \begin{tikzcd}
+        & {\sigma} 
+            \ar[dl, -malloctip, "\rho_1"'] \ar[dr, -alloctip, "\rho_2"]
+    \\ 
+    {\sigma_1} 
+        \ar[dr, -alloctip, "\exists \tinstU\me_1'"'] 
+            && {\sigma_2} 
+                \ar[dl, -malloctip, "\exists \tinstU\me_2'"]
+    \\ 
+        & {\hat\sigma}
+    \end{tikzcd}
+    s.t. $\vA(\me_1')(\va_1) = \vA(\me_2')(\va_2)$.
+\end{lemma}
+\begin{proof}
+    This is a direct generalisation of the proof in \cref{lem:hmon-quotient}. 
+    We first show that the RHS relation is an equivalence. 
+    Reflexivity and symmetry is immediate.
+    For transitivity, we have
+    \begin{center}
+        \begin{tikzcd}
+                && {\sigma_{12} \liplus{\sigma_2} \sigma_{23}}
+        \\
+            & {\sigma_{12}} 
+                \ar[ur, -alloctip, "\ext^{\tinstU\me_{22}}\me_{23}"]
+                    && {\sigma_{23}}
+                        \ar[lu, -malloctip, "\ext^{\tinstU\me_{23}}\me_{22}"']
+        \\
+        {\sigma_1}
+            \ar[ur, -malloctip, "\tinstU\me_1"]
+                && {\sigma_2}
+                        \ar[ul, -malloctip, "\tinstU\me_{22}"] \ar[ur, -alloctip, "\tinstU\me_{23}"']
+                        && {\sigma_3}
+                            \ar[ul, -malloctip, "\tinstU\me_3"']
+        \\\\
+                && {\sigma}
+                    \ar[uull, -malloctip, "\rho_1"] \ar[uu, -alloctip, "\rho_2"] \ar[uurr, -alloctip, "\rho_3"']
+        \end{tikzcd}
+    \end{center}
+    Notice that the top square commutes by \cref{lem:ligu-rmono-exist}
+    which implies that $\inj_{\rho_1}(\va_1) \sim \inj_{\rho_3}(\va_3)$.
+
+    To prove that the generated relation by the colimit is exactly $\sim$, one shows direction $\to$ by inducting on the list of related elements,
+    and for $\from$, notice that if $\inj_{\rho_1}(\va_1) \sim \inj_{\rho_2}(\va_2)$, then
+    \[ \inj_{\rho_1}\va_1 \leq \inj_{\instU\me_1 \comp \rho_1}\vA(\me_1)(\va_1) \ge \inj_{\rho_2}\va_2 \]
+
+\end{proof}
+
+\begin{lemma}
+    $\thideMon$ together with the covariant actions on morphisms, unit and multiplication from $\typeRes\relax$ form a monad.
+\end{lemma}
+\begin{proof}
+    \nl
+    We first show it is functorial on morphisms $\me : \sigma_1 \to \sigma_2 \in \tinstC$.
+    Consider two related $\inj_{\sigma_1 \xto\rho \sigma'} \va'$, $\inj_{\sigma_1 \xto{\rho'} \sigma''} \va''$. 
+    By \cref{lem:thmon-quotient} we have
+    \begin{tikzcd}
+        & {\sigma_1} 
+            \ar[dl, -malloctip, "\rho'"'] \ar[dr, -alloctip, "\rho''"] \ar[dd, "\hat\rho"]
+    \\ 
+    {\sigma'} 
+        \ar[dr, -alloctip, "\exists \tinstU\me'"'] 
+            && {\sigma''} 
+                \ar[dl, -malloctip, "\exists \tinstU\me''"]
+    \\ 
+        & {\hat\sigma}
+    \end{tikzcd}
+    with $\vA(\me')(\va') = \vA(\me'')(\va'')$.
+
+    We form the following diagram
+    \begin{center}
+        \begin{tikzcd}[sep=small]
+            & {\hat\sigma \liplus{\sigma'} (\sigma_2 \liplus{\sigma_1} \sigma')} \ar[rr, -alloctip, "\iso'"]
+                && {\hat\sigma \liplus{\sigma_1} \sigma_2}
+                    && {(\sigma_2 \liplus{\sigma_1} \sigma'') \liplus{\sigma''} \hat\sigma} \ar[ll, -malloctip, "\iso''"']
+        \\
+        {\hat\sigma} \ar[ur, "\ext^{\tinstU\me'}\ext^{\rho'}\me"'] \ar[urrr, bend left=50, "\ext^{\hat\sigma}\me"]
+                && {\sigma' \liplus{\sigma_1} \sigma_2} \ar[ul, -malloctip, "\ext^{\ext^{\rho'}\tinstU\me}\me'"]
+                    && {\sigma_2 \liplus{\sigma_1} \sigma''} \ar[ur, -alloctip, "\ext^{\ext^{\rho''}\tinstU\me}\me''"']
+                        && {\hat\sigma} \ar[ul, "\ext^{\tinstU\me''}\ext^{\rho''}\me"] \ar[ulll, bend right=50, "\ext^{\hat\sigma}\me"]
+        \\
+            & {\sigma'} \ar[ul, -malloctip, "\tinstU\me'"'] \ar[ur, "\ext^{\rho'}\me"]
+                && {\sigma_2} \ar[ul, -malloctip, "\ext^{\tinstU\me}\rho'"] \ar[ur, -alloctip, "\ext^{\tinstU\me}\rho''"'] \ar[uu, -alloctip, "\ext^{\tinstU\me}\hat\rho"]
+                            && {\sigma''} \ar[ur, -alloctip, "\tinstU\me''"] \ar[ul, "\ext^{\rho''}\me"']
+        \\\\
+                        &&& {\sigma_1} \ar[uull, -malloctip, "\rho'"'] 
+                                       \ar[uu, "\tinstU\me"] 
+                                       \ar[uurr, -alloctip, "\rho''"] 
+                                       \ar[uuulll, -malloctip, bend left=30, "\hat\rho"] 
+                                       \ar[uuurrr, -alloctip, bend right=30, "\hat\rho"']
+        \end{tikzcd}
+    \end{center}
+    where the isomorphisms are given by the pasting property of L.I.C. in $\tempC$.
+    The induced data given by \cref{rem:lic-T-data} of the morphisms also commute as they are uniquely determined by $\mvarM_\me, \mvarM_{\me'}, \mvarM_{\me''}$.
+
+    We relate $\inj_{\ext^{\tinstU\me}\rho'}\vA(\ext^{\rho'}\me)(\va')$ with $\inj_{\ext^{\tinstU\me}\rho''}\vA(\ext^{\rho''}\me)(\va'')$ by
+    \begin{center}
+    \begin{tikzcd}
+        & {\sigma_2} \ar[dl, -malloctip, "\ext^{\tinstU\me}\rho'"'] \ar[dr, -alloctip, "\ext^{\tinstU\me}\rho''"]
+    \\
+    {\sigma_2 \liplus{\sigma_1} \sigma'} \ar[dr, -alloctip, "\iso' \comp \ext^{\ext^{\rho'}\tinstU\me}\me'"']
+            && {\sigma_2 \liplus{\sigma_1} \sigma''} \ar[dl, -malloctip, "\iso'' \comp \ext^{\ext^{\rho''}\tinstU\me}\me''"]
+    \\ 
+        & {\hat\sigma \liplus{\sigma_1} \sigma_2}
+    \end{tikzcd}
+    \end{center}
+    which give us
+    \begin{align*}
+        \vA(\iso' \comp \ext^{\ext^{\rho'}\tinstU\me}\me' \comp \ext^{\rho'}\me)(\va') 
+                &= \vA(\iso' \comp \ext^{\tinstU\me'}\ext^{\rho'}\tinstU\me \comp \tinstU\me')(\va') \\
+                &= \vA(\ext^{\hat\sigma}\me \comp \tinstU\me'')(\va'') \\
+                &= \vA(\iso'' \comp \ext^{\tinstU\me''}\ext^{\rho''}\tinstU\me \comp \tinstU\me'')(\va'') \\
+                &= \vA(\iso'' \comp \ext^{\ext^{\rho''}\tinstU\me}\me'' \comp \ext^{\rho''}\me)(\va'')
+    \end{align*}
+
+    To show functoriality, for preservation of identities consider
+    \begin{tikzcd}[sep=small]
+        & {\sigma} \ar[dl, Rightarrow, "1"'] \ar[dr, "\rho"]
+    \\
+    {\sigma} \ar[dr, "\ext^{1}\rho"']
+            && {\sigma'} \ar[dl, "\ext^\rho1"]
+    \\
+        & {\sigma \liplus\sigma \sigma'}
+    \end{tikzcd}
+    and so take
+    \begin{tikzcd}[sep=small]
+        & {\sigma} \ar[dl, "\ext^{1}\rho"'] \ar[dr, "\rho"]
+    \\
+    {\sigma \liplus\sigma \sigma'} \ar[dr, Rightarrow, "1"']
+            && {\sigma'} \ar[dl, "\ext^\rho1"]
+    \\
+        & {\sigma \liplus\sigma \sigma'}
+    \end{tikzcd}
+    and for composition one considers pasting law for L.I.C. 
+
+    That multiplication is quotient respecting, consider
+    \begin{tikzcd}
+        & {\sigma} \ar[dl, "\rho_1'"'] \ar[dr, "\rho_2'"]
+    \\
+    {\sigma_1'} \ar[dr, "\tinstU\me_1"']
+            && {\sigma_2'} \ar[dl, "\tinstU\me_2"]
+    \\
+        & {\hat\sigma}
+    \end{tikzcd}
+    for some $\vq_1 = \quot_{\sigma_1' \xto{\rho_1''} \sigma_1''} \va_1''$, and  
+    $\vq_2 = \quot_{\sigma_2' \xto{\rho_2''} \sigma_2''} \va_2''$.
+    with
+    \[ \thideMon(\vA)(\me_1)(\vq_1) = \thideMon(\vA)(\me_2)(\vq_2) \]
+
+    Unpacking this gives us a diagram
+    \begin{center}
+        \begin{tikzcd}
+                && {\sigma} \ar[dl, "\rho_1'"'] \ar[dr, "\rho_2'"]
+        \\
+            & {\sigma_1'} \ar[dr, "\tinstU\me_1"] \ar[dl, "\rho_1''"']
+                        && {\sigma_2'} \ar[dl, "\tinstU\me_2"'] \ar[dr, "\rho_2''"]
+        \\
+        {\sigma_1''} \ar[dr, "\ext^{\rho_1''}\me_1"']
+                && {\hat\sigma} \ar[dl, "\ext^{\tinstU\me_1}\rho_1''"'] \ar[dr, "\ext^{\tinstU\me_2}\rho_2''"]
+                        && {\sigma_2''} \ar[dl, "\ext^{\rho_2''}\me_2"]
+        \\ 
+            & {\sigma_1'' \liplus{\sigma_1'} \hat\sigma} \ar[dr, "\tinstU\check\me_1"']
+                    && {\sigma_2'' \liplus{\sigma_2'} \hat\sigma} \ar[dl, "\tinstU\check\me_2"]
+        \\
+                && {\check\sigma}
+        \end{tikzcd}
+    \end{center}
+with $\vA(\tinstU\check\me_1 \comp \ext^{\rho_1'}\me_1)(\va_1'') = \vA(\tinstU\check\me_2 \comp \ext^{\rho_2''}\me_2)(\va_2'')$. 
+
+    Which is exactly what we need to show that 
+    \[ \hideRes\vA{\rho_1'}\vq_1 = \hideRes\vA{\rho_2'}\vq_2 \]
+
+    That the action on morphisms in $\funC\tinstC\setC$ is quotient respecting and natural is a simple exercise
+    and the same goes for naturality of unit and multiplication and that they satisfy the monad laws.
+\end{proof}
+
+\begin{lemma}\label{lem:thidemon-hide-ext-com}
+    Given a L.I.G.U. diagram
+    \begin{tikzcd}[sep=small]
+        & {\sigma} 
+            \ar[dl, "\me_1"'] \ar[dr, -alloctip, "\me_2"] 
+    \\ 
+    {\sigma_1} 
+        \ar[dr, -alloctip, "\ext^{\me_1}\me_2"']
+            && {\sigma_2}
+                \ar[dl, "\ext^{\me_2}\me_1"] 
+    \\ 
+        & {\sigma_1 \liplus\sigma \sigma_2}
+    \end{tikzcd} and a $\vr \in \thideMon\vA(\sigma_2)$, we have
+    \[ \hideRes\vA{\ext^{\me_1}\me_2}(\thideMon(\ext^{\me_2}\me_1)(\vr)) = \thideMon(\me_1)(\hideRes\vA{\me_2}(\vr)) \] 
+\end{lemma}
+\begin{proof}
+    Let $\vr = \eqclass{\sigma_2 \xato\rho \hat\sigma} \va$, for some $\va : \vA(\hat\sigma)$.
+    The LHS of the equation gives
+    \[ 
+        \eqclass{\sigma_1 \xato{\tinstU(\ext^\me_1\me_2)} \sigma_1 \liplus\sigma \sigma_2 
+                          \xato{\ext^{\tinstU(\ext^{\me_2}\me_1)}\rho)} (\sigma_1 \liplus\sigma \sigma_2) \liplus{\sigma_2} \hat\sigma} 
+                            \vA(\ext^\rho(\ext^{\me_2}\me_1)(\va))
+    \]
+    using the diagram
+    \begin{center}
+        \begin{tikzcd}[sep=small]
+            & {\sigma_2} \ar[dr, -alloctip, "\rho"] \ar[dl, "\ext^{\me_2}\me_1"']
+        \\
+        {\sigma_1 \liplus\sigma \sigma_2} \ar[dr, -alloctip, "\ext^{\tinstU(\ext^{\me_2}\me_1)}\rho"']
+                && {\hat\sigma} \ar[dl, "\ext^\rho(\ext^\me_2\me_1)"]
+        \\
+            & {(\sigma_1 \liplus\sigma \sigma_2) \liplus{\sigma_2} \hat\sigma}
+        \end{tikzcd}
+    \end{center}
+
+    The RHS of the equation gives
+    \[ 
+        \eqclass{\sigma_1 \xato{\ext^{\tinstU\me_1}(\rho \comp \tinstU\me_2)} \sigma_1 \liplus\sigma \hat\sigma} \vA(\ext^{(\rho \comp \tinstU\me_2)}\me_1)(\va)
+    \]
+    using the diagram
+    \begin{center}
+        \begin{tikzcd}[sep=small]
+                && {\sigma} \ar[dr, -alloctip, "\tinstU\me_2"] \ar[ddll, "\me_1"']
+        \\
+                    &&& {\sigma_2} \ar[dr, -alloctip, "\rho"]
+        \\
+        {\sigma_1} \ar[ddrr, -alloctip, "\ext^{\tinstU\me_1}(\rho \comp \tinstU\me_2)"']
+                        &&&& {\hat\sigma} \ar[ddll, "\ext^{(\rho \comp \tinstU\me_2)}\me_1"]
+        \\
+        \\
+                && {\sigma_1 \liplus\sigma \hat\sigma}
+        \end{tikzcd}
+    \end{center}
+
+    We relate the two resultlets by
+    \begin{center}
+        \begin{tikzcd}
+            & {\sigma} \ar[dl, "\me_1"'] \ar[dr, -alloctip, "\tinstU\me_2"]
+        \\
+        {\sigma_1} \ar[dr, -alloctip, "\tinstU(\ext^{\me_1}\me_2)"'] \ar[drr, -alloctip, "\ext^{\tinstU\me_1}(\rho \comp \tinstU\me_2)" near start]
+                    && {\sigma_2} \ar[dr, -alloctip, end anchor=north east, "\rho"] \ar[dl, crossing over, "\ext^{\me_2}\me_1"']
+        \\
+                & {\sigma_1 \liplus\sigma \sigma_2} \ar[dr, -alloctip, "\ext^{\tinstU(\ext^{\me_2}\me_1)}\rho"']
+                    & {\sigma_1 \liplus\sigma \hat\sigma} \ar[d, dashed, "\iso"', "\vh"]
+                        & {\hat\sigma} \ar[l, "\ext^{(\rho \comp \tinstU\me_2)}\me_1"'] \ar[dl, "\ext^\rho(\ext^{\me_2}\me_1)"]
+        \\
+                && {(\sigma_1 \liplus\sigma \sigma_2) \liplus{\sigma_2} \hat\sigma}
+        \end{tikzcd}
+    \end{center}
+    where by L.I.C. pasting (\cref{lem:lic-pasting}) the two outer L.I.C. squares are isomorphic,
+    witnessed by the iso $\vh$.
+    Further, $\vh$ is an allocation morphism by \cref{lem:alloc-cancl}.
+    And so, by \cref{lem:thmon-quotient}, the resultlets are related via $\vh$ and the identity $1_{(\sigma_1 \liplus\sigma \sigma_2) \liplus{\sigma_2} \hat\sigma}$.
+    (notice that the data of $\ext^\rho(\ext^{\me_2}\me_1)$ and $\ext^{(\rho \comp \tinstU\me_2)}\me_1$ are completely determined by $\mvarM_{\me_1}$ and so they match).
+\end{proof}
+
+\subsubsection{Evaluation and Realisation}
+
+An \emph{evaluation} is a collection of resultlets. 
+
+\begin{definition}[Evaluation]
+    Let $\Sigma$ be a finite family of templates and $\vA : \tinstC \to \setC$.
+    An $\vA$-valued \emph{evaluation} $\ev$ over $\Sigma$ is an indexed family of resultlets $\ev \in \Prod{\sigma_\vi \in \Sigma} \typeRes\vA\sigma_\vi$.
+\end{definition}
+
+Let $\vA : \tinstC \to \setC$, total cover $\cov$ over $\pair\vw\Sigma$, $\vA$-valued evaluation $\ev$ over $\Sigma$, 
+and let $\phi$ be
+\begin{center}
+    \begin{tikzcd}
+        {\homF\worldC\vw{\instU(\dash)} \times \heapF} \ar[r, "\phi"]
+            & {\hideMon{(\vA \comp \inclITI\dash)}} \ar[d, "\hmonIso"] 
+        \\
+        {\stencilF\vw\inclITI\dash} \ar[r, dashed] \ar[u, "\pair{\anyL\dash}{\mvarM_\dash}", "\iso"']
+            & {\thideMon\vA\inclITI\dash}
+    \end{tikzcd}
+\end{center}
+which induces a morphism from $\stencilF\vw\inclITI\dash \dashto \thideMon\vA\inclITI\dash$.
+
+\begin{definition}[Realisation]
+We say that $\cov$ and $\ev$ realise $\phi$, $\realise\cov\ev\phi$ if
+for every concrete stencil $\me :\, ?_\vw \to 1_{\hat\vw}$, we have
+\[ \hmonIso(\phi\,\pair{\anyL\me}{\mvarM_\me}) = \thideMon(\vA)(\tilde\me)(\proj_{\indF{\tilde\me}(\star)} \ev) \]  
+where the morphism $\tilde\me : \sigma_{\indF{\tilde\me}(\star)} \to 1_{\hat\vw}$ is given by totality.
+\end{definition}

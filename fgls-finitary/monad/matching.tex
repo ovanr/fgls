@@ -1,0 +1,205 @@
+
+\subsection{Matching}
+
+\subsubsection{Stencils}
+
+A \emph{stencil} is a template heap with a selection of public locations. 
+They represent collections of heaps with a common segment determined by the public locations.
+
+\begin{definition}[Stencils]
+    Stencils are given by
+    \begin{align*}
+    \stencilF\relax & : \opC\worldC \to \funC\tinstC\setC \\
+    \stencilF\vw & = \homF\tinstC{?_{\vw}}\dash \iso \homF\worldC\vw{\anyL\dash} \times \theapF
+    \end{align*}
+    with the obvious functorial actions. We call the contravariant operation $\stencilF\sigma$ as \emph{hiding}.
+
+    \emph{Concrete stencils} are stencils over heaps, that is 
+    \[ \stencilF\vw\inclITI\dash = \homF\tinstC{?_{\vw}}{\inclITI\dash} \iso \homF\worldC\vw{\vu(\dash)} \times \heapF : \instC \to \setC \]
+\end{definition}
+
+\begin{example}\label{ex:one}
+
+Consider the following stencil given diagrammatically and assume all locations are of a single sort $\vC$
+(underlined locations are the public locations, dashed boxes represent location variables)
+\begin{center}
+\renewcommand\ndsize{15}
+\begin{tikzpicture}[node distance=5mm]
+    \node[ccell=$\underline\va$] (na) {};
+    \node[ccell=$\vb$] (nb) [below=0pt of na] {};
+    \node[vcell=$\vc$] (nc) [below=0pt of nb] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[ptr] (nb.center) to ++\wwest to ++\south to (nc.west);
+\end{tikzpicture}
+\end{center}
+It represents heaps that have this segment as starting point from $\va$, such as
+\begin{center}
+\renewcommand\ndsize{15}
+\begin{tikzpicture}[node distance=5mm]
+    \node[ccell=$\underline\va$] (na) {};
+    \node[ccell=$\vb$] (nb) [below=0pt of na] {};
+    \node[ccell=$\vc$] (nc) [below=0pt of nb] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[ptr] (nb.center) to ++\wwest to ++\south to (nc.west);
+    \draw[ptr] (nc.center) to ++\east to ++\south to ++\west to (nc.south);
+\end{tikzpicture}
+\hspace{2em}
+\begin{tikzpicture}[node distance=5mm]
+    \node[ccell=$\underline\va$] (na) {};
+    \node[ccell=$\vb$] (nb) [below=0pt of na] {};
+    \node[ccell=$\vc$] (nc) [below=0pt of nb] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[ptr] (nb.center) to ++\wwest to ++\south to (nc.west);
+    \draw[ptr] (nc.center) to ++\eeast to ++\north to ++\north to ++\north to ++\wwest to (na.north);
+\end{tikzpicture}
+\end{center}
+\end{example}
+
+\subsubsection{Covers}
+
+\begin{notation}
+    Let metavariable $\Sigma$ to range over finite families of templates, that is, objects in $\Sigma \in \objC{\famC\tinstC}$.
+\end{notation}
+
+\begin{definition}[Cover]
+    Let $\Sigma$ be a finite family of templates, and $\vw \in \objC\worldC$.
+    A \emph{cover} $\cov$ over $\pair\Sigma\vw$ is an indexed family of stencils $\Prod{\sigma_\vi \in \Sigma} \stencilF\vw{\sigma_\vi}$,
+    that is, it is a morphism $\cov :\, ?_\vw \to \Sigma \in \famC\tinstC$.
+\end{definition}
+
+We inherit the terminology from \cref{sec:famC-tinstC}, and talk about connected, non-overlapping, total and complete covers.
+We revisit these concepts here in their specialised form.
+
+\begin{definition}[Connected Cover]
+    A cover $\cov$ over $\pair\vw\Sigma$ is said to be connected if every stencil $\proj_\vi \comp \cov$ for $\sigma_\vi \in \Sigma$ is connected.
+\end{definition}
+
+\begin{definition}[Non-Overlapping Cover]
+    A cover $\cov$ over $\pair\Sigma\vw$ is said to be \emph{non-overlapping} if 
+    for every distinct $\sigma_\vi, \sigma_\vj \in \Sigma$, we have
+    \[ \AllTwo{\sigma_\vi \xto{\me_\vi} \hat\sigma}{\sigma_\vj \xto{\me_\vj} \hat\sigma} 
+        \me_\vi \comp \proj_\vi \comp \cov \neq \me_\vj \comp \proj_\vj \comp \cov \]
+\end{definition}
+
+\begin{definition}[Total Covers]
+    A cover $\vS$ over $\pair\Sigma\vw$ is \emph{total} if for every connected, concrete stencil $\me :\, ?_\vw \to 1_{\vw'}$,
+    there exists a $\sigma_\vi \in \Sigma$, $\tilde\me : \sigma_\vi \to 1_{\vw'}$ such that $\tilde\me \comp \proj_\vi \comp \cov = \me$.
+\end{definition}
+
+\begin{definition}[Complete Covers]
+    A \emph{complete} cover is a connected, non-overlapping and total cover.
+\end{definition}
+
+\begin{definition}[Cover Intersection]
+Given a cover $\cov$ over $\pair\vw\Sigma$ and a cover $\cov'$ over $\pair\vw{\Sigma'}$ 
+we define their intersection $\cov \uwedge\vw \cov'$ as the biggest cover that is included in both of them.
+
+It is given by pushouts in $\famC\tinstC$ 
+\begin{center}
+\begin{tikzcd}
+    {?_\vw}
+        \ar[dd, "\cov"'] \ar[rr, "\cov'"] \ar[ddrr, "\cov \uwedge\vw \cov'"]
+        && {\Sigma'}
+            \ar[dd, "\ext^{\cov'}\cov"] 
+    \\\\
+    {\Sigma}
+        \ar[rr, "\ext^\cov\cov'"']
+        && {\Sigma \pltimes{?_\vw} \Sigma'}
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\paragraph{Hiding Locations in a Cover}
+
+We extend the contravariant hiding action on stencils to covers.
+\begin{definition}[Hiding in Covers]
+For a renaming $\sigma : \vw \injto \vw'$, and a cover $\cov$ over $\pair{\vw'}\Sigma$, we have a cover over $\pair\vw\Sigma$
+by applying the hiding action on every stencil
+\[ \hideSt_\sigma(\cov) \eqdef ?_\vw \xto{\sigma} ?_{\vw'} \xto \cov \Sigma \]
+\end{definition}
+Hiding does not preserve connectivity, non-overlapping, or totality in general.
+% Counter-example: for two stencils with public locations a, b: { a |-> True, b |-> False } and { a |-> False, b |-> True },
+%                  if we hide along the empty world, non-overlapping proprety breaks. It is not hard to see that completeness breaks as well
+
+\paragraph{Rebasing a Cover}\label{sec:cov-rebase}
+
+We define a covariant action on renamings.
+
+\begin{definition}
+For a $\sigma : \vw \injto \vw'$ and cover $\cov$ over $\pair\vw\Sigma$,
+we can rebase $\cov$ to a cover $\cov^\sigma$ over $\pair{\vw'}{\Sigma^\sigma}$ for some induced family of templates ${\Sigma^\sigma}$.
+
+We define the construction using pushouts in $\famC\tinstC$
+\begin{center}
+\begin{tikzcd}
+    {?_\vw}
+        \ar[d, "\cov"'] \ar[r, "?_\sigma"]
+        & {?_{\vw'}}
+            \ar[d, "\cov^\sigma"]
+    \\
+    {\Sigma} \ar[r, "\rebase^\sigma"' yshift=-2pt]
+        & {\Sigma^\sigma} \posquare{ul}
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+Cover rebasing preserves connectivity, non-overlapping property (when cover is connected), totality, and thus completeness (see \cref{lem:con-pushout,lem:epi-pushout,lem:total-pushout,lem:compl-pushout}).
+
+\begin{example}
+    Consider a singleton cover over $\pair{\va : \vC}{[1_{\va,\vb,\vc}]}$ given by
+    \begin{center}
+    \renewcommand\ndsize{12}
+    \begin{tikzpicture}[node distance=5mm]
+        \node[ccell=$\vb$] (nb) {};
+        \node[ccell=$\underline\va$] (na) [below=0pt of nb] {};
+        \node[ccell=$\vc$] (nc) [below=0pt of na] {};
+        \draw[ptr] (na.center) to ++\east to ++\north to (nb.east);
+        \draw[ptr] (na.center) to ++\east to ++\south to (nc.east);
+    \end{tikzpicture}
+    \end{center}
+        
+    and we rebase it over renaming $\va : \vC \inclto \va : \vC, \vb : \vC, \vc : \vC$, where $\phi(\vC) = \tyUnit + \tyRef\vC \tyProd \tyRef\vC$. 
+    The resulting cover is over 
+    \[  \pair{\{\va : \vC, \vb : \vC, \vc : \vC\}}
+             {[1_{\va,\vb,\vc}, 1_{\va,\vb,\vc}, \incl^{\va,\vb',\vc \inclto \va,\vb',\vc,\vb}, \incl^{\va,\vb,\vc' \inclto \va,\vb,\vc',\vc}, \incl^{\va,\vb',\vc' \inclto \va,\vb',\vc',\vb, \vc}]} \]
+    with stencils
+    \begin{center}
+    \renewcommand\ndsize{12}
+    \begin{tikzpicture}[node distance=5mm]
+            \node[ccell=$\underline\vb$] (nb1) {};
+            \node[ccell=$\underline\va$] (na1) [below=0pt of nb1] {};
+            \node[ccell=$\underline\vc$] (nc1) [below=0pt of na1] {};
+            \draw[ptr] (na1.center) to ++\east to ++\north to (nb1.east);
+            \draw[ptr] (na1.center) to ++\east to ++\south to (nc1.east);
+    
+            \node[ccell=$\underline\vc$] (nc2) [right=30pt of nb1] {};
+            \node[ccell=$\underline\va$] (na2) [below=0pt of nc2] {};
+            \node[ccell=$\underline\vb$] (nb2) [below=0pt of na2] {};
+            \draw[ptr] (na2.center) to ++\east to ++\north to (nc2.east);
+            \draw[ptr] (na2.center) to ++\east to ++\south to (nb2.east);
+
+            \node[ccell=$\vb'$] (nb3) [right=30pt of nc2] {};
+            \node[ccell=$\underline\va$] (na3) [below=0pt of nb3] {};
+            \node[ccell=$\underline\vc$] (nc3) [below=0pt of na3] {};
+            \node[vcell=$\underline\vb$] (nb3') [below=0pt of nc3] {};
+            \draw[ptr] (na3.center) to ++\east to ++\north to (nb3.east);
+            \draw[ptr] (na3.center) to ++\east to ++\south to (nc3.east);
+
+            \node[ccell=$\underline\vb$] (nb4) [right=30pt of nb3] {};
+            \node[ccell=$\underline\va$] (na4) [below=0pt of nb4] {};
+            \node[ccell=$\vc'$] (nc4) [below=0pt of na4] {};
+            \node[vcell=$\underline\vc$] (nc4') [below=0pt of nc4] {};
+            \draw[ptr] (na4.center) to ++\east to ++\north to (nb4.east);
+            \draw[ptr] (na4.center) to ++\east to ++\south to (nc4.east);
+
+            \node[ccell=$\vb'$] (nb5) [right=30pt of nb4] {};
+            \node[ccell=$\underline\va$] (na5) [below=0pt of nb5] {};
+            \node[ccell=$\vc'$] (nc5) [below=0pt of na5] {};
+            \node[vcell=$\underline\vb$] (nb5') [below=0pt of nc5] {};
+            \node[vcell=$\underline\vc$] (nc5') [below=0pt of nb5'] {};
+            \draw[ptr] (na5.center) to ++\east to ++\north to (nb5.east);
+            \draw[ptr] (na5.center) to ++\east to ++\south to (nc5.east);
+    \end{tikzpicture}
+    \end{center}
+\end{example}
+

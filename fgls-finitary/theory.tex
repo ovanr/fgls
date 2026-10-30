@@ -1,0 +1,17 @@
+
+\section{A theory of template heaps}
+
+In this section we introduce \emph{template heaps}, a notion that describes multiple heaps with a common segment.
+We develop a small theory around template heaps in order to achieve our main objective: 
+to give a finitary submonad of the Full-Ground Local State monad \cite{kammar2017monad}.
+
+We begin by revisiting the categories $\worldC$ (worlds and injections) and $\instC$ (world and injections with instantiation data) where we mainly focus on their local independence structure~\cite{simpson2018category}.
+We introduce the category of templates $\tempC$ that introduces a notion of location variables.
+We extend the local independence structure to $\tempC$ in order to define a suitable generalisation of the hiding monad on template heaps.
+We give the category of template instantiations $\tinstC$, which introduces instantiation data to $\tempC$.
+
+\input{theory/cat-W}
+\input{theory/cat-I}
+\input{theory/cat-T}
+\input{theory/cat-TI}
+\input{theory/cat-fam-TI}

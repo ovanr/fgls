@@ -1,0 +1,106 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{csquotes}
+\usepackage[english]{babel}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[section]{placeins}
+\usepackage[backend=biber,maxbibnames=9,sorting=ynt,style=alphabetic]{biblatex}
+\usepackage[hidelinks]{hyperref}
+\usepackage{appendix}
+\usepackage{dutchcal}
+\DeclareMathAlphabet{\pazocal}{OMS}{cmsy}{m}{n}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{thmtools}
+\usepackage{stmaryrd}
+\usepackage{mathpartir}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{xspace}
+\usepackage{stackengine}
+\usepackage{scalerel}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,shapes.multipart,cd,decorations.pathreplacing}
+\usepackage{tikz-cd}
+\usepackage{mdframed}
+\usepackage[capitalize,noabbrev]{cleveref}
+
+% \usepackage{parskip}  % adds a line between paragraphs
+
+\addbibresource{bibliography.bib}
+
+% Make paragraph bold
+\makeatletter
+\def\@parfont{\bfseries}
+\makeatother
+
+% Shorter section references
+\crefformat{section}{\S#2#1#3}
+
+% Removes small-caps font from label in inferrule
+\renewcommand{\LabTirName}[1]{{#1}}
+
+\input{macros}
+
+\newif\ifcomments
+% uncomment to enable comments
+% \commentstrue
+% uncomment to disable comments
+\commentsfalse
+
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{definition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem*{lemma*}{Lemma}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\theoremstyle{remark}
+\newtheorem{problem}{Problem}
+
+\theoremstyle{remark}
+\newtheorem{example}{Example}
+
+\newtheoremstyle{proof}
+    {3pt}% 〈Space above〉
+    {3pt}% 〈Space below〉
+    {}% 〈Body font〉
+    {}% 〈Indent amount〉1
+    {\itshape}% 〈Theorem head font〉
+    {:}% 〈Punctuation after theorem head〉
+    {.5em}% 〈Space after theorem head〉2
+    {}% 〈Theorem head spec (can be left empty, meaning ‘normal’)〉
+\theoremstyle{proof}
+\newtheorem*{proofnote}{Proof Notes}
+
+\begin{document}
+
+\title{On finitariness of the Full-Ground Local State Monad}
+\author{Orpheas van Rooij}
+
+\maketitle
+
+\input{background}
+\input{non-finitary-proof}
+\input{fgls-ctx-monad}
+\input{finitary-monad}
+\input{appendix}
+
+\printbibliography
+
+\end{document}
+\endinput

@@ -1,0 +1,208 @@
+
+\subsection[Category of Worlds and Injections]{The category of worlds and injections $\worldC$}
+
+Given a set of sorts $\vC \in \typeSort$, the category $\worldC$ is defined as
+\begin{itemize}
+    \item Objects: worlds $\vw = \{ \vl_1 : \vC_1, \dots, \vl_\vn : \vC_\vn \}$.
+    \item Morphisms: Injective, sort-preserving $\sigma : \vw \to \vw'$.
+\end{itemize}
+
+\begin{notation}
+We use $\img\sigma$ to refer to its image and $\vw' \ominus \sigma$ for its complement, that is, $\vw' \setminus \img\sigma$, 
+which induces an inclusion $\compl\sigma : \vw' \ominus \sigma \to \vw'$.
+
+We denote morphisms from the empty world as $?_\vw : \emptyset \to \vw$ and inclusions as $\incl_\vi^{\vw_1,\vw_2} : \vw_\vi \to \vw_1 \mplus \vw_2$, 
+where $\oplus : \worldC \times \worldC \to \worldC$ is the independent coproduct functor (see \cite{kammar2017monad} for definition).
+We also denote by $\iso^{\sigma : \vw \to \vw'} : \vw' \iso \vw \oplus (\vw' \ominus \sigma)$ the canonical isomorphism.
+\end{notation}
+
+\begin{lemma}[Monomorphisms in $\worldC$]\label{lem:monos-W}
+    Every morphism in $\worldC$ is mono.
+\end{lemma}
+\begin{proof}Immediate from their injectivity.\end{proof}
+
+\begin{lemma}[Initial Object in $\worldC$]
+    The category $\worldC$ has an initial object.
+\end{lemma}
+\begin{proof}Consider the empty world.\end{proof}
+
+\begin{lemma}[Equalizers in $\worldC$]
+    The category $\worldC$ has all equalizers.
+\end{lemma}
+\begin{proof}
+    Define the equalizer in 
+    \begin{tikzcd}{\eqz{\sigma_1}{\sigma_2}} \ar[r, hook, "\ve"] & {\vw_1} \ar[r, yshift=3pt, "\sigma_1"] \ar[r, yshift=-3pt, "\sigma_2"'] & {\vw_2}\end{tikzcd} 
+    to be
+    \[ \eqz{\sigma_1}{\sigma_2} \eqdef \{ \va : \vC \in \vw_1 \mid \sigma_1(\va) = \sigma_2(\va) \} \]
+    with $\ve$ being the inclusion into $\vw_1$.
+
+    Given a $\sigma_1 \comp \hat\sigma = \sigma_2 \comp \hat\sigma$, let $\vh : \hat\vw \to \eqz{\sigma_1}{\sigma_2}$ be given by $\hat\sigma$.  
+    It is clear that it is well-defined, and uniqueness follows from $\ve$ being mono.
+\end{proof}
+\begin{example}
+    This is an equalizer diagram 
+    \begin{center}
+    \begin{tikzcd}
+        {\vb : \vC'} \ar[r, "\incl_2"] 
+            & {\va : \vC \mplus \vb : \vC'} 
+                \ar[r, yshift=3pt, "\incl_1 \oplus 1"] \ar[r, yshift=-3pt, "\incl_2 \oplus 1"'] 
+            & {\va_1 : \vC \oplus \va_2 : \vC \oplus \vb : \vC'}
+    \end{tikzcd}
+    \end{center}
+\end{example}
+\begin{notation}
+    We sometimes overload $\eqz{\sigma_1}{\sigma_2}$ to refer both to the object and the morphism when it is clear from context, \eg
+    \[ \begin{tikzcd}{\eqz{\sigma_1}{\sigma_2}} \ar[rr, "\eqz{\sigma_1}{\sigma_2}"] && {\vw_1} \ar[r, yshift=3pt, "\sigma_1"] \ar[r, yshift=-3pt, "\sigma_2"'] & {\vw_2}\end{tikzcd}\]
+\end{notation}
+
+\begin{lemma}[Pullbacks in $\worldC$]
+    The category $\worldC$ has all pullbacks.
+\end{lemma}
+\begin{proof}
+    Define the pullback of injections $\vw_1 \xto{\sigma_1} \hat\vw \xfrom{\sigma_2} \vw_2$ to be
+    \begin{align*} 
+        \vw_1 \pltimes{\hat\vw} \vw_2 & \eqdef \img{\sigma_1} \setInt \img{\sigma_2} \\
+        \res_{\sigma_1}\sigma_2 & \eqdef \inv^{\sigma_1} \\
+        \res_{\sigma_2}\sigma_1 & \eqdef \inv^{\sigma_2}
+    \end{align*}
+    It is clear that the square 
+        \begin{tikzcd}{\vw_1 \pltimes{\hat\vw} \vw_2} \ar[d, "\res_{\sigma_1}\sigma_2"'] \ar[r, pos=0.45, "\res_{\sigma_2}\sigma_1"] & {\vw_2} \ar[d, "\sigma_2"] \\
+            {\vw_1} \ar[r, "\sigma_1"'] & {\hat\vw}
+        \end{tikzcd}
+        commutes.
+    Further assume $\vw' \xto{\sigma'_1} \vw_1$, $\vw' \xto{\sigma'_2} \vw_2$.
+    Define the induced morphism $\vh : \vw' \to \vw_1 \pltimes{\hat\vw} \vw_2$ as $\sigma_1 \comp \sigma'_1$. 
+    It is well-defined by $\sigma_1 \comp \sigma'_1 = \sigma_2 \comp \sigma'_2$.
+    Uniqueness follows from injectivity of $\inv^{\sigma_1}$, $\inv^{\sigma_2}$.
+\end{proof}
+
+\begin{example}
+    This is a pullback diagram 
+    \begin{tikzcd} 
+        {\vb : \vC'}
+            \ar[d, hook, "\res_\vi\vj"]  \ar[r, hook, "\res_\vj\vi"] \pbsquare{dr}
+            & {\vb : \vC', \vc : \vC''}  
+                \ar[d, hook, "\vj"] 
+        \\
+        {\va : \vC, \vb : \vC'} 
+            \ar[r, hook, "\vi"] 
+            & {\va : \vC, \vb : \vC', \vc : \vC''}
+    \end{tikzcd}
+\end{example}
+
+\subsubsection{Local Independence Structure}
+
+Pushouts in $\worldC$ do not exist in general as witnessed by $\worldC \inclto \commaC\finC\typeSort$ not reflecting pushouts.
+The reason for this stems from the inherent injectivity of morphisms in $\worldC$
+certain induced morphisms coming out of the pushout in $\commaC\finC\typeSort$ are not injective.
+We instead consider a local independence structure on $\worldC$ which recovers the initia(L.I.C.) lity of the desired construct.
+Instead of considering any square as a solution to the problem of closing two morphisms $\vw_1 \xfrom{\sigma_1} \vw \xto{\sigma_2} \vw_2$,
+we consider independent squares that only allow locations from $\vw$ to be conflated.
+The pushout in $\commaC\finC\typeSort$ becomes their local independent coproduct which takes the disjoint union of their coimages.
+We recall here the local independent structure on $\worldC$~\cite{simpson2018category}.
+
+\begin{definition}[Local Independent Squares in $\worldC$]
+    \begin{tikzcd}[sep=small] 
+                    & {\vw} \arrow[ld, "\sigma_1"'] \arrow[rd, "\sigma_2"] & \\
+         {\vw_1} \arrow[rd, "{\sigma_1'}"'] &            & {\vw_2} \arrow[ld, "{\sigma_2'}"] \\
+                                            &  {\hat\vw} &
+    \end{tikzcd} 
+    is a local independent square (L.I.S.) when it is a pullback
+    \begin{center}
+    \begin{tikzcd}[] 
+        {\vw} \arrow[d, "\sigma_1"'] \arrow[r, "\sigma_2"] \pbsquare{dr} & {\vw_2} \arrow[d, "{\sigma_1'}"] \\
+        {\vw_1} \arrow[r, "{\sigma_1'}"']                                & {\hat\vw} 
+    \end{tikzcd} 
+    \end{center}
+\end{definition}
+
+\begin{lemma}[Local Independence Structure on $\worldC$]\label{lem:local-ind-struct-W}
+We can equip $\worldC$ with a local independent structure~\cite{simpson2018category} by defining the collection of local independent multicospans 
+$ \mcatI = \{ \sigma_\vi \xto{\sigma_\vi'} \hat\sigma \}_{\vi \in \vI} $ as multicospans that satisfy (note that $\vI$ is finite): 
+\[ \All{\vi, \vj \in \vI} \vi \neq \vj \implies 
+    \begin{tikzcd}[sep=small] 
+                    & {\vw} \arrow[ld, "\sigma_\vi"'] \arrow[dd, "{\hat\sigma}"] \arrow[rd, "\sigma_\vj"] & \\
+        {\vw_\vi} \arrow[rd, "{\sigma_\vi'}"'] &            & {\vw_\vj} \arrow[ld, "{\sigma_\vj'}"] \\
+                                          &  {\hat\vw} &
+    \end{tikzcd}\text{ is a local independent square.} \]
+\end{lemma}
+\begin{proof}\nl
+    We only need to show that the collection $\mcatI$ is closed under composition, all other axioms follow immediately. 
+    Consider multicospan $\{ \sigma_\vi \xto{\sigma'_\vi} \hat\sigma \}_{\vi \in \vI} \in \mcatI$ 
+    and a family of multicospans $\{ \{ \tau_{\vi\vj} \xto{\tau'_{\vi\vj}} \sigma_\vi \}_{\vj \in \vJ_\vi} \in \mcatI \}_{\vi \in \vI}$.
+    We need $\{ \tau_{\vi\vj} \xto{\sigma'_\vi \comp \tau'_{\vi\vj}} \hat\sigma \}_{\vj \in \vJ_\vi, \vi \in \vI } \in \mcatI$, which follows from
+    \begin{enumerate}
+        \item For all $\vi \in \vI, \vk \neq \vl \in \vJ_\vi$, $\tau_{\vi\vk} \xto{\sigma'_\vi \comp \tau'_{\vi\vk}} \hat\sigma \xfrom{\sigma'_\vi \comp \tau'_{\vi\vl}} \tau_{\vi\vl}$ is a local independent square.
+                \begin{arrow-diagram}
+                    {} \ar[dd, "\tau_{\vi\vk}"'] \ar[rr, "\tau_{\vi\vl}"] \pbsquare{ddrr} && {} \ar[d, "\tau'_{\vi\vl}"] \\
+                                                                                          && {} \ar[d, "\sigma'_\vi"] \\
+                    {} \ar[r, "\tau'_{\vi\vk}"'] & {} \ar[r, "\sigma'_\vi"'] & {}
+                \end{arrow-diagram}
+                follows from
+                \begin{arrow-diagram}
+                    {} \ar[d, "\tau_{\vi\vk}"'] \ar[r, "\tau_{\vi\vl}"] \pbsquare{dr} & {} \ar[d, "\tau'_{\vi\vl}"] \\
+                    {} \ar[r, "\tau'_{\vi\vk}"'] & {}
+                \end{arrow-diagram}
+                and injectivity of $\sigma'_\vi$ (pullbacks are preserved under post-composition with monos, \cref{lem:pullback-mono-post-comp}).
+        \item For all $\vi \neq \vj \in \vI, \vk \in \vJ_\vi, \vl \in \vJ_\vj$, $\tau_{\vi\vk} \xto{\sigma'_\vi \comp \tau'_{\vi\vk}} \hat\sigma \xfrom{\sigma'_\vj \comp \tau'_{\vj\vl}} \tau_{\vj\vl}$ is a local independent square.
+                We need
+                \begin{arrow-diagram}
+                    {} \ar[dd, "\tau_{\vi\vk}"'] \ar[rr, "\tau_{\vj\vl}"] \pbsquare{ddrr} && {} \ar[d, "\tau'_{\vj\vl}"] \\
+                                                                                          && {} \ar[d, "\sigma'_\vj"] \\
+                    {} \ar[r, "\tau'_{\vi\vk}"'] & {} \ar[r, "\sigma'_\vi"']              & {}              
+                \end{arrow-diagram}
+                which follows from pullback pasting
+                \begin{arrow-diagram}
+                    {} \ar[d, Rightarrow, "1"'] \ar[rr, "\tau_{\vj\vl}"] \pbsquare{dr} && {} \ar[d, "\tau'_{\vj\vl}"] \\
+                    {} \ar[d, "\tau_{\vi\vk}"'] \ar[r, Rightarrow, "1"] \pbsquare{dr} & {} \ar[r, "\sigma_\vj"] \ar[d, "\sigma_\vi"] \pbsquare{dr}  & {} \ar[d, "\sigma'_\vj"] \\
+                    {} \ar[r, "\tau'_{\vi\vk}"'] & {} \ar[r, "\sigma'_\vi"']          & {}
+                \end{arrow-diagram}
+                (see also \cref{lem:pullback-iso-mono})
+    \end{enumerate}
+\end{proof}
+
+% \begin{remark}[Future Concern for \cref{sec:local-ind-squares-einitC}]\label{rem:failure-lis-einitC}
+%     In the proof of \cref{lem:local-ind-struct-W}, case (2), we used the fact that coimages are preserved under composition
+%     \[ \vg[\coimg{\vf}] \subseteq \coimg{\vg \comp \vf} \]
+%     An analogous property when we attempt to define an independence structure in \cref{sec:local-ind-squares-einitC} is
+%         Unreachable locations are preserved under composition in $\einitC$.
+%     Unfortunately such a property does not hold, and thus the independence structure we give for $\einitC$ does not satisfy the composition axiom. 
+% \end{remark}
+
+\begin{definition}[Local Independent Coproducts from \cite{kammar2017monad}]\label{def:local-ind-coproducts-W}
+Recall that a local independent coproduct of $\vw_1 \xfrom{\sigma_1} \vw \xto{\sigma_2} \vw_2$ from \textcite{kammar2017monad} is given by the following square
+\begin{center}
+    \begin{tikzcd}[sep=small] 
+                    & {\vw} \arrow[ld, "\sigma_1"'] \arrow[rd, "\sigma_2"] & \\
+        {\vw_1} \arrow[rd, "\ext^{\sigma_1}\sigma_2"'] &            & {\vw_2} \arrow[ld, "\ext^{\sigma_2}\sigma_1"] \\
+                                                       &  {\vw_1 \liplus\vw \vw_2} &
+    \end{tikzcd} 
+\end{center}
+defined by
+\begin{align*}
+    \vw_1 \liplus\vw \vw_2 & \eqdef \vw \oplus (\vw_1 \ominus \sigma_1) \oplus (\vw_2 \ominus \sigma_2) \\
+    \ext^{\sigma_1}\sigma_2 & \eqdef 1 \oplus \incl_1 \comp \iso^{\sigma_1} \\
+    \ext^{\sigma_2}\sigma_1 & \eqdef 1 \oplus \incl_2 \comp \iso^{\sigma_2}
+\end{align*}
+\end{definition}
+
+\begin{lemma}[Local Independent Coproducts on $\worldC$]
+    The local independent coproducts (L.I.C.) from \textcite{kammar2017monad} give the structure for the L.I.C. in \textcite{simpson2018category} (considering the independent structure above). 
+\end{lemma}
+\begin{proof}
+    One needs to show: 
+    \begin{itemize} 
+        \item $\{ \ext^{\sigma_1}\sigma_2, \ext^{\sigma_2}\sigma_1 \}$ is $\mcatI$-neutral and independent (Definition 3.5).
+        \item The unique morphism exists (Definition 3.5).
+        \item Independent squares compose (Definition 5.2).
+        \item The pasting-like law for L.I.C. (Definition 6.2).
+    \end{itemize}
+\end{proof}
+
+\begin{remark}\label{rem:local-ind-coproducts-W-data}
+In a L.I.C. square of span $\vw_1 \xfrom{\sigma_1} \vw \xto{\sigma_2} \vw_2$,
+if $\sigma_1$ is equipped with instantiation data $\mvarM : \dheapF(\vw_1 \ominus \sigma_1, \vw_1)$,
+then $\ext^{\sigma_2}\sigma_1$ can be equipped with instantiation data as well (See \cite{kammar2017monad} for definition of the heaplet bifunctor $\dheapF : \opC\worldC \times \worldC \to \setC$)
+\[ \dheapF(\iso, \ext^{\sigma_1}\sigma_2)(\mvarM) : \dheapF((\vw_1 \liplus\vw \vw_2) \ominus \ext^{\sigma_2}\sigma_1, \vw_1 \liplus\vw \vw_2) \]
+using the canonical iso $(\vw_1 \liplus\vw \vw_2) \ominus \ext^{\sigma_2}\sigma_1 \iso \vw_1 \ominus \sigma_1$.
+\end{remark}

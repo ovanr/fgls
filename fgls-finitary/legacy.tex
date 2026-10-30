@@ -1,0 +1,262 @@
+
+\subsubsection{Reflection of Disconnectivity}
+
+A morphism $\me' : \sigma_2 \to \sigma_3$ is disconnectivity reflecting w.r.t a disconnected morphism $\me : \sigma_1 \rto \sigma_2$,
+if every unreachable location comes from $\sigma_2$.
+Such morphisms must be connected and further can only instantiate variables $\varL{\sigma_2}$ that come from $\varL{\sigma_1}$.
+
+\begin{definition}[Disconnectedness Reflecting Morphisms]
+    A morphism $\me_2 : \sigma_2 \to \sigma_3$ reflects the disconnectivity of a morphism $\me_1 : \sigma_1 \rto \sigma_2$
+    if it satisfies $(\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}) \pltimes{\anyL{\sigma_3}} 
+                     (\anyL{\sigma_3} \ominus \anyL{\me_2}) = \emptyset$.
+\end{definition}
+
+\begin{lemma}[Disconnectedness Reflecting Morphisms Property Equivalence]\label{lem:dcon-refl-prop-equiv}
+    Let $\sigma_1 \xrto{\me_1} \sigma_2 \xto{\me_2} \sigma_3$.
+    We have the following equivalence.
+
+    \begin{tikzcd}[sep=small]
+        {\emptyset} 
+            \ar[r] \ar[d] \pbsquare{dr} 
+            & {\anyL{\sigma_3} \ominus \anyL{\me_2}}
+                \ar[d, "\compl{\anyL{\me_2}}"] 
+        \\
+        {\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}}
+            \ar[r, "\compl{\anyL{\uncon{\me_2 \comp \me_1}}}"' yshift=-4pt] 
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}$\hspace{5pt}\mathclap{\xLeftrightarrow{(1)}}$
+    \begin{tikzcd}[sep=small]
+        {\anyL{\sigma_3} \ominus \anyL{\me_2}}
+            \ar[r, dashed, "\exists "] \ar[dr, "\compl{\anyL{\me_2}}"']
+            & {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+                \ar[d, "\anyL{\uncon{\me_2 \comp \me_1}}"]
+        \\
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}$\hspace{10pt}\mathclap{\xLeftrightarrow{(2)}}$
+    \begin{tikzcd}[sep=small]
+        {\anyL{\sigma_2} \ominus \anyL{\me_1}}
+            \ar[r, "\compl{\anyL{\me_1}}"] 
+            & {\anyL{\sigma_2}}
+                \ar[d, "\anyL{\me_2}"'] 
+        \\
+        {\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}}
+            \ar[r, "\compl{\anyL{\uncon{\me_2 \comp \me_1}}}"' yshift=-5pt] \ar[u, dashed, "\exists \inv^{\anyL{\me_2}}\res|{\me_1}"] 
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}
+
+\end{lemma}
+
+\begin{lemma}
+    For $\sigma_1 \xrto{\me_1} \sigma_2 \xsurjto{\me_2} \sigma_3$ if $\me_1$ is variable reflecting then $\me_2$ reflects the disconnectivity of $\me_1$.
+\end{lemma}
+
+\begin{definition}
+    For $\me : \sigma_1 \to \sigma_2$ we write $\sigma_{\uncon\me}$ as the unreachable component of $\me$
+    \[ \sigma_{\uncon\me} := \concL{\sigma_2} \ominus \concL{\uncon\me} \xto{\concL{\sigma_2}\res|{\uncon\me}} \anyL{\sigma_2} \ominus \anyL{\uncon\me} \]
+    It is well-defined by \cref{lem:con-fact-is-vpres}, and notice the inclusion in $\tempC$
+        \[ \sigma_{\uncon\me} \xto{\compl{\uncon\me} \eqdef \pair{\compl{\concL{\uncon\me}}}{\compl{\anyL{\uncon\me}}}} \sigma_2 \]
+\end{definition}
+
+\begin{definition}[Preservation Squares]
+    A \begin{arrow-diagram}
+        {} \ar[r, "\vf'"] \ar[d, red, "\vm"'] & {} \ar[d, red, "\vm'"] \\
+        {} \ar[r, "\vf"'] & {} \\
+       \end{arrow-diagram}
+    is called a (regular mono) preservation square when every pointer introduced by $\vm$ is introduced by $\vm'$ as well
+    \[ \UPlus\vf[\coimg{\UPlus\vm}] \subseteq \coimg{\UPlus\vm'} \]
+    We call it a \emph{mirrored} preservation square when the coimages are equal
+        \[ \UPlus\vf[\coimg{\UPlus\vm}] = \coimg{\UPlus\vm'} \]
+and denote them accordingly as
+\begin{center}
+\begin{arrow-diagram}
+    {} \ar[r, "\vf'"] \ar[d, red, "\vm"'] \psquare{dr} & {} \ar[d, red, "\vm'"] \\
+    {} \ar[r, "\vf"'] & {} \\
+\end{arrow-diagram}
+\hspace{30pt}
+\begin{arrow-diagram}
+    {} \ar[r, "\vf'"] \ar[d, red, "\vm"'] \mpsquare{dr} & {} \ar[d, red, "\vm'"] \\
+    {} \ar[r, "\vf"'] & {} \\
+\end{arrow-diagram}
+\end{center}
+\end{definition}
+
+\begin{lemma}[PS Compose]
+    \label[lemma]{lem:rs-compose}
+    If 
+\begin{arrow-diagram}
+    {} \ar[r, "\vf'"] \ar[d, red, "\vm"'] \psquare{dr} & {} \ar[d, red, "\vm'"] \\
+    {} \ar[r, "\vf"'] & {}
+\end{arrow-diagram}
+and \begin{arrow-diagram}
+        {}  & {} \ar[d, red, "{\hat\vm}"] \\
+        {} \ar[ur, "\vg"] \ar[r, "\vf'"'] & {}
+\end{arrow-diagram}
+then
+\begin{arrow-diagram}
+    {} \ar[r, "\vg"] \ar[d, red, "\vm"'] \psquare{dr} & {} \ar[d, red, "\hat\vm \comp \vm'"] \\
+    {} \ar[r, "\vf"'] & {}
+\end{arrow-diagram}
+\end{lemma}
+
+
+\begin{lemma}[PS Horizontal Paste 1]
+    \label[lemma]{lem:rs-horizontal-paste-1}
+    If 
+\begin{arrow-diagram}
+    {} \ar[r, "\hat{\vf_1}"] \ar[d, red, "\vm_1"'] \psquare{dr} 
+        & {} \ar[d, red] \ar[r, "\hat{\vf_2}"] \psquare{dr} 
+                & {} \ar[d, red, "\vm_3"] \\
+    {} \ar[r, "\vf_1"'] 
+        & {} \ar[r, "\vf_2"']
+                & {}
+\end{arrow-diagram}
+    then
+\begin{arrow-diagram}
+    {} \ar[r, "\hat{\vf_1}"] \ar[d, red, "\vm_1"'] \psquare{drr} 
+        & {} \ar[r, "\hat{\vf_2}"] 
+                & {} \ar[d, red, "\vm_3"] \\
+    {} \ar[r, "\vf_1"'] 
+        & {} \ar[r, "\vf_2"']
+                & {}
+\end{arrow-diagram}
+\end{lemma}
+
+\begin{lemma}[PS Horizontal Paste 2]
+    \label[lemma]{lem:rs-horizontal-paste-2}
+    If 
+\begin{arrow-diagram}
+    {} \ar[r, "\hat{\vf_1}"] \ar[d, red, "\vm_1"'] \psquare{drr} 
+        & {} \ar[r, "\hat{\vf_2}"] 
+                & {} \ar[d, red, "\vm_3"] \\
+    {} \ar[r, "\vf_1"'] 
+        & {} \ar[r, "\vf_2"']
+                & {}
+\end{arrow-diagram}
+    and
+\begin{arrow-diagram}
+    {} \ar[r, "\hat{\vf_2}"] \ar[d, red, "\vm_2"'] \psquare{dr} & {} \ar[d, red, "\vm_3"] \\
+    {} \ar[r, "\vf_2"'] & {}
+\end{arrow-diagram}
+    then
+\begin{arrow-diagram}
+    {} \ar[r, "\hat{\vf_1}"] \ar[d, red, "\vm_1"'] \psquare{dr} & {} \ar[d, red, "\vm_2"] \\
+    {} \ar[r, "\vf_1"'] & {}
+\end{arrow-diagram}
+\end{lemma}
+
+\begin{lemma}[PS Horizontal Paste Inv]
+    \label[lemma]{lem:rs-horizontal-paste-inv}
+If
+\begin{arrow-diagram}
+    {} \ar[d, red, "\vm_1"'] \ar[r, "\hat{\vf_1}"] \mpsquare{dr}
+                &  {} \ar[d, red, "\vm_2"] \\
+    {} \ar[r, "\vf_1"'] 
+                & {}
+\end{arrow-diagram}
+and
+\begin{arrow-diagram}
+    {} \ar[d, red, "\vm"'] \ar[r, "{\hat{\vf_1}}"] \ar[drr, phantom, "{\scriptstyle\subseteq_M}"]
+        & {} \ar[r, "\hat{\vf_2}"]
+                & {} \ar[d, red] \\
+    {} \ar[r, "\vf_1"'] 
+        & {} \ar[r, "\vf_2"']
+                & {}
+\end{arrow-diagram}
+then
+\begin{arrow-diagram}
+    {} \ar[d, red, "\vm_2"'] \ar[r, "\hat{\vf_2}"] \psquare{dr}
+                &  {} \ar[d, red, "\vm_3"] \\
+    {} \ar[r, "\vf_2"'] 
+                & {}
+\end{arrow-diagram}
+\end{lemma}
+
+\begin{lemma}[PS Vertical Paste]
+    \label[lemma]{lem:rs-vertical-paste}
+    If 
+\begin{arrow-diagram}
+    {} \ar[r] \ar[d, red, "\vm_1"'] \psquare{dr} 
+        & {} \ar[d, red, "\vm_2"] \\
+        {} \ar[r] \ar[d, red, "\vm_1'"'] \psquare{dr} 
+        & {} \ar[d, red, "\vm_2'"] \\
+    {} \ar[r] & {}
+\end{arrow-diagram}
+    then
+\begin{arrow-diagram}
+    {} \ar[r] \ar[d, red, "\vm_1' \comp \vm_1"'] \psquare{dr} 
+        & {} \ar[d, red, "\vm_2' \comp \vm_2"] \\
+    {} \ar[r] & {}
+\end{arrow-diagram}
+\end{lemma}
+
+\begin{lemma}[PS Epi Reflection]
+    \label[lemma]{lem:rs-epi-reflection}
+    If 
+\begin{arrow-diagram}
+    {} \ar[d, red, "\vm"'] \ar[rr, blue] \ar[drr, phantom, "{\scriptstyle\subseteq_M}"]
+                && {} \ar[d, red] \\
+    {} \ar[r, "\vf_1"'] 
+        & {} \ar[r, "\vf_2"']
+                & {}
+\end{arrow-diagram}
+    then
+\begin{arrow-diagram}
+    {} \ar[d, red, "\vm"'] \ar[r, blue] \psquare{dr} & {} \ar[d, red] \\
+    {} \ar[r, "\vf"'] & {}
+\end{arrow-diagram}
+\end{lemma}
+
+\begin{lemma}[PS Alloc-Epi Mirror]
+    \label[lemma]{lem:rs-alloc-epi-mirror}
+    If 
+\begin{arrow-diagram}
+    {} \ar[-alloctip, d, red, "\vm"'] \ar[r] \psquare{dr}
+                &  {} \ar[d, red] \\
+    {} \ar[r, blue, "\vf"'] 
+                & {}
+\end{arrow-diagram}
+    then
+\begin{arrow-diagram}
+    {} \ar[-alloctip, d, red, "\vm"'] \ar[r] \mpsquare{dr}
+                &  {} \ar[d, red] \\
+    {} \ar[r, blue, "\vf"'] 
+                & {}
+\end{arrow-diagram}
+\end{lemma}
+
+
+\section{Background}
+
+\subsection{Full-Ground Local State}
+
+The monad for Full-Ground local state is as follows~\cite{kammar2017monad}:
+\[\begin{array}{rcl}
+    \monFLS & : & \funC\worldC\setC \to \funC\worldC\setC \\ 
+    (\monFLS\vX)\vw & \eqdef & \underbrace{
+        \End{\vw \injto \vw' \in \commaC\vw\vU} 
+            \heapF\vw' \to 
+            \overbrace{\Coend{\vw' \injto \vw'' \in \commaC{\vw'}\vU} (\vX\vU)\vw'' \times \heapF\vw''}^{\vP(\vX\vU\times\heapF)\vw'}
+        }_{\vU_*(\Exp{\vP(\vX\vU \times \heapF)}\heapF)\vw}
+\end{array}\]
+The monad's action on objects can be described as taking the right Kan extension along the forgetful functor $\vU$ of the functor $\Exp{\vP(\vX\vU \times \heapF)}\heapF$.
+In this case $\vP : \funC\initC\setC \to \funC\initC\setC$ is the so-called hiding monad and $\heapF : \initC \to \setC$ represents heaps ($\initC$ has objects worlds and morphisms as initialisation data).
+
+\begin{center}
+\begin{tikzcd}
+    {\initC} \arrow[rr, "\vU"] & & {\worldC} && {\funC\worldC\setC} \arrow[rr, "\vU^*", shift left=3] & \perp & {\funC\initC\setC} \arrow[ll, "\vU_*", shift left=3] \arrow[loop, distance=2em, in=35, out=325, "\vP"'] \\
+\end{tikzcd}
+\end{center}
+
+\subsection{Finitary Monads}
+
+\begin{itemize}
+    \item A monad is said to be finitary if its underlying endofunctor preserves $\omega$-filtered colimits.
+    \item An $\omega$-filtered colimit is a colimit over an $\omega$-filtered category.
+    \item An $\omega$-filtered category is a category $\mcatC$ that satisfies all of the following conditions: 
+        \begin{itemize}
+            \item There exists at least one object in $\mcatC$.
+            \item For any two objects $\vC, \vD \in \mcatC$, there exists an object $\vE$ and two morphisms $\vf : \vC \to \vE$, $\vg : \vD \to \vE$.
+            \item For any two parallel morphisms $\vf,\vg : \vC \to \vD$, there exists a morphism $\vh : \vD \to \vE$ such that $\vh \comp \vf = \vh \comp \vg$.
+        \end{itemize}
+\end{itemize}
+

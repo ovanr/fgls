@@ -1,0 +1,45 @@
+
+\subsection{FGLS Monad}
+\label{sec:fgls-monad}
+
+We give an alternative description of the FGLS monad $\monFLS : \funC\worldC\setC \to \funC\worldC\setC$ using natural transformations. 
+We utilise this presentation to define the finitary submonad from.
+\[
+    \monFLS\vX\vw \iso \homF{\funC\instC\setC}{\homF\worldC\vw{\instU(\dash)} \times \heapF}{\vP(\vX\instU \times \heapF)}
+\]
+where $\instU : \instC \to \worldC$ is the forgetful functor that forgets the heap data.
+We further define the functorial action, unit and join of the FGLS monad in terms of this naturality style.
+
+\subsubsection*{Functorial action}
+
+\begin{definition}[Functorial action of $\monFLS$ on renamings]
+    Let $\sigma :  \vw \injto \vw'$ be a renaming in $\worldC$ in
+\begin{align*}
+    \monFLS\vX\sigma & : \monFLS\vX\vw \to \monFLS\vX\vw' \\
+    \phi & \mapsto \homF\worldC{\vw'}{\instU(\dash)} \times \heapF \xto{(\dash \comp \sigma) \times 1} 
+    \homF\worldC\vw{\instU(\dash)} \times \heapF \xto\phi \vP(\vX\instU \times \heapF)
+\end{align*}
+\end{definition}
+
+\subsubsection*{Unit of Monad}
+
+
+\begin{definition}[Unit of $\monFLS$]
+\begin{align*}
+    \eta_\vX & : \vX \To \monFLS\vX \\
+    \vx      & \mapsto_\vw \homF\worldC\vw{\instU(\dash)} \times \heapF \xto{\vX(\dash)(\vx) \times 1} \vX\instU \times \heapF 
+                                                          \xto{\eta^\vP_{\vX\instU \times \heapF}} \vP(\vX\instU \times \heapF)
+\end{align*}
+where $\vX(\dash)(\vx)$ is simply the functorial action of $\vX$ on $\vx$.
+\end{definition}
+
+\subsubsection*{Join of Monad}
+
+\begin{definition}[Multiplication of $\monFLS$]
+\begin{align*}
+    \mu_\vX & : \Exp\monFLS2\vX \To \monFLS\vX \\
+    \phi & \mapsto_\vw \homF\worldC\vw{\tinstU(\dash)} \times \heapF \xto\phi \vP(\monFLS\vX\tinstU \times \heapF) \xto{\vP(\eval)} \Exp\vP2(\vX\tinstU \times \heapF)
+    \xto{\mu^\vP_{\vX\tinstU \times \heapF}} \vP(\vX\tinstU \times \heapF)
+\end{align*}
+where $\eval \pair\phi\vh \overeq\vw \phi_\vw\pair{1_\vw}\vh$.
+\end{definition}

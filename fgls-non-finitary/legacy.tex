@@ -1,0 +1,16 @@
+
+\paragraph{Pullbacks}
+
+The category $\worldC$ has pullbacks:
+\begin{center}
+    \begin{tikzcd}
+        {\vv} \arrow[d, tail, "{\nu_*}"'] \arrow[r, tail, "{\ext\nu}"] 
+        \arrow[dr, phantom, "\scalebox{1.5}{$\lrcorner$}" , very near start, color=black] & {\vw_2} \arrow[d, tail, "{\sigma}"] \\
+        {\vw_1} \arrow[r, tail, "{\rho}"'] & {\vw'} 
+    \end{tikzcd}
+\end{center}
+and further, every pullback square induces morphisms:
+\[\begin{array}{lcr}
+    \rho \ominus \sigma : \vw_1 \ominus \nu_* \injto \vw' \ominus \sigma & \text{ and } & 
+    \sigma \ominus \rho : \vw_2 \ominus \ext\nu \injto \vw' \ominus \rho
+\end{array}\]

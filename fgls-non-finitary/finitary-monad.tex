@@ -1,0 +1,387 @@
+
+\section{Becoming Finitary}
+
+A natural question to ask is how to carve out a subset of the function space described by the FGLS monad such that the monad it induces is finitary.
+Our goal is to prove a representation result between this finitary monad and the parametrised algebraic theory for FGLS.
+Since the PAT for FGLS has models in $\funC\ctxC\setC$, we consider the finitary version of the FGLS monad lifted to $\ctxC$ presheaves (see \cref{sec:fgls-ctx}). 
+
+\subsection{Preliminaries}
+
+We first introduce some properties and constructions that are used to describe the finitary monad.
+
+\subsubsection{Heaplet Initialisation Category}
+The heaplet initialisation category $\dinitC$ is defined as:
+\begin{itemize}
+    \item Objects: Sort-preserving injective renamings between worlds $\vw^- \injto \vw^+$.
+    \item Morphisms: Injective sort-preserving $\varepsilon^-$, sort-preserving $\varepsilon^+$, and a $\vh_\varepsilon : \dheapF(\vw_2^- \ominus \varepsilon^-, \vw_2^+)$ such that: 
+                    \begin{center}
+                     \begin{tikzcd}{\vw_1^+} \arrow[r, "{\varepsilon^+}"] & {\vw_2^+} \\
+                                   {\vw_1^-} \arrow[u, tail, "\rho"] \arrow[r, tail, "{\varepsilon^-}"'] & {\vw_2^-} \arrow[u, tail, "\sigma"']
+                     \end{tikzcd} 
+                    \end{center}
+\end{itemize}
+We have functors $\vU_1 : \dinitC \to \worldC, \vU_2 : \dinitC \to \ctxC$ that project the first and second world correspondingly, 
+$\initInclF : \initC \inclto \dinitC$ which maps $\vw$ to the corresponding identity morphism, and the heaplet functor can be defined as $\dheapF : \dinitC \to \setC$ 
+(notice that we consider the heaplet functor to be of the form $\opC\worldC \times \ctxC \to \setC$).
+
+\paragraph{An order on morphisms}
+
+We say that a morphism $\varepsilon_2$ is \emph{at least as concrete} as $\varepsilon_2$ (notation $\varepsilon_1 \leq \varepsilon_2$), 
+when $\varepsilon_1, \varepsilon_2$ have the same domain: 
+\begin{center}
+    \begin{tikzcd}
+        {\vw_2^+} & {\vw^+} \arrow[l, "{\vU_2\varepsilon_2}"'] \arrow[r, "{\vU_2\varepsilon_1}"] & {\vw_1^+} \\
+        {\vw_2^-} \arrow[u, tail] & {\vw^-} \arrow[u, tail, "{\rho}"] \arrow[l, tail, "{\vU_1\varepsilon_2}"] \arrow[r, tail, "{\vU_1\varepsilon_1}"'] & {\vw_1^-} \arrow[u, tail]
+    \end{tikzcd} 
+\end{center}
+and satisfy:
+\[ \text{ every } \vx \in \mathsf{Img}_{\vU_2\varepsilon_2}[\mathsf{Fibers}_{\vU_2\varepsilon_1}[\vw_1^+]] \text{ is a singleton set } \]
+The idea is that $\varepsilon_2$ does not relate more dangling pointers from $\vw^+ \ominus \rho$ than $\varepsilon_1$.
+
+\begin{example}
+\end{example}
+
+\begin{lemma}$\leq$ forms a preorder\end{lemma}
+
+\paragraph{Extension Functor}
+We define the extension functor as a means to add $\vw'$-many dangling pointers.
+\[\begin{array}{r@{\,}c@{\,}l}
+    \extF\dash{\vw'} & : & \dinitC \to \dinitC \\
+    \extF{(\vw^- \xto\rho \vw^+)}{\vw'} & = & \vw^- \xto\rho \vw^+ \xinclto{\inl} \vw^+ \oplus \vw' \\
+    \extF\varepsilon{\vw'} & = & \triple{\vU_1\varepsilon}{\vU_2\varepsilon \oplus 1_{\vw'}}{\dheapF\tup1\inl(\eta_\varepsilon)}
+\end{array}\]
+Further, for every functor $\vG : \dinitC \to \setC$, we have:
+\[\begin{array}{r@{\,}c@{\,}l}
+    \extNat\vG{\vw'} & : & \vG \To \vG\extF\dash{\vw'} \\
+    \extNat\vG{\vw'}{(\vw^- \xto\rho \vw^+)} & = & \vG{\triple{1_{\vw^-}}{\inl^{\vw^+ \xinclto\inl \vw^+ \oplus \vw'}}\emptyset}
+\end{array}\]
+We will often drop $\vG$ from $\extNat\vG{\vw'}$ when it is clear from the context.
+
+\subsubsection{Templates}
+
+We introduce the notion of a \emph{template} that represents a collection of objects in $\dinitC$.
+Specifically, a template is a set $\vI$ seen as a discrete category, together with a functor $\vT : \vI \to \dinitC$.
+We say that a template is finite when $\vI$ is a finite set.
+
+We would like to represent all the possible heap extensions that can be derived from a template.
+For a template $\vT$, its heap extensions are given by the following functor:
+\[\begin{array}{r@{\,}c@{\,}l}
+    \templateExt\vF & : & \initC \to \setC \\
+    \templateExt\vF & = & \colimit(\vI \xrightarrow\vT \dinitC \xrightarrow\vy \funC\dinitC\setC \xrightarrow{(\dash)\initInclF} \funC\initC\setC)
+                                    \iso \Coprod{\vi \in \vI} \homF\dinitC{\vT(\vi)}{\initInclF(\dash)}
+\end{array}\]
+
+\subsubsection{Stencils}
+
+Stencils are used to represent heaps with a common segment.
+It is parametrised over a world $\vw$ that represents the public locations, and it is defined using heaplets with dangling pointers. 
+Dangling pointers represent the points by which the stencil can be extended into a bigger heaplet/heap.
+
+\[\begin{array}{r@{\,}c@{\,}l}
+    \stencilF\nop & : & \opC\ctxC \to \funC\dinitC\setC \\
+    \stencilF\vw & = & \homF\ctxC\vw{\vU_2(\dash)} \times \dheapF \\
+    \stencilF\vf\tup\vg\vh & = & \tup{\vg \comp \vf}\vh
+\end{array}\]
+
+\begin{example}\label{exam:one}
+
+Consider the following stencil given diagrammatically and assume all locations are of a single sort $\vC$
+(locations in blue are directly accessible from the public world $\vw = \va$, pointers in red are dangling):
+\begin{center}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pubcell=$\va$] (na) {};
+    \node[pricell=$\vb$] (nb) [below=0pt of na] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[dptr] (nb.center) to ++\west  to node[midway,xshift=-0.5em] {$\vc$} ++\south to ++\east ;
+    \draw[brace] (na.north) to node[labbrace]{$\vw^-$} (nb.south);
+    \draw[mbrace] (na.north) to ++\south to node[lambrace]{$\vw^+$} ++\south to ++\south ;
+\end{tikzpicture}
+\end{center}
+This stencil represents the heaps that have this segment as starting point from $\va$, to draw a few:
+\begin{center}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pubcell=$\va$] (na) {};
+    \node[pricell=$\vb$] (nb) [below=0pt of na] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[ptr] (nb.center) to ++\wwest to ++\north to ++\north to ++\eeast to (na.north);
+\end{tikzpicture}
+\hspace{2em}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pubcell=$\va$] (na) {};
+    \node[pricell=$\vb$] (nb) [below=0pt of na] {};
+    \node[mpricell=$\vc$] (nc) [below=0pt of nb] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[ptr] (nb.center) to ++\west to ++\south to (nc.west);
+    \draw[ptr] (nc.center) to ++\east to ++\south to ++\west to (nc.south);
+\end{tikzpicture}
+\hspace{2em}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pubcell=$\va$] (na) {};
+    \node[pricell=$\vb$] (nb) [below=0pt of na] {};
+    \node[mpricell=$\vc$] (nc) [below=0pt of nb] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[ptr] (nb.center) to ++\west to ++\south to (nc.west);
+    \draw[ptr] (nc.center) to ++\eeast to ++\north to ++\north to ++\north to ++\wwest to (na.north);
+\end{tikzpicture}
+\end{center}
+\end{example}
+
+\paragraph{Rebasing a Stencil}
+
+We define a covariant action of morphisms $\ctxC$ acting on a stencil which we call $\emph{rebasing}$.
+For every morphism $\vf : \vw \to \vw' \in \ctxC$:
+\[\begin{array}{r@{\,}c@{\,}l}
+    \stencilRebase\vf & : & \stencilF\vw\extF\dash{\vw' \ominus \vf} \To \stencilF{\vw'}\extF\dash{\vw' \ominus \vf} \\
+    \stencilRebase\vf_{\vw^- \xto\rho \vw^+}\tup{\vg^{\vw \to \vw^+ \oplus \vw' \ominus \vf}}\vh & \mapsto &
+    \tup{\vw' \xto\iso \vw \oplus \vw' \ominus \vf \xto{[\vg,\inr]} \vw^+ \oplus \vw' \ominus \vf}\vh
+\end{array}\]
+\begin{lemma}\label{lem:stencilFretract}
+The functorial action $\stencilF\vf$ is the retraction of the rebasing operation, that is:
+\[ {\stencilF\vf}_{\extF\dash{\vw' \ominus \vf}} \comp \stencilRebase\vf = 1 \]
+\end{lemma}
+
+\begin{example}
+    Consider the following extension $\vw = \va : \vC, \vw' = \va : \vC, \vd : \vC'$ and $\vf = \inl$. 
+    We have that $\vw' \ominus \vf = \vd : \vC'$. 
+    Consider a stencil that has $\vd$ as dangling reference:
+    \[\begin{array}[t]{lll}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pubcell=$\va$] (na) {};
+    \node[pricell=$\vb$] (nb) [below=0pt of na] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[dptr] ($ (nb.center) + (0.5,-0.5) $) to node[midway,xshift=1.5em] {$\vd$} ++\west; 
+    \node[draw=none] (nmap) [right=50pt of na.east] {$\xmapsto{\stencilRebase\vf}$};
+    \node[pubcell=$\va$] (na2) [right=50pt of nmap] {};
+    \node[pricell=$\vb$] (nb2) [below=0pt of na2] {};
+    \draw[ptr] (na2.center) to ++\east to ++\south to (nb2.east);
+    \draw[dptr] ($ (nb2.center) + (0.5,-0.5) $) to node[midway,xshift=1.5em,color=blue] {$\vd$} ++\west; 
+\end{tikzpicture}
+\end{array}\]
+    The rebasing operation simply makes the location $\vd$ publicly accessible from $\vw'$. 
+\end{example}
+
+\subsubsection{Stencil Cover}
+
+We view stencils accessible via a world $\vw$ as a category by considering the category of elements for functor $\stencilF\vw$ \ie $\coeC{\stencilF\vw}$,
+defined as:
+\begin{itemize}
+    \item Objects: $\tup{\rho : \vw^- \injto \vw^+}{\vs \in \stencilF\vw(\rho)}$
+    \item Morphisms: $\tup{\rho}\vs \xrightarrow\varepsilon \tup{\sigma}{\vs'}$
+                    is a morphism $\varepsilon : \rho \to \sigma \in \dinitC$, such that $\stencilF\vw(\varepsilon)(\vs) = \vs'$
+\end{itemize}
+
+A \emph{stencil cover} is a collection of stencils that is compatible with a particular template.
+That is, a $\vw$-accessible $\vT$-cover, is a functor $\vS : \vI \to \coeC{\stencilF\vw}$ such that:
+\begin{center}
+\begin{tikzcd}
+    {\vI} \arrow[rr, "{\vT}"] \arrow[dr, "{\vS}"'] && {\dinitC} \\
+        & {\coeC{\stencilF\vw}} \arrow[ur, "{\vU}"'] &
+\end{tikzcd}
+\end{center}
+We have a natural transformation $\cov : \templateExt\vT \To \homF\ctxC\vw{\vJ\vU(\dash)} \times \heapF$ given by:
+\[ \tup\vi{\varepsilon^{\vT(\vi) \to \sigma}} \mapsto \stencilF\vw(\varepsilon)(\projTwo(\vS\vi)) \]
+We say that a cover is \emph{complete} when $\cov$ is an isomorphism.
+
+\subsubsection{Heaplet Hiding Monad}
+We further generalise the hiding monad to heaplets as follows (see \cref{adx:heaplet-hiding-mon} for the functorial action):
+\[\begin{array}{r@{\,}@{\,}l@{\,}l@{\,}}
+    \dhideMon          :&\multicolumn{2}{l}{\funC\dinitC\setC \to \funC\dinitC\setC} \\
+    (\dhideMon\vA)(\rho : \vw^- \injto \vw^+)  =& \Coend{\vw^- \injto \vw' \in \commaC{\vw^-}\vU} 
+                                                             \vA(\inl^{\vw' \inclto \vw' \oplus \vw^+ \ominus \rho})
+\end{array}\]
+which takes the coend of $\opC{(\commaC{\vw^-}\vU)} \times \commaC{\vw^-}\vU \xrightarrow\projTwo \commaC{\vw^-}\vU \xrightarrow\vU \initC \xrightarrow{\initInclF} \dinitC  \xrightarrow{\extF\dash{\vw^+ \ominus \rho}} \dinitC \xrightarrow\vA \setC$.
+We have a natural isomorphism $\dhideMon(\vX \odot \dheapF)\initInclF \iso \hideMon(\vX \odot \heapF)$
+between the hiding monad on heaplets with the one on heaps when $\vA = \vX \odot \dheapF$.
+
+We consider the action of $\dhideMon\vA$ on morphisms as consisting of two parts: 
+\begin{itemize}
+    \item An action between elements of the equivalence classes (does not satisfy functoriality): 
+        \[ \dhideMonSk\vA(\varepsilon : \rho \to \sigma) : \Coprod{\vw_1^- \injto \vw'} \vA(\inl^{\vw' \to \vw' \oplus (\vw_1^+ \ominus \rho)}) \to
+                                                           \Coprod{\vw_2^- \injto \vw'} \vA(\inl^{\vw' \to \vw' \oplus (\vw_2^+ \ominus \sigma)}) \]
+    \item A quotienting step given by the coend to make it functorial: 
+            \[ \dhideMon\vA(\varepsilon)(\quot{\rho'}\va) = [\underline{\mathbb{P}}\vA(\varepsilon)(\inj{\rho'}\va)] \]
+\end{itemize}
+We further consider a variation of the category of elements for $\dhideMon\vA$ that will circumvent the need for representatives in later constructions.
+Define the category of elements $\maxC{\dhideMonSk\vA}$, as follows:
+\begin{itemize}
+    \item Objects: $\tup{\rho \in \dinitC}{\vp \in \dhideMonSk\vA(\rho)}$
+    \item Morphisms: $\tup\rho\vp \to \tup\sigma\vs$ is a morphism $\varepsilon : \rho \to \sigma \in \dinitC$ such that $\dhideMon\vA(\varepsilon)[\vp] = [\vs]$
+\end{itemize}
+Thus the objects of this category are the elements of the equivalence classes of $\dhideMon\vA$ and not the equivalence classes themselves.
+
+\subsubsection{Evaluations}
+
+We associate a template with its evaluations using the above hiding monad as the codomain. 
+Define an $\vX$-valued $\vT$-evaluation as a functor $\vE : \vI \to \maxC{\dhideMonSk(\vX \odot \dheapF)}$ that is compatible with $\vT$:
+\begin{center}
+\begin{tikzcd}
+    {\vI} \arrow[rr, "{\vT}"] \arrow[dr, "{\vE}"'] && {\dinitC} \\
+        & {\maxC{\dhideMonSk(\vX \odot \dheapF)}} \arrow[ur, "{\vU}"'] &
+\end{tikzcd}
+\end{center}
+We have a natural transformation $\ev : \templateExt\vT \To \hideMon(\vX \odot \heapF)$ given by:
+\[ \tup\vi{\varepsilon^{\vT(\vi) \to \sigma}} \mapsto \iso^{\dhideMon(\vX \odot \dheapF)\initInclF, \hideMon(\vX \odot \heapF)}(\dhideMon(\vX \odot \dheapF)(\varepsilon)[\projTwo(\vE\vi)] \]
+
+\subsection{Finitary Monad}
+\label{sec:finitary-monad}
+
+A $\phi \in (\monFLSCtx\vX)\vw$ is finitary when it is generated by its actions on a finite number of \emph{heaplets}. 
+
+\[\begin{array}{r@{\,\,}l@{\,}l@{\,}}
+    \monFLSfin         : &\multicolumn{2}{l}{\funC\ctxC\setC \to \funC\ctxC\setC} \\
+    (\monFLSfin\vX)\vw =& \{ \phi \in (\monFLSCtx\vX)\vw :& \textit{exists a finite template $\vT$,} \\
+                        &&                                  \textit{a complete $\vw$-accessible $\vT$-cover $\vS$,} \\ 
+                        &&                                  \textit{an $\vX$-valued $\vT$-evaluation $\vE$,} \\
+                        &&                                  \textit{such that $\ev_\vE \comp \cov_\vS^{-1} = \phi$} \}
+\end{array}\]
+
+\begin{itemize}
+    \item We consider $\phi \in (\monFLSCtx\vX)\vw$ using its naturality description (see \cref{sec:fgls-ctx-natural}).
+    \item We require a finite template, and thus we have a finite number of stencils.
+    \item We require a complete cover, so $\cov : \templateExt\vF \To \homF\ctxC\vw{\vU(\dash)} \times \heapF$ is an isomorphism.
+          This gives us that every $\tup\vf\vh$ is mapped to exactly one stencil $\vS\vi$ and morphism $\varepsilon$ such that $\stencilF\vw(\varepsilon)(\projTwo(\vS\vi)) = \tup\vf\vh$.
+      \item We require that morphism $\phi$ lifts through $\cov^{-1}$ using the morphism $\ev$ induced by the evaluation $\vE$.
+          This means that the following diagram commutes:
+          \begin{center}
+            \begin{tikzcd}
+                {\homF\ctxC\vw{\vJ\vU(\dash)} \times \heapF} \arrow[rr, "{\phi}"] \arrow[rd, "{\cov^{-1}}"'] && {\hideMon(\vX \odot \heapF)} \\
+                                                                                    & {\templateExt\vT} \arrow[ur, "{\ev}"']
+            \end{tikzcd}
+          \end{center}
+\end{itemize}
+
+\subsubsection{Action on Morphisms}
+
+We show that the factorial action of the $\monFLSfin$ monad on morphisms lifts through $\monFLSCtx$, that is, for every $\vf : \vw \to \vw'$ we have functor $\vG : \vI' \to \commaC\vy{\stencilF{\vw'}}$ and morphism $\vh$ such that: 
+\begin{center}
+\begin{tikzcd}
+    {\homF\ctxC{\vw'}{\vJ\vU\dash}} \arrow[d, "{\iso}"] \arrow[rr, "{(\dash \comp \vf) \times 1}"] && 
+    {\homF\ctxC\vw{\vJ\vU\dash}}    \arrow[r, "{\phi}"] \arrow[d, "{\iso}"]   & {\hideMon(\vX\vJ\vU \times \heapF)} 
+\\
+    {\templateExt{\vG}\initInclF} \arrow[rr, "{\vh_{\initInclF(\dash)}}"'] \arrow[u, "{\cov{\initInclF(\dash)}}"] &&
+    {\templateExt\vF\initInclF} \arrow[u, "{\cov{\initInclF(\dash)}}"] \arrow[ur, "{\ev{\initInclF(\dash)}}"']
+\end{tikzcd}
+\end{center}
+
+\begin{proof}
+We utilize the structure of the functorial action on morphisms, that is,
+for a morphism $\varepsilon : \rho \to \sigma$, $\inj{\rho'}\va$, $\dhideMon\vA(\varepsilon)[\inj{\rho'}\va]$ will give a 
+
+Every morphism $\vf : \vw \to \vw' \in \ctxC$ induces a functor $\rebaseF\vf : \coeC{\stencilF\vw} \to \coeC{\stencilF{\vw'}}$
+which extends a stencil with $\vw' \ominus \vf$ pointers and then rebases it: 
+\[\begin{array}{r@{\,}c@{\,}l}
+    \rebaseF\vf & : & \coeC{\stencilF\vw} \to \coeC{\stencilF{\vw'}} \\
+    \tup\rho\vs & \mapsto & \tup{\extFNB\rho{(\vw' \ominus \vf)}}{\stencilRebase\vf(\extNat\nop{\vw' \ominus \vf}(\vs))} \\
+    \varepsilon & \mapsto & \extFNB\varepsilon{(\vw' \ominus \vf)}
+\end{array}\]
+
+\begin{example}
+    Consider the stencil from \cref{exam:one} and the extension of $\vw = \va : \vC$ to $\vw' = \va : \vC, \vd : \vC'$.
+    The resulting stencil has an extra dangling pointer $\vd : \vC'$ and so any extension of the stencil must be a heap that is defined with a location of sort $\vC'$. 
+\begin{center}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pubcell=$\va$] (na) {};
+    \node[pricell=$\vb$] (nb) [below=0pt of na] {};
+    \draw[ptr] (na.center) to ++\east to ++\south to (nb.east);
+    \draw[dptr] (nb.center) to ++\west to node[midway,xshift=-0.5em] {$\vc$} ++\south to ++\east;
+    \draw[dptr] ($ (nb.center) + (0.5,-1) $) to node[midway,xshift=1.5em,color=blue] {$\vd$} ++\west; 
+    \draw[brace] (na.north) to node[labbrace]{$\vw^-$} (nb.south);
+    \draw[mbrace] (na.north) to ++\south to node[lambrace,yshift=-0.5em]{$\vw^+$} ++\south to ++\south to ++\south;
+\end{tikzpicture}
+\end{center}
+\end{example}
+
+    Consider $\vG = \rebaseF\vf\vF : \vI \to \commaC\vy{\stencilF{\vw'}}$ and $\vh = \coprod{\vy\tup1\inl}$.
+\begin{center}
+\begin{tikzcd}
+    {\homF\ctxC{\vw'}{\vJ\vU\dash}} \arrow[d, "{\iso}"] \arrow[r, "{(\dash \comp \vf) \times 1}"] & 
+    {\homF\ctxC\vw{\vJ\vU\dash}}    \arrow[r, "{\phi}"] \arrow[d, "{\iso}"]   & {\hideMon(\vX\vJ\vU \times \heapF)} 
+\\
+    {\templateExt{(\rebaseF\vf\vF)}\initInclF} \arrow[r, "{\coprod{\vy\tup1\inl}_{\initInclF(\dash)}}"'] \arrow[u, "{\cov{\initInclF(\dash)}}"] & 
+    {\templateExt\vF\initInclF} \arrow[u, "{\actV\phi{\initInclF(\dash)}}"] \arrow[ur, "{\resV\phi{\initInclF(\dash)}}"']
+\end{tikzcd}
+\end{center}
+
+That $\cov{\initInclF(\dash)}$ is iso and that the square commutes follows from \cref{lem:stencilFretract} by observing that:
+\begin{center}
+\begin{tikzcd}
+    {\homF\ctxC{\vw'}{\vJ\vU\dash}} \arrow[d, "{\iso}"] \arrow[rr, "{(\dash \comp \vf) \times 1}"] && {\homF\ctxC\vw{\vJ\vU\dash}} \arrow[d, "{\iso}"] \\
+    {\stencilF{\vw'}\initInclF} \arrow[u] \arrow[rr, "{\stencilF\vf}"] && {\stencilF\vw\initInclF} \arrow[u]
+\end{tikzcd}
+\end{center}
+\orpheas{TODO: Latexify the handwritten proof.}
+Further, every $\vf : \vw \to \vw'$ induces a natural transformation $\coprod{\vy\tup1\inl} : \templateExt{(\rebaseF\vf \comp \vF)} \To \templateExt\vF$:
+\[    \tup\vi{\varepsilon^{\extF{\vU\vF(\vi)}{\vw' \ominus \vf} \to \sigma}} \mapsto \tup\vi{\varepsilon \comp \triple{1}{\inl}\emptyset} \]
+
+\end{proof}
+
+\subsubsection{Unit of Monad}
+
+We show that the unit of the $\monFLSfin$ monad lifts through $\monFLSCtx$, that is, $\eta_{\vX,\vw}(\vx)$ satisfies: 
+\begin{center}
+\begin{tikzcd}
+    {\homF\ctxC\vw{\vJ\vU(\dash)} \times \heapF} \arrow[d, "{\iso}"] \arrow[rrr, "{\eta^\vP \comp \vX(\dash)(\vx) \times 1}"] &&& {\vP(\vX\vJ\vU \times \heapF)} 
+\\
+    {\templateExt\vF\initInclF} \arrow[u, "{\cov{\initInclF(\dash)}}"] \arrow[urrr, "{\ev{\initInclF(\dash)}}"']
+\end{tikzcd}
+\end{center}
+\begin{proof}
+    Consider the stencil $\vs = \tup{1_\vw}\emptyset : \stencilF\vw(\emptyset \injto \vw)$ that has only $\vw$ dangling pointers, and let $\vF(*) = \vs : 1 \to \commaC\vy{\stencilF\vw}$.
+    That $\cov{\initInclF(\dash)}$ is iso is given by $\tup\vf\vh \mapsto \inj{*}{\triple{? : \emptyset \injto \vw}\vf\vh}$ and $\ev\nop$ is defined as:
+    \[ \ev\nop(\inj{*}\varepsilon) = \dhideMon(\vX\vU_2 \times \dheapF)(\varepsilon)(\eta^{\dhideMon}_{\emptyset \to \vw}\tup{\vx}\emptyset) \]
+\end{proof}
+
+\subsubsection{Kleisli Extension of Monad}
+
+\begin{center}
+\begin{tikzcd}
+    & {\rho} \arrow[d] \arrow[ld, "{\varepsilon_1}"'] \arrow[rd, "{\varepsilon_2}"] & \\
+    {\rho_1} \arrow[rd, "{\hat{\varepsilon_1}}"'] & {\rho_\vr} \arrow[l, "{\varepsilon_1'}"'] \arrow[r, "{\varepsilon_2'}"] & {\rho_2} \arrow[ld, "{\hat{\varepsilon_2}}"] \\
+                        & {\hat\rho} &
+\end{tikzcd}
+\end{center}
+${\varepsilon_1 \oplus_{\rho} \varepsilon_2} :=$ Treat pointers from $\rho_1$, $\rho_2$ as distinct unless they come from the same domain and do this recursively by following the allocated data from $\varepsilon_1$, $\varepsilon_2$.
+
+\[\begin{array}[t]{lll}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pricell=$\vl_1$] (l1) {};
+    \node[pricell=$\vl_2$] (l2) [below=0pt of l1] {};
+    \draw[ptr] (l1.center) to ++\east to ++\south to (l2.east);
+
+    \node[draw=none] (l) [right=50pt of l1.east, yshift=20pt] {$\vl \in \vw$};
+    \draw[draw=blue, -{Triangle[scale=0.8]}, shorten >=-3pt] (l.west) to ([yshift=5]l1.north west); 
+
+    \node[pricell=$\vl_1'$] (l1') [right=50pt of l, yshift=-20pt] {};
+    \draw[draw=blue, -{Triangle[scale=0.8]}, shorten >=13pt] (l.east) to (l1'.north west);
+
+    \node[pricell=$\vl_2'$] (l2') [below=0pt of l1'] {};
+    \draw[ptr] (l1'.center) to ++\east to ++\south to (l2'.east);
+\end{tikzpicture}
+\end{array}\]
+
+\paragraph{Reachable/Unreachable Factorisation System}
+
+\def\reach{\mathsf{reach}}
+
+The category $\dinitC$ has an orthogonal factorisation system $(\vE,\vM)$ that splits a morphism $\varepsilon : \rho_1 \to \rho_2$ into an $\ve : \rho_1 \to \rho_1^\reach$ representing the reachable part of $\eta_\varepsilon$ and $\vm : \rho_1^\reach \to \rho_2$ representing the rest unreachable part.
+
+We can then define local independent morphisms $\vf, \vg$ as:
+
+\begin{center}
+\begin{tikzcd}
+                       && {\rho} \arrow[lld, "{\varepsilon_1}"'] \arrow[ld, "{\ve_1}"] \arrow[rrd, "{\varepsilon_2}"] \arrow[rd, "{\ve_2}"'] && \\
+    {\rho_1} \arrow[rrd, "{\vf}"'] & {\rho_1^\reach} \arrow[l, "{\vm_1}"'] & & {\rho_2^\reach} \arrow[r, "{\vm_2}"] & {\rho_2} \arrow[lld, "{\vg}"] \\
+         && {\hat\rho} &&
+\end{tikzcd}
+\end{center}
+
+\begin{center}
+\begin{tikzcd}
+                       && {\rho} \arrow[lld, "{\varepsilon_1}"'] \arrow[ld, "{\ve_1}"] \arrow[rrd, "{\varepsilon_2}"] \arrow[rd, "{\ve_2}"'] && \\
+    {\rho_1} \arrow[rrd, "{\vf}"'] & {\rho_1^\reach} \arrow[l, "{\vm_1}"'] & & {\rho_2^\reach} \arrow[r, "{\vm_2}"] & {\rho_2} \arrow[lld, "{\vg}"] \\
+         && {\hat\rho} &&
+\end{tikzcd}
+\end{center}
+such that if $\vU^+(\vf)(\va) = \vU^+(\vg)(\vb)$ then $\va \in \img{\vU^+(\vm_1)}$ and $\vb \in \img{\vU^+(\vm_2)}$.
+
+In words: if two pointers are related then they must come from the reachable part.

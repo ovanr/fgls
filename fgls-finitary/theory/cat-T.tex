@@ -1,0 +1,1093 @@
+\subsection[Category of Templates]{The category of templates $\tempC$}
+
+The first step towards introducing template heaps requires us to distinguish between two different kinds of locations.
+We have (i) concrete locations that are associated with some cell contents and 
+(ii) location variables that stand for \emph{any arbitrary cell contents}.
+
+To model these two kinds of locations we make use of the category of templates defined as the arrow category $\arrC\worldC$
+\begin{itemize}
+    \item Objects: Sort-preserving injective renamings between worlds $\Minus\vw \xto\sigma \Plus\vw$.
+    \item Morphisms: Injective, sort-preserving $\concL\rho : \Minus\vw \to \Plus{\vw'}$ and $\anyL\rho : \Minus\vw \to \Plus{\vw'}$, such that: 
+                    \begin{center}
+                    \begin{tikzcd}{\Plus\vw} \ar[r, tail, "{\anyL\rho}"] & {\Plus{\vw'}} \\
+                                  {\Minus\vw} \ar[u, tail, "\sigma"] \ar[r, tail, "{\concL\rho}"'] & {\Minus{\vw'}} \ar[u, tail, "\sigma'"']
+                     \end{tikzcd} 
+                    \end{center}
+\end{itemize}
+We have two forgetful functors $\concL\dash, \anyL\dash : \tempC \to \worldC$, projecting the $-$ and $+$ components respectively.
+
+\begin{notation}
+\noindent
+\begin{itemize}
+    \item We refer to the elements of $\concL\sigma$ as the concrete locations of $\sigma \in \objC{\tempC}$.
+    \item We refer to the elements of $\Plus\vw \ominus \sigma$ as the location variables of $\sigma \in \objC{\tempC}$, notation $\varL\sigma$.
+    \item We refer to elements of $\anyL\sigma$ as \emph{all} the locations of $\sigma \in \objC{\tempC}$.
+    \item If it is clear from the context we overload the notations $\concL\sigma = \concL\sigma \xto\sigma \anyL\sigma$ and
+        $\varL\sigma = \varL\sigma \xto{\compl\sigma} \anyL\sigma$ for the inclusions into $\anyL\sigma$.
+    \item We have an induced morphism $\varL\rho : \varL\sigma \xto{\varL\sigma} \anyL\sigma \xto{\anyL\rho} \anyL{\sigma'}$.
+    \item We refer to elements $\anyL{\sigma'} \ominus \anyL\rho$ as the new locations introduced by $\rho$, 
+          and $\concL{\sigma'} \ominus \concL\rho$ as the concrete locations introduced by $\rho$.
+    \item We refer to the variables $\varL\sigma$ that are instantiated by $\rho$ as $\concL{\sigma'} \pltimes{\anyL{\sigma'}} \varL\sigma$: 
+        \begin{center}
+            \begin{tikzcd}
+                {\concL{\sigma'} \pltimes{\anyL{\sigma'}} \varL\sigma} \ar[r] \ar[d] \pbsquare{dr} & {\varL\sigma} \ar[d, "\varL\rho"] \\
+                {\concL{\sigma'}} \ar[r, "\concL{\sigma'}"']                    & {\anyL{\sigma'}}
+            \end{tikzcd}
+        \end{center}
+            which are exactly the $\varL\sigma$ that are mapped to concrete locations $\concL{\sigma'}$ by $\rho$.
+    \item We refer to the variables $\varL{\sigma'}$ that are fresh w.r.t. $\rho$ as $\varL{\sigma'} \pltimes{\anyL{\sigma'}} (\anyL{\sigma'} \ominus \anyL\rho)$: 
+        \begin{center}
+            \begin{tikzcd}
+                {\varL{\sigma'} \pltimes{\anyL{\sigma'}} (\anyL{\sigma'} \ominus \anyL\rho)}
+                    \ar[r] \ar[d] \pbsquare{dr} 
+                        & {\anyL{\sigma'} \ominus \anyL\rho} 
+                            \ar[d, "\compl{\anyL\rho}"] 
+                \\
+                {\varL{\sigma'}}    
+                    \ar[r, "\varL{\sigma'}"'] 
+                        & {\anyL{\sigma'}} 
+            \end{tikzcd}
+        \end{center}
+            which are exactly the $\varL{\sigma'}$ that are not mapped from any location $\anyL\sigma$ by $\rho$.
+    \item Similarly, $\varL{\sigma'} \pltimes{\anyL{\sigma'}} \varL\sigma$ refers to the variables $\varL{\sigma'}$ that are mapped from variables in $\varL\sigma$ by $\rho$. 
+        \begin{center}
+            \begin{tikzcd}
+                {\varL{\sigma'} \pltimes{\anyL{\sigma'}} \varL\sigma} \ar[r] \ar[d] \pbsquare{dr} &  {\varL\sigma} \ar[d, "\varL\rho"] \\
+                {\varL{\sigma'}} \ar[r, "\varL{\sigma'}"'] & {\anyL{\sigma'}} 
+            \end{tikzcd}
+        \end{center}
+    \item Notice that from $\concL{\sigma'}$ and $\varL{\sigma'}$ being disjoint, we have that concrete locations in $\concL\sigma$ cannot become uninstantiated
+        \begin{center}
+            \begin{tikzcd}
+                {\emptyset} \ar[rr] \ar[d] \pbsquare{drr} && {\varL{\sigma'}} \ar[d, "\varL{\sigma'}"] \\
+                {\concL\sigma} \ar[r, "\concL\rho"'] & {\concL{\sigma'}} \ar[r, "\concL{\sigma'}"'] & {\anyL{\sigma'}} 
+            \end{tikzcd}
+        \end{center}
+    \end{itemize}
+\end{notation}
+
+\begin{example}\label{ex:tempC-overview}
+    Consider the following morphism in $\tempC$
+    \begin{center}
+    \begin{tikzcd}
+        {\va : \vC, \vb : \vC'} \ar[rr, hook, "\anyL\rho = \incl^{\va,\vb \inclto \va,\vb,\vc}" yshift=5pt]               && {\va : \vC, \vb : \vC', \vc : \vC''} \\
+        {\va : \vC} \ar[u, hook, "\incl^{\va \inclto \va,\vb}"] \ar[rr, hook, "\concL\rho"'] && {\va : \vC, \vb : \vC'} \ar[u, hook, "\incl^{\va,\vb \inclto \va,\vb,\vc}"']
+    \end{tikzcd}
+    \end{center}
+    \begin{itemize}
+        \item We have variables $\varL{\incl^{\va \inclto \va,\vb}} = \{ \vb : \vC' \}$, and $\varL{\incl^{\va,\vb \inclto \va,\vb,\vc}} = \{ \vc : \vC''\}$.
+        \item Variables instantiated by $\rho$: 
+                \[\concL{\incl^{\va,\vb \inclto \va,\vb,\vc}} \pltimes{\{ \va, \vb, \vc \}} \varL{\incl^{\va \inclto \va,\vb}} = \{ \vb : \vC' \} \]
+        \item Variables $\varL{\incl^{\va,\vb \inclto \va,\vb,\vc}}$ that are fresh w.r.t. to $\rho$: 
+                \[ \varL{\incl^{\va,\vb \inclto \va,\vb,\vc}} \pltimes{\{ \va,\vb,\vc\}} (\anyL{\incl^{\va,\vb \inclto \va,\vb,\vc}} \ominus \anyL\rho) = \{ \vc : \vC''\} \]
+        \item Variables $\varL{\incl^{\va,\vb \inclto \va,\vb,\vc}}$ mapped from variables in $\varL{\incl^{\va \inclto \va,\vb}}$ by $\rho$: 
+                \[ \varL{\incl^{\va,\vb \inclto \va,\vb,\vc}} \pltimes{\{ \va,\vb,\vc\}} \varL{\incl^{\va \inclto \va,\vb}} = \emptyset \]
+    \end{itemize}
+\end{example}
+
+\begin{definition}[Variable Extension Functor]
+We define the variable extension functor as a means to add $\vw$-many variables.
+\[\begin{array}{r@{\,}c@{\,}l}
+    \extF\dash\vw & : & \tempC \to \tempC \\
+    \extF{(\concL\sigma \xto{\concL\sigma} \anyL\sigma)}{\vw} & = & \begin{tikzcd}{\anyL\sigma \mplus \vw} \\ 
+                                                                                  {\concL\sigma} \ar[u, "\incl_1 \comp \concL\sigma"']
+                                                                    \end{tikzcd} \\
+    \extF\rho\vw & = & \pair{\concL\me}{\anyL\me \mplus 1_\vw}
+\end{array}\]
+Further, for every functor $\vG : \tempC \to \setC$ and $\vw$, we have a $\extNat\vG\vw : \vG \To \vG\extF\dash{\vw'}$.
+\end{definition}
+\begin{example}
+    The action of $\extF\dash{\{ \vd : \vC''' \}}$ on morphism $\rho$ from \cref{ex:tempC-overview} is $\extF\rho{\{ \vd : \vC'''\}}$ defined as
+    \begin{center}
+    \begin{tikzcd}
+        {\{ \va : \vC, \vb : \vC' \} \oplus \{ \vd : \vC''' \} } 
+            \ar[r, "\anyL\rho \oplus 1_\vd" yshift=2pt] 
+            & {\{ \va : \vC, \vb : \vC', \vc : \vC'' \} \oplus \{ \vd : \vC'''\}} 
+        \\
+        {\va : \vC} 
+            \ar[u, hook, "\incl_1 \comp \incl^{\va \inclto \va,\vb}"] \ar[r, hook, "\concL\rho"'] 
+            & {\va : \vC, \vb : \vC'} \ar[u, hook, "\incl_1 \comp \incl^{\va,\vb \inclto \va,\vb,\vc}"']
+    \end{tikzcd}
+    \end{center}
+\end{example}
+
+\begin{lemma}[Monomorphisms in $\tempC$]\label{lem:monos-T}
+    Every morphism in $\tempC$ is mono.
+\end{lemma}
+\begin{proof}Follows directly from injectivity of underlying morphisms.\end{proof}
+
+\begin{lemma}[Initial Object in $\tempC$]
+    The category $\tempC$ has an initial object.
+\end{lemma}
+\begin{proof}Consider template $?_\emptyset : \emptyset \to \emptyset$.\end{proof}
+
+\begin{lemma}[Equalizers in $\tempC$]
+    The category $\tempC$ has all equalizers, and $\concL\dash$, $\anyL\dash$ preserve equalizers.
+\end{lemma}
+\begin{proof}
+    The equalizer
+    \begin{tikzcd}{\eqz{\rho_1}{\rho_2}} \ar[r] & {\sigma_1} \ar[r, yshift=3pt, "\rho_1"] \ar[r, yshift=-3pt, "\rho_2"'] & {\sigma_2}\end{tikzcd} 
+    is given componentwise
+    \begin{center}
+    \begin{tikzcd}
+        {\concL{\hat\sigma}} 
+            \ar[r, dashed, "\concL\vh"] \ar[rrr, yshift=4pt, bend left=30, "\concL{\hat\rho}"] \ar[d, "\concL{\hat\sigma}"]
+            & {\eqz{\concL{\rho_1}}{\concL{\rho_2}}} 
+                \ar[rr, "\eqz{\concL{\rho_1}}{\concL{\rho_2}}"] \ar[d, dashed] 
+                    && {\concL{\sigma_1}} \ar[d, "\concL{\sigma_1}"]
+        \\
+        {\anyL{\hat\sigma}}
+            \ar[r, dashed, "\anyL\vh"] \ar[rrr, bend right=30, "\anyL{\hat\rho}"]
+            & {\eqz{\anyL{\rho_1}}{\anyL{\rho_2}}} 
+                \ar[rr, "\eqz{\anyL{\rho_1}}{\anyL{\rho_2}}"]
+                    && {\anyL{\sigma_1}} \ar[r, yshift=3pt, "\anyL{\rho_1}"] 
+                        \ar[r, yshift=-3pt, "\anyL{\rho_2}"'] 
+                            & {\anyL{\sigma_2}}
+    \end{tikzcd} 
+    \end{center}
+\end{proof}
+\begin{example}
+    This is an equalizer diagram 
+    \begin{center}
+    \begin{tikzcd}
+        {?_{\vb}} \ar[r, "\pair{?_\va}{\incl_2}"] 
+            & {\incl_1^{\va \to \va \oplus \vb}}
+                \ar[rr, yshift=3pt, "\pair{\incl_1}{\incl_1 \oplus 1_\vb}"] \ar[rr, yshift=-3pt, "\pair{\incl_2}{\incl_2 \oplus 1_\vb}"'] 
+            && {\incl_1^{\va_1 \oplus \va_2 \to \va_1 \oplus \va_2 \oplus \vb}}
+    \end{tikzcd}
+    \end{center}
+\end{example}
+
+\begin{lemma}[Pullbacks in $\tempC$]\label{lem:pullbacks-tempC}
+    The category $\tempC$ has all pullbacks and $\concL\dash$, $\anyL\dash$ preserve pullbacks.
+\end{lemma}
+\begin{proof}
+    The pullback of $\sigma_1 \xto{\rho_1} \hat\sigma \xfrom{\rho_2} \sigma_2$ is given componentwise
+    \begin{center}
+    \begin{tikzcd}
+        {\concL\sigma}
+            \ar[rrrr, bend left=30, "\concL{\rho_2'}"]
+            \ar[ddrr, bend right=30, "\concL{\rho_1'}"']
+            \ar[dr, "\concL{\hat\sigma}"]
+            \ar[rr, dashed, "\concL\vh"]
+                && {\concL{\sigma_1} \pltimes{\concL\sigma} \concL{\sigma_2}}
+                \ar[rr, "\ext^{\concL{\rho_1}}{\concL{\rho_2}}"]
+                    \ar[dr, dashed]
+                    \ar[dd, "\ext^{\concL{\rho_2}}\concL{\rho_1}"' yshift=20pt]
+                        && {\concL{\sigma_2}}
+                            \ar[dr, "\concL{\sigma_2}"']
+                            \ar[dd, "\concL\rho"' yshift=20pt]
+        \\
+            & {\anyL\sigma}
+                \ar[rrrr, bend left=60, "\anyL{\rho_2'}" xshift=20pt]
+                \ar[rr, dashed, "\anyL\vh" xshift=-40pt]
+                \ar[ddrr, bend right=30, "\anyL{\rho_1'}"']
+                    && {\anyL{\sigma_1} \pltimes{\anyL\sigma} \anyL{\sigma_2}}
+                        \ar[rr, "\ext^{\anyL{\rho_2}}\anyL{\rho_1}" xshift=-20pt]
+                        \ar[dd, "\ext^{\anyL{\rho_1}}\anyL{\rho_2}" yshift=20pt]
+                                && {\anyL{\sigma_2}}
+                                    \ar[dd, "\anyL{\rho_2}"]
+        \\
+                && {\concL{\sigma_1}}
+                    \ar[rr, "\concL{\rho_1}" xshift=-40pt]
+                    \ar[rd, "\ext^{\anyL{\rho_1}}\anyL{\rho_2}"']
+                        && {\concL\sigma}
+                            \ar[dr, "\concL\sigma"]
+        \\
+                    &&& {\anyL{\sigma_1}} 
+                            \ar[rr, "\anyL{\rho_1}"]
+                            && {\anyL\sigma}
+    \end{tikzcd}
+    \end{center}
+\end{proof}
+
+\begin{example}
+    This is a pullback square
+    \begin{center}
+    \begin{tikzcd} 
+        {?_\vb} 
+            \ar[r, "\pair{?_{\va_1}}{\incl_2}"] 
+            \ar[d, "\pair{?_{\va_2}}{\incl_2}"']
+            \pbsquare{dr}
+            & {\incl_1^{\va_1 \to \va_1 \oplus \vb}}
+                \ar[d, "\pair{\incl_1}{1_{\va_1} \oplus \incl_2}"]
+        \\
+        {1_{\va_2 \oplus \vb}}
+            \ar[r, "\pair{\incl_2}{\incl_2}"']
+            & {1_{\va_1 \oplus (\va_2 \oplus \vb)}}
+    \end{tikzcd}
+    \end{center}
+\end{example}
+
+\subsubsection{Generated Cospans}
+
+\begin{lemma}[Generated Cospans in $\tempC$]\label{lem:gen-cospan}
+    Given cospan $\anyL{\sigma_1} \xto{\tau_1} \hat\vw \xfrom{\tau_2} \anyL{\sigma_2}$ in $\worldC$ 
+    we generate a cospan $\sigma_1 \xto{\rho^\tau_1} \sigma^\tau \xfrom{\rho^\tau_2} \sigma_2$ in the least possible way, 
+    that is, it satisfies
+    \begin{itemize}
+        \item Satisfy $\anyL{\sigma^\tau} = \hat\vw$, $\anyL{\rho^\tau_1} = \tau_1$ and $\anyL{\rho^\tau_2} = \tau_2$.
+        \item For any other cospan $\sigma_1 \xto{\rho_1'} \hat\sigma \xfrom{\rho_2'} \sigma_2$ that factors through $\hat\vw$
+                \begin{tikzcd}
+                    {\anyL{\sigma_1}} \ar[dr, "\anyL{\rho_1'}"'] \ar[r, "\tau_1"] & {\hat\vw} \ar[d, dashed, "\exists \tau'"] & {\anyL{\sigma_2}} \ar[l, "\tau_2"'] \ar[dl, "\anyL{\rho_2'}"] \\
+                                                                                      & {\anyL{\hat\sigma}}
+                \end{tikzcd},
+              there exists a unique $\vh : \sigma^\tau \to \hat\sigma$ that satisfies $\rho_1' = \vh \comp \rho^\tau_1$ and $\rho_2' = \vh \comp \rho^\tau_2$.
+    \end{itemize}
+
+    We say that $\rho^\tau_1, \rho^\tau_2$ are generated by $\tau_1, \tau_2$.
+    Intuitively, a generated cospan selects the smallest $\concL{\sigma^\tau}$ possible, that is, it selects the least concrete locations possible.
+\end{lemma}
+\begin{proof}
+    We define $\anyL{\sigma^\tau} = \hat\vw$, $\anyL{\rho^\tau_1} = \tau_1$, $\anyL{\rho^\tau_2} = \tau_2$.
+    To define $\concL{\sigma^\tau}$ we first consider their common concrete locations through the pullback
+    \begin{center}
+    \begin{tikzcd}[sep=small]
+        {\concL{\sigma_1} \pltimes{\hat\vw} \concL{\sigma_2}} 
+            \ar[rrrr, "\res_{\concL{\sigma_2};\tau_2}\concL{\sigma_1};\tau_1"] 
+            \ar[dd, "\res_{\concL{\sigma_1}; \tau_1}\concL{\sigma_2}; \tau_2"'] 
+            \pbsquare{ddrrrr}
+                &&&& {\concL{\sigma_2}} \ar[d, "\concL{\sigma_2}"] \\
+                &&&& {\anyL{\sigma_2}} \ar[d, "{\tau_2}"] \\
+        {\concL{\sigma_1}} \ar[r, "\concL{\sigma_1}"'] 
+                & {\anyL{\sigma_1}} \ar[rrr, "{\tau_1}"']
+                &&& {\hat\vw}
+    \end{tikzcd}
+    \end{center}
+    and further take the L.I.C. in $\worldC$ of the pullback morphisms
+    \begin{center}
+    \begin{tikzcd}
+        {\concL{\sigma_1} \pltimes{\hat\vw} \concL{\sigma_2}} 
+            \ar[rr, "\res_{\concL{\sigma_2}; \tau_2}\concL{\sigma_1}; \tau_1" yshift=5pt] 
+            \ar[dd, "\res_{\concL{\sigma_1}; \tau_1}\concL{\sigma_2}; \tau_2"']
+                && {\concL{\sigma_2}} \ar[dd, "\concL{\rho^\tau_2}"] 
+    \\\\
+        {\concL{\sigma_1}} \ar[rr, "\concL{\rho^\tau_1}"']
+                && {\concL{\sigma^\tau} := \concL{\sigma_1} \liplus{\concL{\sigma_1} \pltimes{\hat\vw} \concL{\sigma_2}} \concL{\sigma_2}}
+                                           
+    \end{tikzcd}
+    \end{center}
+    The morphism $\concL{\sigma^\tau} \xto{\concL{\sigma^\tau}} \anyL{\sigma^\tau}$ is the unique morphism induced by the L.I.C. towards the pullback. 
+    The UP gives that the morphisms $\rho^\tau_1$, $\rho^\tau_2$ are commuting squares.
+
+    \paragraph{Least Property}
+    Consider a compatible cospan $\rho_1', \rho_2'$.
+    We only need to extend $\anyL\vh = \tau'$ to a morphism in $\tempC$.
+    Let $\concL\vh$ be the induced morphism by the L.I.C.
+    \begin{center}
+    \begin{tikzcd}
+        {\concL{\sigma_1} \pltimes{\hat\vw} \concL{\sigma_2}} \ar[d, "\res_{\concL{\sigma_1}; \tau_1}\concL{\sigma_2}; \tau_2"']
+                                                                              \ar[rr, "\res_{\concL{\sigma_2}; \tau_2}\concL{\sigma_1}; \tau_1"]
+            && {\concL{\sigma_2}} \ar[d, "\concL{\rho^\tau_2}"] \ar[rdd, bend left=40, "\concL{\rho_2'}"] & \\
+        {\concL{\sigma_1}} \ar[rr, "\concL{\rho^\tau_1}"'] \ar[rrrd, bend right=20, "\concL{\rho_1'}"'] 
+            && {\concL{\sigma^\tau}} \ar[dr, dashed, "\concL\vh"] & \\
+                                    &&& {\concL{\hat\sigma}}
+    \end{tikzcd}
+    \end{center}
+    The outer square commutes by
+    \begin{align*}
+        \concL{\rho_2'} \comp (\res_{\concL{\sigma_2};\tau_2}\concL{\sigma_1};\tau_1) & = \concL{\rho_1'} \comp (\res_{\concL{\sigma_1};\tau_1}\concL{\sigma_2};\tau_2) \iff \\
+        \concL{\hat\sigma} \comp \concL{\rho_2'} \comp (\res_{\concL{\sigma_2};\tau_2}\concL{\sigma_1};\tau_1) & = \concL{\hat\sigma} \comp \concL{\rho_1'} \comp (\res_{\concL{\sigma_1};\tau_1}\concL{\sigma_2};\tau_2) = \\
+        \anyL{\rho_2'} \comp \concL{\sigma_2} \comp (\res_{\concL{\sigma_2};\tau_2}\concL{\sigma_1};\tau_1) & = \anyL{\rho_2'} \comp \concL{\sigma_1} \comp (\res_{\concL{\sigma_1};\tau_1}\concL{\sigma_2};\tau_2) = \\
+        \tau' \comp \tau_2 \comp \concL{\sigma_2} \comp (\res_{\concL{\sigma_2};\tau_2}\concL{\sigma_1};\tau_1) & = \tau' \comp \tau_1 \comp \concL{\sigma_1} \comp (\res_{\concL{\sigma_1};\tau_1}\concL{\sigma_2};\tau_2)
+    \end{align*}
+    and satisfies independence by \cref{lem:pullback-mono-post-comp}.
+    Further $\vh$ is a commuting square, that is $\concL{\hat\sigma} \comp \concL\vh = \anyL\vh \comp \concL{\sigma^\tau}$, by the jointly epi property of $\concL{\rho^\tau_1}$ and $\concL{\rho^\tau_2}$.
+\end{proof}
+
+\begin{lemma}[Generated Cospans and Jointly Epi Property]\label{lem:gen-cospan-epi-prop}
+    A cospan $\sigma_1 \xto{\rho_1} \hat\sigma \xfrom{\rho_2} \sigma_2$ is 
+    generated by $\anyL{\sigma_1} \xto{\anyL{\rho_1}} \anyL{\hat\sigma} \xfrom{\anyL{\rho_2}} \anyL{\sigma_2}$ 
+    iff $\concL{\rho_1}$ and $\concL{\rho_2}$ are jointly surjective.
+\end{lemma}
+\begin{proof}\nl
+    $\to$) 
+    Generated cospans are unique up to isomorphism, and so $\rho_1$, $\rho_2$ is iso to the cospan induced by \cref{lem:gen-cospan} at $\anyL{\rho_1}$, $\anyL{\rho_2}$. 
+    Since the cospan of \cref{lem:gen-cospan} at $\concL\dash$ is a L.I.C., we have that $\concL{\rho_1}$, $\concL{\rho_2}$ are jointly epi.
+
+    $\from$)
+    We only need to show that the cospan $\rho_1$, $\rho_2$ satisfies the UP of generated cospans, so consider
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_1}} 
+            \ar[dr, "\anyL{\rho_1'}"'] \ar[r, "\anyL{\rho_1}"] 
+            & {\anyL{\hat\sigma}} 
+                \ar[d, dashed, "\exists \anyL\vh"] 
+                & {\anyL{\sigma_2}} 
+                    \ar[l, "\anyL{\rho_2}"'] \ar[dl, "\anyL{\rho_2'}"] 
+        \\
+            & {\anyL{\sigma'}}
+    \end{tikzcd}
+    \end{center}
+    Define $\concL\vh$ as 
+    \begin{align*}
+        \concL\vh & : \concL{\hat\sigma} \to \concL{\sigma'} \\
+        \concL\vh(\va : \vC) & \eqdef \begin{cases} \concL{\rho_1'}(\va_1)  & \;\mif\; \concL{\rho_1}(\va_1) = \va \\
+                                                    \concL{\rho_2'}(\va_2)  & \;\mif\; \concL{\rho_2}(\va_2) = \va
+                                      \end{cases}
+    \end{align*}
+    It is well-defined for if $\concL{\rho_1}(\va_1) = \va = \concL{\rho_1}(\va_2)$, we have
+    \begin{align*}
+        \concL{\hat\sigma}\concL{\rho_1}(\va_1) &= \concL{\hat\sigma}\concL{\rho_2}(\va_2) \iff \\
+        \anyL{\rho_1}\concL{\sigma_1}(\va_1) &= \anyL{\rho_2}\concL{\sigma_2}(\va_2) \iff \\
+        \anyL\vh\anyL{\rho_1}\concL{\sigma_1}(\va_1) &= \anyL\vh\anyL{\rho_2}\concL{\sigma_2}(\va_2) \iff \\
+        \anyL{\rho_1'}\concL{\sigma_1}(\va_1) &= \anyL{\rho_2'}\concL{\sigma_2}(\va_2) \iff \\
+        \concL{\sigma'}\concL{\rho_1'}(\va_1) &= \concL{\sigma'}\concL{\rho_1'}(\va_2) \iff \\
+        \concL{\rho_1'}(\va_1) &= \concL{\rho_1'}(\va_2)
+    \end{align*}
+    It is easy to show that $\vh$ is a morphism in $\tempC$ and uniqueness of $\vh$ follows from the jointly epi property. 
+\end{proof}
+
+\begin{lemma}[Instantiation data for Generated Cospans]\label{lem:gen-cospan-data}
+    Given a diagram of the form 
+        \begin{tikzcd} 
+            & {\anyL\sigma} \ar[dl, "\anyL{\rho_1}"'] \ar[dr, "\anyL{\rho_2}"] & \\ 
+            {\anyL{\sigma_1}} \ar[dr, "\tau_1"'] && {\anyL{\sigma_2}} \ar[dl, "\tau_2"] \\
+                                                & {\hat\vw} &
+        \end{tikzcd} where $\rho_2$ has data $\mvarM : \dheapF(\concL{\sigma_2} \ominus \concL{\rho_2}, \anyL{\sigma_2})$,
+        we can equip $\rho^\tau_1$ with data $\eta_{\rho^\tau_1} : \dheapF(\concL{\hat\sigma} \ominus \concL{\rho^\tau_1}, \anyL{\hat\sigma})$.
+\end{lemma}
+\begin{proof}
+    We have a canonical isomorphism
+    \[ \concL{\hat\sigma} \ominus \concL{\rho^\tau_1} \iso \concL{\sigma_2} \ominus \res_{(\concL{\sigma_2}; \tau_2)}\concL{\sigma_1};\tau_1 \]
+    and further from the pullback property
+    \begin{center}
+    \begin{tikzcd}[sep=small]
+    {\concL\sigma} \ar[rrrrrd, bend left=20, "\concL{\rho_2}"] \ar[dddr, bend right=50, "\concL{\rho_1}"'] \ar[dr, dashed, "\vh"] & 
+\\
+        & {\concL{\sigma_1} \pltimes{\hat\vw} \concL{\sigma_2}} 
+            \ar[rrrr, "\res_{\concL{\sigma_2};\tau_2}\concL{\sigma_1};\tau_1"] 
+            \ar[dd, "\res_{\concL{\sigma_1}; \tau_1}\concL{\sigma_2}; \tau_2"] 
+            \pbsquare{ddrrrr}
+                &&&& {\concL{\sigma_2}} \ar[d, "\concL{\sigma_2}"] 
+\\
+                &&&&& {\anyL{\sigma_2}} \ar[d, "{\tau_2}"] 
+\\
+        & {\concL{\sigma_1}} \ar[r, "\concL{\sigma_1}"'] 
+            & {\anyL{\sigma_1}} \ar[rrr, "{\tau_1}"']
+                &&& {\hat\vw}
+    \end{tikzcd}
+    \end{center}
+    we have 
+\[ \concL{\sigma_2} \ominus \concL{\rho_2} \iso (\concL{\sigma_2} \ominus \res_{(\concL{\sigma_2}; \tau_2)}\concL{\sigma_1};\tau_1) \mplus 
+                                                (\concL{\sigma_1} \pltimes{\hat\vw} \concL{\sigma_2} \ominus \vh) \]
+    Putting these together gives a morphism 
+    \[ \concL{\hat\sigma} \ominus \concL{\rho^\tau_1} \xto{\incl_1} \concL{\sigma_2} \ominus \concL{\rho_2} \]
+    and so we define $\mvarM_{\rho^\tau_1} = \dheapF(\incl_1, \tau_2)(\mvarM)$.
+\end{proof}
+
+\subsubsection{Local Independence Structure}
+
+We equip $\tempC$ with a local independence structure that takes into consideration the instantiations of location variables.
+
+\begin{definition}[Local Independent Squares in $\tempC$]
+    \begin{tikzcd}[sep=small] 
+                    & {\sigma} \ar[ld, "\rho_1"'] \ar[rd, "\rho_2"] & \\
+        {\sigma_1} \ar[rd, "\rho_1'"'] &            & {\sigma_2} \ar[ld, "\rho_2'"] \\
+                                &  {\hat\sigma} &
+    \end{tikzcd} 
+    is a local independent square when the pullback of $\anyL{\sigma_1} \pltimes{\anyL{\hat\sigma}} \anyL{\sigma_2}$ is $\anyL\sigma$
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL\sigma} \ar[r, "\anyL{\rho_2}"] \ar[d, "\anyL{\rho_1}"'] \pbsquare{dr} & {\anyL{\sigma_2}} \ar[d, "\anyL{\rho'_2}"] \\
+            {\anyL{\sigma_1}} \ar[r, "\anyL{\rho'_1}"']                                  & {\anyL{\hat\sigma}}
+        \end{tikzcd}
+    \end{center}
+    Thus an independent square conflates two locations $\va \in \anyL{\sigma_1}$ and $\vb \in \anyL{\sigma_2}$ only if they come from $\anyL\sigma$.
+\end{definition}
+
+\begin{lemma}[Local Independent Coproducts in $\tempC$]\label{lem:lic-exist}
+    For every span $\sigma_1 \xfrom{\rho_1} \sigma \xto{\rho_2} \sigma_2$ the local independent coproduct (L.I.C.) exists.
+\end{lemma}
+\begin{proof}
+    Consider the L.I.C. in $\worldC$
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL\sigma} \ar[d, "{\anyL{\rho_2}}"'] \ar[rr, "{\anyL{\rho_1}}"] && {\anyL{\sigma_1}} \ar[d, "{\ext^{\anyL{\rho_1}}\anyL{\rho_2}}"] \\
+        {\anyL{\sigma_2}} \ar[rr, "{\ext^{\anyL{\rho_2}}\anyL{\rho_1}}"'] && {\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}}
+    \end{tikzcd}
+    \end{center}
+
+    Using \cref{lem:gen-cospan} for $\anyL{\sigma_1} \xto{\ext^{\anyL{\rho_1}}\anyL{\rho_2}} \anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2} \xfrom{\ext^{\anyL{\rho_2}}\anyL{\rho_1}} \anyL{\sigma_2}$ can extend this to morphisms in $\tempC$
+        \[ \sigma_1 \xto{\ext^{\rho_1}\rho_2} \sigma_1 \liplus\sigma \sigma_2 \xfrom{\ext^{\rho_2}\rho_1} \sigma_2 \]
+        We have that $\ext^{\rho_1}\rho_2 \comp \rho_1 = \ext^{\rho_2}\rho_1 \comp \rho_2$ from $\ext^{\anyL{\rho_1}}\anyL{\rho_2} \comp \anyL{\rho_1} = \ext^{\anyL{\rho_2}}\anyL{\rho_1} \comp \anyL{\rho_2}$.
+
+    \paragraph{Induced Morphism}
+    Consider the diagram where each square is independent.
+    \begin{center}
+    \begin{tikzcd}     
+                                          & {\sigma} \ar[ld, "{\rho_1}"'] \ar[rd, "{\rho_2}"] & \\
+{\sigma_1} \ar[rd, pos=0.30, "{\ext^{\rho_1}\rho_2}"] \ar[rdd, "\rho_1'"'] &   & {\sigma_2} \ar[ld, pos=0.30,"{\ext^{\rho_2}\rho_1}"'] \ar[ldd, "\rho_2'"] \\
+                                                             & {\sigma_1 \liplus\sigma \sigma_2} \ar[d, dashed, pos=0.20, "{\hat\rho}"] & \\
+                                          & {\hat\sigma} &
+    \end{tikzcd}
+    \end{center}
+
+    The $\anyL{\hat\rho}$ part of morphism $\hat\rho$ is induced by
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL\sigma} \ar[d, "{\anyL{\rho_2}}"'] \ar[rr, "{\anyL{\rho_1}}"] 
+            && {\anyL{\sigma_1}} \ar[d, "{\ext^{\anyL{\rho_1}}\anyL{\rho_2}}"] \ar[rdd, bend left=40, "\anyL{\rho_1'}"] & \\
+        {\anyL{\sigma_2}} \ar[rr, "{\ext^{\anyL{\rho_2}}\anyL{\rho_1}}"'] \ar[rrrd, bend right=20, "\anyL{\rho_2'}"'] 
+            && {\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}} \ar[dr, dashed, "\anyL{\hat\rho}"] & \\
+                                                    &&& {\anyL{\hat\sigma}}
+    \end{tikzcd}
+    \end{center}
+    which by \cref{lem:gen-cospan} extends to a unique $\hat\rho$.
+    $\mcatI$-neutrality of the injections and composition of independent (product) squares follows from the independent structure on $\worldC$.
+\end{proof}
+
+\begin{example}\label{ex:tempC-lic}
+The following diagram is a L.I.C. square: 
+\begin{center}
+    \begin{tikzcd}
+                            & {?_{\va,\vb,\vc}} \ar[ld, "\rho_1 = \pair{?_{\va, \vb}}{\incl^{\va,\vb,\vc \inclto \va,\vb,\vc,\vd}}"'] 
+                                                \ar[rd, "\rho_2 = \pair{?_{\va,\vc}}{\incl^{\va,\vb,\vc \inclto \va,\vb,\vc,\ve}}"] & \\
+    {\incl^{\va, \vb \inclto \va,\vb,\vc,\vd}} \ar[rd, "\ext^{\rho_1}{\rho_2} = \pair{\incl^{\va,\vb \inclto \va,\vb,\vc}}{\incl^{\va,\vb,\vc,\vd \inclto \va,\vb,\vc,\vd,\ve}}"'] && 
+    {\incl^{\va,\vc \inclto \va,\vb,\vc,\ve}} \ar[ld, "\ext^{\rho_2}{\rho_1} = \pair{\incl^{\va,\vc \inclto \va,\vb,\vc}}{\incl^{\va,\vb,\vc,\ve \inclto \va,\vb,\vc,\vd,\ve}}"] \\
+                                                                            & {\incl^{\va,\vb,\vc \inclto \va,\vb,\vc,\vd,\ve}}
+    \end{tikzcd}
+\end{center}
+Notice that location variables $\vd$ and $\ve$ are not conflated because they are fresh w.r.t. $?_{\va,\vb,\vc}$.
+\end{example}
+
+\begin{remark}\label{rem:lic-T-data}
+Applying \cref{lem:gen-cospan-data} to the L.I.C. of morphisms $\sigma_1 \xfrom{\rho_1} \sigma \xto{\rho_2} \sigma_2$,
+we have that if $\rho_1$ is equipped with instantiation data $\mvarM : \dheapF(\concL{\sigma_1} \ominus \concL{\rho_1},\anyL{\sigma_1})$,
+then $\ext^{\rho_2}\rho_1$ can be equipped with instantiation data 
+\[ \mvarM_{\ext^{\rho_2}\rho_1} : \dheapF(\concL{\sigma_1 \liplus\sigma \sigma_2} \ominus \concL{\ext^{\rho_2}\rho_1}, \anyL{\sigma_1 \liplus\sigma \sigma_2}) \] 
+\end{remark}
+
+\begin{example}
+    Consider the square from \cref{ex:tempC-lic}.
+    If morphism $\rho_1$ is equipped with instantiation data $\mvarM : \dheapF(\{\va, \vb\}, \{\va,\vb,\vc,\vd\})$,
+    we equip $\ext^{\rho_2}\rho_1$ with instantiation data $\dheapF(\{\vb \}, \{\va,\vb,\vc, \vd, \ve\})$ by $\dheapF(\incl^{\vb \inclto \va,\vb}, \incl^{\va,\vb,\vc,\vd \inclto \va,\vb,\vc,\vd,\ve})(\mvarM)$.
+\end{example}
+
+\begin{lemma}[Pasting Law for Local Independent Coproducts]\label{lem:lic-pasting}
+    In a diagram
+    \begin{tikzcd}
+        {\sigma} \ar[r, "\rho_1"] \ar[d, "\rho_1'"']
+            & {\sigma_1} \ar[r, "\rho_3"] \ar[d, "\rho_2"]
+                & {\sigma_3} \ar[d, "\rho_3'"]
+        \\
+        {\sigma_1'} \ar[r, "\rho_2'"']
+            & {\sigma_2} \ar[r, "\rho_3''"']
+                & {\sigma_3'}
+    \end{tikzcd}
+    where the left square is a L.I.C., then the whole square is a L.I.C. iff the right square is.
+\end{lemma}
+\begin{proof}
+    By \cref{lem:gen-cospan-epi-prop}, to show that a commuting square is a L.I.C., it is enough to show that the morphisms out of the span are jointly surjective at the $\anyL\dash$, and $\concL\dash$ level, and further that we have a pullback at the $\anyL\dash$ level.
+
+    For the $\to$ direction, it is clear that if any $\anyL{\rho_3''}$ and $\anyL{\rho_3'}$ are not jointly surjective then the whole square cannot be as well which is a contradiction.
+    The same applies to the $\concL\dash$ level, and so the right square must be jointly surjective.
+    We must further show that we have a pullback at the $\anyL\dash$ level, and so consider $\anyL{\rho_3''}(\vb) = \anyL{\rho_3'}(\va)$.
+    From the left square being a L.I.C. we have that $\anyL{\rho_2'}$ and $\anyL{\rho_2}$ are jointly surjective.
+    So if $\anyL{\rho_2}(\vb') = \vb$ then we are done. 
+    Otherwise we have $\anyL{\rho_2'}(\vb') = \vb$, 
+    and by the outer square being L.I.C., it is a pullback and therefor, 
+    $\vb'$ and $\va$ are related by $\anyL{\sigma}$, which implies that they are related by $\anyL{\sigma_1}$ also.
+    \nl
+    For the $\from$ direction, consider a $\va : \vC \in \anyL{\sigma_3'}$, and we show that it is mapped from $\anyL{\sigma_1'}$ or $\anyL{\sigma_3}$.
+    By the right square being jointly surjective, either $\va$ is mapped from $\anyL{\sigma_3}$ or it comes from $\anyL{\sigma_2}$.
+    If it comes from $\anyL{\sigma_2}$, then by the left square being L.I.C. either it is mapped from $\anyL{\sigma_1'}$ or it is mapped from $\anyL{\sigma_1}$ and since it is a commuting square, it must also be mapped from $\anyL{\sigma_3}$.
+    The same reasoning applies to $\concL\dash$.
+    That the outer square is also a pullback at the $\anyL\dash$ level follows from pullback pasting.
+\end{proof}
+
+\subsubsection{Variable Preserving Morphisms}
+
+We identify a class of morphisms in $\tempC$: morphisms that do not instantiate any location variables from $\varL{\sigma_1}$.
+We call these morphisms variable preserving since every variable in $\varL{\sigma_1}$ is also a variable in $\varL{\sigma_2}$.
+\begin{definition}[Variable Preserving Morphisms]
+A morphism $\rho : \sigma_1 \to \sigma_2$ is variable preserving if it satisfies $\concL{\sigma_2} \pltimes{\anyL{\sigma_2}} \varL{\sigma_1} = \emptyset$.
+\end{definition}
+\begin{example}
+    The morphism $?_{\va} \xto{\pair{?_{\vb}}{\incl^{\va \inclto \va,\vb,\vc}}} \incl^{\vb \inclto \va,\vb,\vc}$ is a variable preserving morphism since variable $\va$ from the domain is mapped to a variable in the codomain.
+    The morphism $?_\va \xto{\pair{?_\va}{1_\va}} 1_\va$ is not a variable preserving morphism since variable $\va$ is instantiated by the morphism.
+\end{example}
+
+\begin{lemma}[Variable Preserving Property Equivalence]\label{lem:vpres-prop}
+    Let $\rho : \sigma_1 \to \sigma_2$. We have the following equivalences
+
+    \begin{tikzcd}
+        {\emptyset} 
+            \ar[r] \ar[d] \pbsquare{dr} 
+            & {\varL{\sigma_1}} 
+                \ar[d, "\varL\rho"'] 
+        \\
+        {\concL{\sigma_2}} 
+            \ar[r, "\concL{\sigma_2}"'] 
+            & {\anyL{\sigma_2}}
+    \end{tikzcd} $\xLeftrightarrow{(1)}$
+    \begin{tikzcd}
+        {\anyL{\sigma_1}} 
+            \ar[r, "\anyL\rho"]
+            & {\anyL{\sigma_2}}
+        \\
+        {\concL{\sigma_1}} 
+            \ar[u, "\concL{\sigma_1}"] \ar[r, "\concL\rho"] \pbsquare{ur}
+            & {\concL{\sigma_2}} 
+                \ar[u, "\concL{\sigma_2}"]
+    \end{tikzcd} $\xLeftrightarrow{(2)}$
+    \begin{tikzcd}
+        {\varL{\sigma_1}} 
+            \ar[dr, "\varL\rho"'] \ar[r, dashed, "\exists \varL\rho\res|{\sigma_2}"] 
+            & {\varL{\sigma_2}} 
+                \ar[d, "\varL{\sigma_2}"] 
+        \\
+            & {\anyL{\sigma_2}}
+    \end{tikzcd} $\xLeftrightarrow{(3)}$
+    \begin{tikzcd}
+        {\concL{\sigma_2} \ominus \concL\rho} 
+            \ar[d, dashed, "\exists \concL{\sigma_2}\res|\rho"] \ar[r, "\compl{\concL\rho}"] 
+            & {\concL{\sigma_2}} 
+                \ar[d, "\concL{\sigma_2}"'] 
+        \\
+        {\anyL{\sigma_2} \ominus \anyL\rho} 
+            \ar[r, "\compl{\anyL\rho}"'] 
+            & {\anyL{\sigma_2}}
+    \end{tikzcd}
+
+\end{lemma}
+\begin{proof}\nl
+    For (1), consider the canonical isomorphism $\anyL{\sigma_1} \iso \concL{\sigma_1} \mplus \varL{\sigma_1}$.
+
+    For $\xRightarrow{(2)}$ consider $\varL\rho : \varL{\sigma_1} \to \anyL{\sigma_2} \iso \concL{\sigma_2} \mplus \varL{\sigma_2}$.
+    If $\varL\rho$ maps to $\concL{\sigma_2}$ we get a contradiction from the pullback.
+
+    For $\xLeftarrow{(2)}$, we have the diagram 
+    \begin{tikzcd}
+        {\emptyset} \ar[d] \ar[r] & {\varL{\sigma_1}} \ar[d, "\varL\rho"'] \ar[r, dashed, "\varL\rho\res|{\sigma_2}"] & {\varL{\sigma_2}} \ar[dl, "\varL{\sigma_2}"] \\
+        {\concL{\sigma_2}} \ar[r, "\concL{\sigma_2}"] & {\anyL{\sigma_2}}
+    \end{tikzcd}
+    which is a pullback since $\img{\varL{\sigma_2}} \setInt \img{\concL{\sigma_2}} = \emptyset$ which makes the inner square a pullback.
+
+    For $\xRightarrow{(3)}$ the second pullback gives $\concL{\sigma_2}\compl{\concL\rho}(\va : \vC) \not\in \img{\anyL\rho}$.
+
+    For $\xLeftarrow{(3)}$, we show $\concL{\sigma_2} \pltimes{\anyL{\sigma_2}} \varL{\sigma_1} = \emptyset$, and so consider $\varL\rho(\va : \vC) = \concL{\sigma_2}(\vb : \vC)$.
+    From $\rho$ being a commuting square we have $\vb : \vC \in \concL{\sigma_2} \ominus \concL\rho$. 
+    But then $\concL{\sigma_2}(\vb) \in \anyL{\sigma_2} \ominus \anyL\rho$ which is a contradiction as it must also be equal to $\varL\rho(\va)$.
+\end{proof}
+
+\begin{notation}
+    For a variable preserving morphism $\sigma_1 \xto\rho \sigma_2$, 
+    let $\compl\rho : (\sigma_2 \ominus \rho) \to \sigma_2$ denote the morphism in $\tempC$ given by $\xRightarrow{(3)}$ in \cref{lem:vpres-prop}.
+\end{notation}
+
+\begin{lemma}[Variable Preservation Closed Under Composition]\label{lem:comp-vpres}
+    Variable preserving morphisms are closed under composition.
+\end{lemma}
+\begin{proof}
+    Follows directly by pullback pasting.
+\end{proof}
+
+\begin{lemma}[Variable Preserving Cancellation]\label{lem:vpres-cancl}
+    In \begin{tikzcd}
+        {\sigma_1} 
+            \ar[rr, "\rho"] \ar[dr, "\rho_1"']
+                && {\sigma_3}
+        \\
+            & {\sigma_2}
+                \ar[ur, "\rho_2"']
+    \end{tikzcd}
+    if $\rho$ and $\rho_2$ are variable preserving, so is $\rho_1$.
+\end{lemma}
+\begin{proof}
+    Follows directly by pullback pasting.
+\end{proof}
+
+\begin{lemma}[Equalizers are Variable Preserving]\label{lem:eq-vpres-tempC}
+   In an equalizer diagram
+    \begin{center}
+    \begin{tikzcd}
+        {\sigma_1} \ar[r, "\ve"] & {\sigma_2} \ar[rr, shift left=1,"\rho_1"] \ar[rr, shift right=1, "\rho_2"'] && {\sigma_3}
+    \end{tikzcd}
+    \end{center}
+    $\ve$ is variable preserving.
+\end{lemma}
+\begin{proof}\nl
+    We want to show $\concL{\sigma_2} \pltimes{\anyL{\sigma_2}} \varL{\sigma_1} = \emptyset$ and so consider
+    \begin{center}
+        \begin{tikzcd}
+            {\vw} \ar[rrd, bend left=30, "\tau_2"] \ar[ddr, bend right=30, "\tau_1"'] && \\
+                                                          & {\emptyset} \ar[r] \ar[d]                      & {\varL{\sigma_1}} \ar[d, "\varL\ve"] \\
+                                                          & {\concL{\sigma_2}} \ar[r, "\concL{\sigma_2}"'] & {\anyL{\sigma_2}}
+        \end{tikzcd}
+    \end{center}
+    Notice that the following square $\ve'$ commutes
+    \begin{center}
+        \begin{tikzcd}
+            {\concL{\sigma_1} \mplus \varL{\sigma_1} \iso \anyL{\sigma_1}} \ar[r, "\anyL\ve"] & {\anyL{\sigma_2}} \\
+            {\concL{\sigma_1} \mplus \vw} \ar[u, "1 \mplus \tau_2"] \ar[r, "\copair{\concL\ve}{\tau_1}"'] & {\concL{\sigma_2}} \ar[u, "\concL{\sigma_2}"']
+        \end{tikzcd}
+    \end{center}
+    and the copairing $\copair{\concL\ve}{\tau_1}$ is mono
+    \begin{align*}
+        \copair{\concL\ve}{\tau_1} \comp \theta_1 & = \copair{\concL\ve}{\tau_1} \comp \theta_2 \iff \\
+        \concL{\sigma_2} \comp \copair{\concL\ve}{\tau_1} \comp \theta_1 & = \concL{\sigma_2} \comp \copair{\concL\ve}{\tau_1} \comp \theta_2 \iff \\
+        \anyL\ve \comp 1 \oplus \tau_2 \comp \theta_1 & = \anyL\ve \comp 1 \oplus \tau_2 \comp \theta_2 \iff \\
+        1 \oplus \tau_2 \comp \theta_1 & = 1 \oplus \tau_2 \comp \theta_2 \iff \\
+        \theta_1 & = \theta_2
+    \end{align*}
+
+    Further notice that $\ve'$ commutes with $\rho_1$, $\rho_2$ from $\anyL{\rho_1} \comp \anyL\ve = \anyL{\rho_1} \comp \anyL\ve$
+    \begin{align*}
+        \concL{\rho_1} \comp \tau_1 &= \concL{\rho_2} \comp \tau_1 \iff \\
+        \concL{\sigma_3} \comp \concL{\rho_1} \comp \tau_1   &= \concL{\sigma_3} \comp \concL{\rho_2} \comp \tau_1 \iff \\
+        \anyL{\rho_1} \comp \concL{\sigma_2} \comp \tau_1      &= \anyL{\rho_2} \comp \concL{\sigma_2} \comp \tau_1 \iff \\
+        \anyL{\rho_1} \comp \varL\ve \comp \tau_2  &= \anyL{\rho_2} \comp \varL\ve \comp \tau_2 =  \\
+        \anyL{\rho_1} \comp \anyL\ve \comp \varL{\sigma_1} \comp \tau_2  &= \anyL{\rho_2} \comp \anyL\ve \comp \varL{\sigma_1} \comp \tau_2
+    \end{align*}
+    and so the universal property of the equalizer gives us an injective morphism $\concL{\sigma_1} \mplus \vw \to \concL{\sigma_1}$, which means $\vw = \emptyset$. 
+\end{proof}
+
+\begin{lemma}[Regular Monos in $\tempC$]\label{lem:rmono-vpres-tempC}
+   A morphism $\rho : \sigma_1 \to \sigma_2$ in $\tempC$ is regular mono iff $\rho$ is variable preserving. 
+\end{lemma}
+\begin{proof}
+    \nl
+    $\to$) Follows directly from \cref{lem:eq-vpres-tempC}.
+    \nl
+    $\from$)
+    We show that this is an equalizer diagram: 
+    \begin{center}
+    \begin{tikzcd}
+        {\sigma_1} \ar[r, "{\rho}"] & {\sigma_2} \ar[rr, shift left=1,"{\ext^\rho\rho}_l"] \ar[rr, shift right=1, "{\ext^\rho\rho}_r"'] && {\sigma_2 \liplus{\sigma_1} \sigma_2}
+    \end{tikzcd}
+    \end{center}
+    
+    From \cref{lem:vpres-prop} and \cref{lem:lic-vpres} we have $\concL{\sigma_2}\res|\rho$ and we can simplify the diagram to
+    \begin{center}
+    \begin{tikzcd}
+            & {\anyL{\sigma_1} \mplus (\anyL{\sigma_2} \ominus \anyL\rho)} 
+            \ar[rr, shift left=1, "1 \mplus \incl_1"] 
+            \ar[rr, shift right=1, "1 \mplus \incl_2"'] 
+                && {\anyL{\sigma_1} \mplus (\anyL{\sigma_2} \ominus \anyL\rho) \mplus (\anyL{\sigma_2} \ominus \anyL\rho)} & 
+\\
+    {\sigma_2} \ar[r, phantom, pos=0.20, "\iso"] & {} && {} \ar[r, phantom, pos=0.95, "\iso"] & {\sigma_2 \liplus{\sigma_1} \sigma_2} 
+\\
+            & {\concL{\sigma_1} \mplus (\concL{\sigma_2} \ominus \concL\rho)} 
+            \ar[uu, "\concL{\sigma_1} \mplus \concL{\sigma_2}\res|\rho"'] 
+            \ar[rr, shift left=1, "1 \mplus \incl_1"] 
+            \ar[rr, shift right=1, "1 \mplus \incl_2"']    
+                                                        && {\concL{\sigma_1} \mplus (\concL{\sigma_2} \ominus \concL\rho) \mplus (\concL{\sigma_2} \ominus \concL\rho)} 
+        \ar[uu, "\concL{\sigma_1} \mplus \concL{\sigma_2}\res|\rho \mplus \concL{\sigma_2}\res|\rho"'] & \\
+    \end{tikzcd}
+    \end{center}
+    Consider $(1 \mplus \incl_1) \comp \iso \comp \phi = (1 \mplus \incl_2) \comp \iso \comp \phi$. Then $\phi$ must factor through $\rho$ and uniqueness follows from $\rho$ being mono.
+\end{proof}
+
+\begin{lemma}[Isos are Variable Preserving]\label{lem:iso-vpres}
+    All isomorphisms are variable preserving morphisms.
+\end{lemma}
+\begin{proof} Follows from \cref{lem:rmono-vpres-tempC}. \end{proof}
+
+\begin{lemma}[Local Independent Coproducts and Variable Preserving Property]\label{lem:lic-vpres}
+    In a L.I.C. where $\rho_2$ is a variable preserving morphism
+    \begin{center}
+    \begin{tikzcd}[sep=small]     
+                                                     & {\sigma} \ar[ld, "{\rho_1}"'] \ar[rd, "{\rho_2}" black]  & \\
+        {\sigma_1} \ar[rd, "{\ext^{\rho_1}\rho_2}"'] &                                                                     & {\sigma_2} \ar[ld, "{\ext^{\rho_2}\rho_1}"] \\
+                                                     &              {\sigma_1 \liplus\sigma \sigma_2}                      &
+    \end{tikzcd}
+    \end{center}
+    we have that $\sigma_1 \liplus\sigma \sigma_2 \iso \concL{\sigma_1} \liplus{\concL\sigma} \concL{\sigma_2} \xdashto{\concL{\sigma_1} \mplus \concL{\sigma_2}\res|{\rho_2}}
+                                                                                                       \anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}$ and
+                 $\ext^{\rho_1}\rho_2$ is variable preserving as well.
+\end{lemma}
+\begin{proof}\nl
+    Notice that this is a pullback square
+    \begin{center}
+    \begin{tikzcd}[sep=small]
+        {\concL\sigma} \ar[rrrr, "\concL{\rho_1}"] \ar[dd, "\concL{\rho_2}"'] \pbsquare{ddrrrr}
+                  &&&& {\concL{\sigma_1}} \ar[d, "\concL{\sigma_1}"] \\
+                  &&&& {\anyL{\sigma_1}} \ar[d, "\ext^{\anyL{\rho_1}}\anyL{\rho_2}"] \\
+        {\concL{\sigma_2}} \ar[r, "\concL{\sigma_2}"'] 
+                  & {\anyL{\sigma_2}} \ar[rrr, "\ext^{\anyL{\rho_2}}\anyL{\rho_1}"']
+                  &&& {\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}}
+    \end{tikzcd}
+    \end{center}
+    By noticing the canonical isomorphism 
+    \[ \anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2} \iso \concL{\sigma} \oplus \varL\sigma \oplus (\anyL{\sigma_1} \ominus \anyL{\rho_1})
+                                                                                               \oplus (\anyL{\sigma_2} \ominus \anyL{\rho_2}) \]
+    and that $\ext^{\anyL{\rho_1}}\anyL{\rho_2} \comp \concL{\sigma_1}$ maps to $\concL\sigma$, $\varL\sigma$ and $\anyL{\sigma_1} \ominus \anyL{\rho_1}$,
+    whereas $\ext^{\anyL{\rho_2}}\anyL{\rho_1} \comp \concL{\sigma_2}$ maps to $\concL\sigma$ and $(\anyL{\sigma_2} \ominus \anyL{\rho_2})$ only (via $\concL{\sigma_2}\res|{\rho_2}$).
+
+    That the induced morphism $\concL{\sigma_1} \liplus{\concL{\sigma}} \concL{\sigma_2}$ is $\concL{\sigma_1} \mplus \concL{\sigma_2}\res|{\rho_2}$ follows from uniqueness 
+    ($\concL{\sigma_1}$ here has the isomorphic type $\concL\sigma \mplus (\concL{\sigma_1} \ominus \concL{\rho_1}) \to \anyL\sigma \mplus (\anyL{\sigma_1} \ominus \anyL{\rho_1})$). 
+
+    That $\ext^{\rho_1}\rho_2$ is variable preserving follows from
+    \begin{center}
+    \begin{tikzcd}
+        {(\concL{\sigma_1} \liplus{\concL\sigma} \concL{\sigma_2}) \ominus \ext^{\concL{\rho_1}}\concL{\rho_2}} 
+            \ar[dd, bend right=40, "\iso"', end anchor=west] \ar[r, "\compl{\ext^{\concL{\rho_1}}\concL{\rho_2}}" yshift=5pt]
+            & {\concL{\sigma_1} \liplus{\concL\sigma} \concL{\sigma_2}} 
+                \ar[r, "\concL{\sigma_1} \liplus{\concL\sigma} \concL{\sigma_2}"]
+                & {\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}} 
+        \\
+        {\concL{\sigma_2}} 
+            \ar[r, "\concL{\sigma_2}"] \ar[ur, "\ext^{\concL{\sigma_2}}\concL{\sigma_1}"]
+            & {\anyL{\sigma_2}} 
+                \ar[ru, "\ext^{\anyL{\rho_2}}\anyL{\rho_1}"']
+        \\
+        {\concL{\sigma_2} \ominus \concL{\rho_2}} 
+            \ar[u, "\compl{\concL{\rho_2}}"'] \ar[r, "\concL{\sigma_2}\res|{\rho_2}"'] 
+            & {\anyL{\sigma_2} \ominus \anyL{\rho_2}} 
+                \ar[u, "\compl{\anyL{\rho_2}}"'] \ar[r, "\iso"']
+                & {(\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}) \ominus \ext^{\anyL{\rho_1}}\anyL{\rho_2}} 
+                    \ar[uu, "\compl{\ext^{\anyL{\rho_1}}\anyL{\rho_2}}"']
+    \end{tikzcd}
+    \end{center}
+\end{proof}
+
+\begin{lemma}[Pullbacks and Variable Preserving Property]\label{lem:pullback-vpres}
+    Let $\rho_2$ be variable preserving in 
+    \begin{center}
+    \begin{tikzcd}[sep=small]     
+            & {\sigma} \ar[ld, "\rho_1"'] \ar[rd, "\rho_2"] 
+        \\
+        {\sigma_1} \ar[rd, "\rho_1'"'] 
+                && {\sigma_2} \ar[ld, "\rho_2'"] 
+        \\
+            & {\hat\sigma}
+    \end{tikzcd}
+    \end{center}
+    Then the above diagram is a pullback iff its $\anyL\dash$-image is a pullback.
+\end{lemma}
+\begin{proof}
+    The $\to$ direction is immediate by \cref{lem:pullbacks-tempC}.
+    For $\from$, by \cref{lem:pullback-mono-post-comp} it is enough to show that
+    \begin{tikzcd}[sep=small]
+        {\concL\sigma} 
+            \ar[rr, "\concL{\rho_1}"] \ar[dd, "\concL{\rho_2}"]
+            && {\concL{\sigma_1}}
+                \ar[d, "\concL{\rho_1'}"]
+        \\
+            && {\concL{\hat\sigma}}
+                \ar[d, "\concL{\hat\sigma}"]
+        \\
+        {\concL{\sigma_2}}
+            \ar[r, "\concL{\rho_2'}"]
+                & {\concL{\hat\sigma}}
+                    \ar[r, "\concL{\hat\sigma}"]
+                    & {\anyL{\hat\sigma}}
+    \end{tikzcd}
+    is a pullback which is the same as
+    \begin{tikzcd}[sep=small]
+        {\concL\sigma} 
+            \ar[rr, "\concL{\rho_1}"] \ar[dd, "\concL{\rho_2}"]
+            && {\concL{\sigma_1}}
+                \ar[d, "\concL{\sigma_1}"]
+        \\
+            && {\anyL{\sigma_1}}
+                \ar[d, "\anyL{\rho_1'}"]
+        \\
+        {\concL{\sigma_2}}
+            \ar[r, "\concL{\sigma_2}"]
+                & {\anyL{\sigma_2}}
+                    \ar[r, "\anyL{\rho_2'}"]
+                    & {\anyL{\hat\sigma}}
+    \end{tikzcd}
+    which is given by the pullback
+    \begin{tikzcd}
+        {\concL\sigma} 
+            \ar[r, "\concL\sigma"] \ar[d, "\concL{\rho_2}"'] \pbsquare{dr}
+            & {\anyL\sigma}
+                \ar[r, "\anyL{\rho_1'}"] \ar[d, "\anyL{\rho_2}"] \pbsquare{dr}
+                    & {\anyL{\sigma_1}}
+                        \ar[d, "\anyL{\rho_1'}"]
+        \\
+        {\concL{\sigma_2}}
+            \ar[r, "\concL{\sigma_2}"] 
+                & {\anyL{\sigma_2}}
+                    \ar[r, "\anyL{\rho_2'}"]
+                    & {\anyL{\hat\sigma}}
+    \end{tikzcd} and \cref{lem:pullback-factoring}.
+\end{proof}
+
+\subsubsection{Variable Reflecting Morphisms}
+
+We identify another class of morphisms in $\tempC$: morphisms that do not introduce location variables.
+We call these morphisms variable reflecting since every variable in $\varL{\sigma_2}$ comes from $\varL{\sigma_1}$.
+\begin{definition}[Variable Reflecting Morphisms]
+A morphism $\rho : \sigma_1 \to \sigma_2$ is variable reflecting if it satisfies $(\anyL{\sigma_2} \ominus \varL\rho) \pltimes{\anyL{\sigma_2}} \varL{\sigma_2} = \emptyset$.
+\end{definition}
+\begin{example}
+    The morphism $?_{\va,\vb} \xto{\pair{?_\va}{1_{\va,\vb}}} \incl^{\va \inclto \va,\vb}$ is a variable reflecting morphism since variable $\vb$ from the codomain comes from the domain.
+    The morphism $?_\va \xto{\pair{?_\va}{\incl^{\va \inclto \va,\vb}}} \incl^{\va \inclto \va, \vb}$ is not a variable reflecting morphism since variable $\vb$ is fresh.
+\end{example}
+
+\begin{lemma}[Variable Reflecting Property Equivalence]\label{lem:vrefl-prop}
+    Let $\rho : \sigma_1 \to \sigma_2$. We have the following equivalences
+    \begin{center}
+    \begin{tikzcd}
+        {\emptyset} \ar[r] \ar[d] \pbsquare{dr} & {\anyL{\sigma_2} \ominus \varL\rho} \ar[d, "\compl{\varL\rho}"'] \\
+        {\varL{\sigma_2}} \ar[r, "\varL{\sigma_2}"'] & {\anyL{\sigma_2}}
+    \end{tikzcd} $\xLeftrightarrow{(1)}$
+    \begin{tikzcd}
+        {\varL{\sigma_2}} \ar[rr, dashed, "\exists \inv^{\varL\rho}\res|{\sigma_2}"] \ar[drr, "\varL{\sigma_2}"'] && {\varL{\sigma_1}} \ar[d, "\varL\rho"'] \\
+                                                                                                                   && {\anyL{\sigma_2}}
+    \end{tikzcd} $\xLeftrightarrow{(2)}$
+    \begin{tikzcd}
+        {\concL{\sigma_2} \ominus \concL\rho} \ar[r, "\compl{\concL\rho}"] & {\concL{\sigma_2}} \ar[d, "\concL{\sigma_2}"] \\
+        {\anyL{\sigma_2} \ominus \anyL\rho} \ar[u, dashed, "\exists \inv^{\concL{\sigma_2}}\res|\rho"] \ar[r, "\compl{\anyL\rho}"'] & {\anyL{\sigma_2}}
+    \end{tikzcd}
+    \end{center}
+\end{lemma}
+\begin{proof}
+    For $\xRightarrow{(1)}$, consider $\varL\rho : \varL{\sigma_1} \to \anyL{\sigma_2} \iso \concL{\sigma_2} \mplus \varL{\sigma_2}$.
+    If there exists $\va : \vC \in \varL{\sigma_2}$ that $\varL\rho$ does not map to, it must also be an element of $\anyL{\sigma_2} \ominus \varL\rho$ by definition. 
+    But then the pullback gives us a contradiction.
+    For $\xLeftarrow{(1)}$, we have a diagram
+    \begin{center}
+    \begin{tikzcd}
+        {\emptyset} \ar[d] \ar[r] & {\anyL{\sigma_2} \ominus \varL\rho} \ar[d, "\compl{\varL\rho}"] \\
+        {\varL{\sigma_2}} \ar[r, "\varL{\sigma_2}"] \ar[dr, "\inv^{\varL\rho}\res|{\sigma_2}"'] & {\anyL{\sigma_2}} \\
+                                                                                                & {\varL{\sigma_1}} \ar[u, "\varL\rho"']
+    \end{tikzcd}
+    \end{center}
+    which is a pullback since $\img{\varL\rho} \setInt \img{\compl{\varL\rho}} = \emptyset$.
+    For $\xRightarrow{(2)}$, first notice that this is a pullback
+    \begin{center}
+    \begin{tikzcd}
+        {\emptyset} \ar[d] \ar[r] \pbsquare{dr} & {\anyL{\sigma_2} \ominus \varL\rho} \ar[d, "\compl{\anyL\rho}"] \\
+        {\varL{\sigma_2}} \ar[r, "\varL{\sigma_2}"'] & {\anyL{\sigma_2}}
+    \end{tikzcd}
+    \end{center}
+    given by the inclusion $\anyL{\sigma_2} \ominus \anyL\rho \inclto \anyL{\sigma_2} \ominus \varL\rho$ and pullback pasting.
+    Now consider the morphism
+    \[ \anyL{\sigma_2} \ominus \anyL\rho \xto{\compl{\anyL\rho}} \anyL{\sigma_2} \iso \concL{\sigma_1} \mplus (\concL{\sigma_2} \ominus \concL\rho) \mplus \varL{\sigma_2} \]
+    From $\rho$ being a commuting square it cannot map to $\concL{\sigma_1}$, and from the pullback it can also not map to $\varL{\sigma_2}$.
+    Lastly for $\xLeftarrow{(2)}$, consider $\varL\rho : \varL{\sigma_1} \to \anyL{\sigma_2} \iso \concL{\sigma_2} \mplus \varL{\sigma_2}$, and a $\va : \vC \in \varL{\sigma_2}$ that is not mapped to from $\varL\rho$.
+    This gives us that either $\va \in \anyL{\sigma_2} \ominus \anyL\rho$ which is a contradiction from $\inv^{\concL{\sigma_2}}\res|\rho$
+    or it comes from $\concL{\sigma_1}$ which is a contradiction from $\rho$ being a commutative square.
+
+\end{proof}
+
+\begin{lemma}[Composition of Variable Reflecting Morphisms]\label{lem:comp-vrefl}
+    Variable reflecting morphisms are closed under composition.
+\end{lemma}
+\begin{proof}
+    For variable reflecting morphisms $\sigma_1 \xto{\rho_1} \sigma_2 \xto{\rho_2} \sigma_3$ we have
+    \begin{center}
+    \begin{tikzcd}
+    {\varL{\sigma_3}} \ar[rd, "\varL{\sigma_3}"'] \ar[r, dashed, "\inv^{\varL{\rho_2}}\res|{\sigma_3}"] 
+        & {\varL{\sigma_2}} \ar[d, "\varL{\rho_2}"'] \ar[rd, "\varL{\sigma_2}"'] \ar[r, dashed, "\inv^{\varL{\rho_1}}\res|{\sigma_2}"] 
+            & {\varL{\sigma_1}} \ar[d, "\varL{\rho_1}"] \ar[dd, bend left=70, "\varL{\rho_2 \comp \rho_1}"]
+    \\
+        & {\anyL{\sigma_3}} \ar[rd, Rightarrow]
+            & {\anyL{\sigma_2}} \ar[d, "\anyL{\rho_2}"]
+    \\
+           && {\anyL{\sigma_3}}
+    \end{tikzcd}
+    \end{center}\vspace{-1.5\baselineskip}
+\end{proof}
+
+\begin{lemma}[Variable Reflecting Cancellation]\label{lem:vrefl-cancl}
+    In \begin{tikzcd}
+        {\sigma_1} 
+            \ar[rr, "\rho"] \ar[dr, "\rho_1"']
+                && {\sigma_3}
+        \\
+            & {\sigma_2}
+                \ar[ur, "\rho_2"']
+    \end{tikzcd}
+    if $\rho$ is variable reflecting, so is $\rho_2$.
+\end{lemma}
+\begin{proof}
+    We show
+    \begin{tikzcd}
+        {\concL{\sigma_3} \ominus \concL{\rho_2}} \ar[r, "\compl{\concL{\rho_2}}"] & {\concL{\sigma_3}} \ar[d, "\concL{\sigma_3}"] \\
+        {\anyL{\sigma_3} \ominus \anyL{\rho_2}} \ar[u, dashed, "\exists \inv^{\concL{\sigma_3}}\res|{\rho_2}"] \ar[r, "\compl{\anyL{\rho_2}}"'] & {\anyL{\sigma_3}}
+    \end{tikzcd}.
+    The variable reflecting property of $\rho$ gives us a $(\anyL{\sigma_3} \ominus \anyL\rho) \dashto (\concL{\sigma_3} \ominus \concL\rho)$
+    and using the canonical isos we have
+    \[ \anyL{\sigma_3} \ominus \anyL{\rho_2} \to 
+       \anyL{\sigma_3} \ominus \anyL\rho     \to 
+       \concL{\sigma_3} \ominus \concL\rho   \iso 
+       (\concL{\sigma_3} \ominus \concL{\rho_2}) \oplus (\concL{\sigma_2} \ominus \concL{\rho_1}) \] 
+    and its image must lie in $\concL{\sigma_3} \ominus \concL{\rho_2}$ by the commuting square of $\rho_2$.
+\end{proof}
+
+\begin{lemma}[Variable Preserving with Reflecting Cancellation]\label{lem:vpres-vrefl-cancl}
+    In \begin{tikzcd}
+        {\sigma_1} 
+            \ar[rr, "\rho"] \ar[dr, "\rho_1"']
+                && {\sigma_3}
+        \\
+            & {\sigma_2}
+                \ar[ur, "\rho_2"']
+    \end{tikzcd}
+    if $\rho$ is variable preserving and $\rho_1$ is reflecting, then $\rho_2$ is variable preserving.
+\end{lemma}
+\begin{proof}
+The variable preserving property of $\rho$ gives us a $\concL{\sigma_3} \ominus \concL\rho \dashto \anyL{\sigma_3} \ominus \anyL\rho$,
+the variable reflecting property of $\rho_1$ gives us a $\anyL{\sigma_2} \ominus \anyL{\rho_1} \dashto \concL{\sigma_2} \ominus \concL{\rho_1}$,
+and together with the canonical isos we have
+\[ 
+    \concL{\sigma_3} \ominus \concL{\rho_2} \to
+        \concL{\sigma_3} \ominus \concL\rho \to
+            \anyL{\sigma_3} \ominus \anyL\rho \iso
+                (\anyL{\sigma_3} \ominus \anyL{\rho_2}) \oplus (\anyL{\sigma_2} \ominus \anyL{\rho_1}) \to
+                    (\anyL{\sigma_3} \ominus \anyL{\rho_2}) \oplus (\concL{\sigma_2} \ominus \concL{\rho_1})
+\]
+and its image must lie in $\anyL{\sigma_3} \ominus \anyL{\rho_2}$.
+\end{proof}
+
+\begin{lemma}[Variable Reflecting with Preserving Cancellation]\label{lem:vrefl-vpres-cancl}
+    In \begin{tikzcd}
+        {\sigma_1} 
+            \ar[rr, "\rho"] \ar[dr, "\rho_1"']
+                && {\sigma_3}
+        \\
+            & {\sigma_2}
+                \ar[ur, "\rho_2"']
+    \end{tikzcd}
+    if $\rho$ is variable reflecting and $\rho_2$ is variable preserving, then $\rho_1$ is variable reflecting.
+\end{lemma}
+\begin{proof}
+    The variable reflecting property of $\rho$ gives us a $(\anyL{\sigma_3} \ominus \anyL\rho) \dashto (\concL{\sigma_3} \ominus \concL\rho)$,
+    and the variable preserving property of $\rho_2$ gives us a $\concL{\sigma_3} \ominus \concL{\rho_2} \dashto \anyL{\sigma_3} \ominus \anyL{\rho_2}$,
+    and together with the canonical isos we have
+    \[ 
+        \anyL{\sigma_2} \ominus \anyL{\rho_1} \to 
+            \anyL{\sigma_3} \ominus \anyL\rho \to 
+                \concL{\sigma_3} \ominus \concL\rho \iso
+                    (\concL{\sigma_3} \ominus \concL{\rho_2}) \oplus (\concL{\sigma_2} \ominus \concL{\rho_1}) \to
+                        (\anyL{\sigma_3} \ominus \anyL{\rho_2}) \oplus (\concL{\sigma_2} \ominus \concL{\rho_1})
+    \]
+    and its image must lie in $\concL{\sigma_2} \ominus \concL{\rho_1}$.
+\end{proof}
+
+\begin{lemma}[Local Independent Coproducts and Variable Reflecting Morphisms]\label{lem:lic-vrefl}
+    In a L.I.C. square where $\rho_2$ is variable reflecting: 
+    \begin{center}
+    \begin{tikzcd}[sep=small]     
+                                                     & {\sigma} \ar[ld, "{\rho_1}"'] \ar[rd, "{\rho_2}" black]  & \\
+        {\sigma_1} \ar[rd, "{\ext^{\rho_1}\rho_2}"'] &                                                          & {\sigma_2} \ar[ld, "{\ext^{\rho_2}\rho_1}"] \\
+                                                     &              {\sigma_1 \liplus\sigma \sigma_2}               &
+    \end{tikzcd}
+    \end{center}
+    we have that $\ext^{\rho_1}\rho_2$ is variable reflecting as well.
+\end{lemma}
+\begin{proof}
+    Consider
+    \begin{center}
+    \begin{tikzcd}[sep=small]
+    {\concL\sigma} 
+        \ar[rrrrd, bend left=15, "\concL{\rho_2}"] 
+        \ar[dddr, bend right=60, "\concL{\rho_1}"'] 
+        \ar[rd, dashed, "\vh"]
+    \\ 
+        & {\concL{\sigma_1} \pltimes{\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}} \concL{\sigma_2}} 
+            \ar[rrr, "\pi_2"] 
+            \ar[dd, "\pi_1"'] 
+            \ar[dr, dashed, "\vh'"]
+                &&& {\concL{\sigma_2}}
+                    \ar[d, "\concL{\sigma_2}"]
+    \\
+            && {\anyL{\sigma}} 
+                    \ar[rr, "\anyL{\rho_2}"] \ar[d, "\anyL{\rho_1}"'] \pbsquare{drr}
+            && {\anyL{\sigma_2}} 
+                    \ar[d, "\ext^{\anyL{\rho_2}}\anyL{\rho_1}"] 
+    \\
+        & {\concL{\sigma_1}} 
+            \ar[r, "\concL{\sigma_1}"'] 
+            & {\anyL{\sigma_1}} 
+                \ar[rr, "\ext^{\anyL{\rho_1}}\anyL{\rho_2}"'] 
+                && {\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}}
+    \end{tikzcd}
+    \end{center}
+
+    We first show that $\inv^{\concL{\sigma_2}}\res|{\rho_2}$ factors through $\concL{\sigma_2} \ominus \pi_2$
+    \begin{center}
+    \begin{tikzcd}[sep=small]
+    {\anyL{\sigma_2} \ominus \anyL{\rho_2}} 
+        \ar[rr, "\inv^{\concL{\sigma_2}}\res|{\rho_2}"] 
+        \ar[dr, dashed]
+            && {\concL{\sigma_2} \ominus \concL{\rho_2}} 
+                \ar[dr, "\compl{\concL{\rho_2}}"]
+    \\
+        & {\concL{\sigma_2} \ominus \pi_2} 
+            \ar[rr, "\compl{\pi_2}"']
+                && {\concL{\sigma_2}}
+    \end{tikzcd}
+    \end{center}
+    and so consider $\va : \vC \in \anyL{\sigma_2} \ominus \anyL{\rho_2}$.
+    From the diagram we have that $\va : \vC \in \anyL{\sigma_2} \ominus (\concL{\sigma_2} \comp \proj_2)$
+    and consider the canonical isomorphism 
+    \[\anyL{\sigma_2} \ominus (\concL{\sigma_2} \comp \proj_2) \iso 
+        (\anyL{\sigma_2} \ominus \concL{\sigma_2}) \mplus (\concL{\sigma_2} \ominus \proj_2) \]
+    Morphism $\inv^{\concL{\sigma_2}}\res|{\rho_2}$ tells us that $\va$ is in the image of $\concL{\sigma_2}$, and so
+    it must come from $\concL{\sigma_2} \ominus \proj_2$.
+
+    We then show that $\ext^{\rho_1}\rho_2$ is variable reflecting by observing that the following diagram commutes
+    \begin{center}
+    \begin{tikzcd}[sep=small]
+        {\concL{\sigma_1 \liplus{\sigma} \sigma_2} \ominus \concL{\ext^{\rho_1}\rho_2}}
+            \ar[drrr, "\compl{\concL{\ext^{\rho_1}\rho_2}}"]
+    \\
+        {\concL{\sigma_2} \ominus \pi_2} 
+            \ar[u, "\iso"] \ar[r, "\compl{\pi_2}"]
+            & {\concL{\sigma_2}} 
+                \ar[rr, "\concL{\ext^{\rho_2}\rho_1}"'] \ar[dd, "\concL{\sigma_2}"']
+                && {\concL{\sigma_1 \liplus{\sigma} \sigma_2}}
+                        \ar[dd, "\concL{\sigma_1 \liplus\sigma \sigma_2}"]
+    \\\\
+        {\anyL{\sigma_2} \ominus \anyL{\rho_2}} 
+            \ar[r, "\compl{\anyL{\rho_2}}"] \ar[uu, dashed]
+            & {\anyL{\sigma_2}} 
+                \ar[rr, "\anyL{\ext^{\rho_2}\rho_1}"]
+                    && {\anyL{\sigma_1 \liplus\sigma \sigma_2}}
+    \\
+        {\anyL{\sigma_1 \liplus\sigma \sigma_2} \ominus \anyL{\ext^{\rho_1}\rho_2}} 
+            \ar[u, "\iso"] \ar[urrr, "\compl{\anyL{\ext^{\rho_1}\rho_2}}"']
+    \end{tikzcd}
+    \end{center}\vspace{-1.5\baselineskip}
+\end{proof}
+
+\subsubsection{Factorisation System}
+
+\begin{lemma}[Epimorphisms in $\tempC$]\label{lem:epis-T}
+   A morphism $\rho : \sigma_1 \to \sigma_2$ in $\tempC$ is epi iff $\anyL\rho$ is surjective.
+\end{lemma}
+\begin{proof}\nl
+    $\to$) Consider $\rho : \sigma_1 \to \sigma_2$ such that for every $\vl\,\vr$, $\vl \comp \rho = \vr \comp \rho \implies \vl = \vr$.
+           Take the L.I.C. of $\sigma_2 \xfrom\rho \sigma_1 \xto\rho \sigma_2$, which gives us two morphisms ${\ext^\rho\rho}_\vl, \ext^\rho\rho_\vr : \sigma_2 \to \sigma_2 \liplus{\sigma_1} \sigma_2$
+           that satisfy ${\ext^\rho\rho}_l \comp \rho = {\ext^\rho\rho}_r \comp \rho$.
+           From the epi property of $\rho$, we have that $\anyL{{\ext^\rho\rho}_l} = \anyL{{\ext^\rho\rho}_r}$ which implies that $\anyL\rho$ is surjective by definition of $\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}$.
+    \nl
+    $\from$) Let $\vl, \vr$ such that $\vl \comp \rho = \vr \comp \rho$.
+             This means that $\anyL\vl \comp \anyL\rho = \anyL\vr \comp \anyL\rho$ and so $\anyL\vl = \anyL\vr$ which also implies $\concL\vl = \concL\vr$.
+\end{proof}
+
+\begin{notation}
+    We denote epis using $\eto$ and regular monos with $\rmto$.
+\end{notation}
+
+\begin{lemma}[Orthogonal Factorisation System in $\tempC$]
+    The classes of epis and regular monos (variable preserving) morphisms gives rise to an orthogonal factorisation system in $\tempC$.
+\end{lemma}
+\begin{proof}
+The intuition here is that the epi part will represent the instantiations of the location variables coming from its domain
+and the regular mono part will be the introduction of all other locations.
+
+A morphism $\rho : \sigma_1 \to \sigma_2$ is factored as follows
+\begin{center}
+\begin{tikzcd}
+    {\anyL{\sigma_1}} \ar[r, Rightarrow]
+        & {\anyL{\sigma_1}} \ar[r, "\anyL\rho"] 
+            & {\anyL{\sigma_2}}  
+    \\
+    {\concL{\sigma_1}} \ar[u, "\concL{\sigma_1}"] \ar[r,dashed] \ar[rr, bend right=30, "\concL\rho"'] 
+        & {\concL{\sigma_2} \pltimes{\anyL{\sigma_2}} \anyL{\sigma_1}} \ar[u] \ar[r] \pbsquare{ur}
+            & {\concL{\sigma_2}} \ar[u, "\concL{\sigma_2}"']
+\end{tikzcd}
+\end{center}
+\end{proof}
+\begin{example}
+    We factor the morphism $?_\va \xto{\pair{?_{\va,\vb}}{\incl^{\va \inclto \va,\vb,\vc}}} \incl^{\va,\vb \inclto \va,\vb,\vc}$ as
+    \[ ?_\va \xto{\pair{?_\va}{1_\va}} 1_\va \xto{\pair{\incl^{\va \inclto \va,\vb}}{\incl^{\va \inclto \va,\vb,\vc}}} \incl^{\va,\vb \inclto \va,\vb,\vc} \]
+\end{example}

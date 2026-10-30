@@ -1,0 +1,98 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{ynt/global//global/global/global}
+    \entry{kelly2022basic}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=fac02deffedd4dbcbb6d46f097ca9c7d}{%
+           family={Kelly},
+           familyi={K\bibinitperiod},
+           given={G.\bibnamedelimi M.},
+           giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \strng{fullhash}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \strng{fullhashraw}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \strng{bibnamehash}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \strng{authorbibnamehash}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \strng{authornamehash}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \strng{authorfullhash}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \strng{authorfullhashraw}{fac02deffedd4dbcbb6d46f097ca9c7d}
+      \field{labelalpha}{Kel82}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Basic Concepts of Enriched Category Theory}
+      \field{year}{1982}
+    \endentry
+    \entry{kammar2017monad}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=1584c94a92e0950ad6da8c0b6cb523d2}{%
+           family={Kammar},
+           familyi={K\bibinitperiod},
+           given={Ohad},
+           giveni={O\bibinitperiod}}}%
+        {{hash=c029311039e4a399c40beb579452ab59}{%
+           family={Levy},
+           familyi={L\bibinitperiod},
+           given={Paul\bibnamedelima Blain},
+           giveni={P\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=a01458f2521127254b68079c7af37872}{%
+           family={Moss},
+           familyi={M\bibinitperiod},
+           given={Sean\bibnamedelima K.},
+           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=5351d3a060653e114d956a0a3700d556}{%
+           family={Staton},
+           familyi={S\bibinitperiod},
+           given={Sam},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{1407270cb9bc3c6d6594cb7911714c60}
+      \strng{fullhash}{d5d2edc7fd46173b8813249285a3c9bd}
+      \strng{fullhashraw}{d5d2edc7fd46173b8813249285a3c9bd}
+      \strng{bibnamehash}{d5d2edc7fd46173b8813249285a3c9bd}
+      \strng{authorbibnamehash}{d5d2edc7fd46173b8813249285a3c9bd}
+      \strng{authornamehash}{1407270cb9bc3c6d6594cb7911714c60}
+      \strng{authorfullhash}{d5d2edc7fd46173b8813249285a3c9bd}
+      \strng{authorfullhashraw}{d5d2edc7fd46173b8813249285a3c9bd}
+      \field{labelalpha}{Kam+17}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{{LICS}}
+      \field{title}{A monad for full ground reference cells}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://doi.org/10.1109/LICS.2017.8005109
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1109/LICS.2017.8005109
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

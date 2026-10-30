@@ -1,0 +1,258 @@
+
+\subsection{Families of Template Instantiations}\label{sec:famC-tinstC}
+
+We model finite collections of templates and their instantiations using the $\famC\tinstC$ construction, the free finite product completion of $\tinstC$.
+
+\begin{itemize}
+    \item Objects: A finite set $\vI$, and an $\vI$-indexed set of templates $\tlistr{\sigma_\vi \in \objC\tinstC}{\vi \in \vI}$.
+    \item Morphisms: A $\tlistr{\sigma_\vi}{\vi \in \vI} \xto\phi \tlistr{\tau_\vj}{\vj \in \vJ}$ consists of
+                     a mapping $\indF\phi : \vJ \to \vI$ and a $\vJ$-indexed set of morphisms $\tlistr{\phi_\vj : \sigma_{\indF\phi(\vj)} \to \tau_\vj}{\vj \in \vJ}$
+\end{itemize}
+We have a forgetful functor $\indF\dash : \famC\tinstC \to \opC\finC$ that maps into the indexing sets.
+
+Notice also that $\famC\tinstC$ is isomorphic to the opposite full subcategory of finite sums of covariant representable presheaves, 
+\[ \tinstC \xto{\opC\yoneda} \opC{\funC\tinstC\setC}_\sqcup \iso \famC\tinstC \]
+Which extends to an embedding of $\tinstC$ into it $\famC\tinstC$ by selecting a singleton family.
+
+\begin{notation}
+We use metavariable $\Sigma$ to range over objects in $\famC\tinstC$ and use
+set membership notation $\sigma_\vi \in \Sigma$ to range over the templates in $\Sigma$.
+We also use list notation $[ \sigma, \sigma, \tau ]$ to write objects in $\famC\tinstC$.
+\end{notation}
+
+\begin{lemma}[Coequalizers in $\famC\tinstC$]
+    The category $\famC\tinstC$ has coequalizers.
+\end{lemma}
+\begin{proof}
+    Since $\famC\tinstC \iso \opC{\funC\tinstC\setC}_\sqcup$ and inclusions reflect limits, 
+    it is enough to check that
+    the equalizer of \begin{tikzcd}{\Sigma_2} \ar[r, yshift=3pt, "\phi"] \ar[r, yshift=-3pt, "\psi"'] & {\Sigma_1}\end{tikzcd} in $\funC\tinstC\setC$
+    can be represented as a finite sum of representables.
+
+    Equalizers are given pointwise by
+    \[ \eqz\phi\psi(\sigma) \iso \{ \inj_{\vj \in \indF{\Sigma_2}} (\me : \sigma_\vj \to \sigma) : \indF\phi(\vj) = \indF\psi(\vj) \Land \me \comp \phi_\vj = \me \comp \psi_\vj \} \]
+    Notice that since every $\me$ is mono, we have $\phi_\vj = \psi_\vj$ for every such $\me$ above.
+
+    So define the coequalizer $\coeqz\phi\psi$ in $\famC\tinstC$   
+    as exactly the $\sigma_\vj$ that satisfy $\phi_\vj = \psi_\vj$
+    \[ \coeqz\phi\psi \eqdef \{ \sigma_\vj \in \Sigma_2 : \indF\phi(\vj) = \indF\psi(\vj) \Land \phi_\vj = \psi_\vj \} \] 
+\end{proof}
+
+\begin{lemma}[Pushouts in $\famC\tinstC$]
+    The category $\famC\tinstC$ has pushouts given by the general unifiers of \cref{sec:unification-theaps}.
+\end{lemma}
+\begin{proof}
+    We define the pushout
+\begin{tikzcd}
+    {\Sigma}
+        \ar[d, "\phi"'] \ar[r, "\psi"]
+        & {\Sigma_2}
+            \ar[d, "\ext^\psi\phi"]
+    \\
+    {\Sigma_1}
+        \ar[r, "\ext^\phi\psi"'] 
+        & {\Sigma_1 \liplus{\Sigma} \Sigma_2} \posquare{ul}
+\end{tikzcd}
+    by noticing that pullbacks in $\funC\tinstC\setC$ are given pointwise and
+    \[
+        \Sigma_1\sigma' \pltimes{\Sigma\sigma'} \Sigma_2\sigma'
+                \iso \{ \pair{\inj_{\sigma_\vi}(\sigma_\vi \xto{\me_\vi} \sigma')}{\inj_{\sigma_\vj}(\sigma_\vj \xto{\me_\vj} \sigma'} :
+                        \indF\phi(\vi) = \indF\psi(\vj) \Land
+                        \begin{tikzcd}[sep=small]
+                            & {\sigma_{\indF\phi(\vi)}} 
+                                \ar[dl, "\phi_\vi"'] \ar[dr, "\psi_\vj"] 
+                        \\
+                        {\sigma_\vi}
+                            \ar[dr, "\me_\vi"'] 
+                            && {\sigma_\vj}
+                                    \ar[dl, "\me_\vj"]
+                        \\
+                            & {\sigma'}
+                        \end{tikzcd} \}
+    \]
+    By \cref{lem:general-unifier-prop}, every such $\me_\vi, \me_\vj$ pair factors through a general unifier, 
+    and so $\Sigma_1 \liplus\Sigma \Sigma_2 \in \famC\tinstC$ must be isomorphic to the set of general unifiers of matching pairs $\vi, \vj$. 
+
+    Specifically, we select all pairs that have matching indices 
+    $\{ \pair\vi\vj \in \indF{\Sigma_1} \times \indF{\Sigma_2} : \indF\phi(\vi) = \indF\psi(\vj) \}$
+    and for every such pair we have by \cref{lem:unification-dec} a finite set $\GU{\phi_\vi}{\psi_\vj}$ 
+    which we turn into a finite family of templates $\Sigma_{\GU{\phi_\vi}{\psi_\vj}}$ by projecting out the first component. 
+    \[ \Sigma_1 \liplus\Sigma \Sigma_2 \eqdef 
+        \Prod{\pair\vi\vj \in \indF{\Sigma_1} \times \indF{\Sigma_2} \,:\, \indF\phi(\vi) = \indF\psi(\vj)} \Sigma_{\GU{\phi_\vi}{\psi_\vj}} \]
+
+    For every vertex of a general unifier, $\sigma_\vk \in \Sigma_{\GU{\phi_\vi}{\psi_\vj}}$,
+    we have morphisms $\me^\vk_\vi: \sigma_\vi \to \sigma_\vk$ and $\me^\vk_\vj: \sigma_\vj \to \sigma^\vk$,
+    and so define the injections in $\Sigma_1 \liplus\Sigma \Sigma_2$ as
+    \begin{align*}
+            \ext^\psi\phi \eqdef \tlistr{\me^\vk_\vi}{\triple\vi\vj\vk \in \indF{\Sigma_1 \liplus\Sigma \Sigma_2}} : \Sigma_1 \to \Sigma_1 \pltimes\Sigma \Sigma_2 \\
+            \ext^\phi\psi \eqdef \tlistr{\me^\vk_\vj}{\triple\vi\vj\vk \in \indF{\Sigma_1 \liplus\Sigma \Sigma_2}} : \Sigma_2 \to \Sigma_1 \pltimes\Sigma \Sigma_2
+    \end{align*}
+    The square $\ext^\phi\psi \comp \phi = \ext^\psi\phi \comp \psi$ commutes from $\me^\vk_\vi \comp \phi_\vi = \me^\vk_\vj \comp \psi_\vj$ for every $\triple\vi\vj\vk \in \indF{\Sigma_1 \liplus\Sigma \Sigma_2}$.
+\end{proof}
+
+\begin{lemma}
+    The embedding $\opC\yoneda : \tinstC \to \famC\tinstC$ preserves equalizers and pullbacks from $\tinstC$.  
+\end{lemma}
+\begin{proof}
+    See \cref{lem:ryoneda-coeqz,lem:ryoneda-pushouts}.
+\end{proof}
+
+\begin{definition}[Connected Morphisms]
+    A morphism $\phi : \Sigma \to \Sigma'$ is said to be \emph{connected} if every $\phi_\vj$ is connected.
+\end{definition}
+
+\begin{definition}[Non-Overlapping Morphisms]
+    A morphism $\phi : \Sigma \to \Sigma'$ is said to be \emph{non-overlapping} if 
+    every distinct pair of morphisms with the same root, 
+    $\sigma_\vi \xfrom{\phi_\vi} \sigma_\vk \xto{\phi_\vj} \sigma_\vj$, 
+    do not unify.
+
+    That is, for every $\vi, \vj \in \indF{\Sigma'}$ s.t. $\vi \neq \vj$ we have
+    \[ 
+        \indF\phi(\vi) = \indF\phi(\vj) \implies 
+            \AllTwo{\sigma_\vi \xto{\me_\vi} \hat\sigma}{\sigma_\vj \xto{\me_\vj} \hat\sigma} 
+        \me_\vi \comp \phi_\vi \neq \me_\vj \comp \phi_\vj
+    \]
+\end{definition}
+
+\begin{lemma}\label{lem:fam-tinstC-epi}
+     A morphism $\phi : \Sigma \to \Sigma'$ is epi iff it is connected and non-overlapping.
+\end{lemma}
+\begin{proof}
+    An epi $\phi : \Sigma \to \Sigma' \in \famC\tinstC$ is a mono in $\funC\tinstC\setC_\sqcup$.
+    Component-wise injectivity is exactly being connected and non-overlapping, and so it follows by \cref{lem:fsreprC-mono}.
+\end{proof}
+
+\begin{definition}[Total Morphisms]
+    We say that a morphism $\phi : \Sigma \to \Sigma'$ is \emph{total} if for every morphism $\me : \Sigma \to 1_\vw$ 
+    there exists a $\tilde\me : \Sigma' \to 1_\vw$ such that
+    \begin{center}
+    \begin{tikzcd}
+        {\Sigma} \ar[rr, "\me"] \ar[dr, "\phi"']
+                && {1_\vw}
+        \\
+            & {\Sigma'} \ar[ur, "\exists \tilde\me"']
+    \end{tikzcd}
+    \end{center}
+    and further, this mapping is compatible w.r.t. connectivity
+    \begin{center}
+    \begin{tikzcd}
+        {\Sigma} \ar[r, twoheadrightarrow, "\me"] \ar[dr, "\phi"']
+                & {1_\vw} \ar[r, -rmonotip, "\me'"]
+                    & {1_{\vw'}}
+        \\
+            & {\Sigma'} 
+                \ar[u, "\exists \tilde\me"'] \ar[ur, "\exists \widetilde{\me' \comp \me}"']
+    \end{tikzcd}
+    \end{center}
+    The induced morphism $\widetilde{\me'\comp \me}$ for a connected morphism $\me$ and unconnected $\me'$ factors through the induced morphism $\tilde\me$.
+\end{definition}
+\begin{lemma}
+    Total morphisms are closed under composition.
+\end{lemma}
+\begin{proof}Easy exercise.\end{proof}
+
+\begin{definition}[Complete Covers]
+    A \emph{complete} cover is a connected, non-overlapping and total cover.
+\end{definition}
+
+\begin{lemma}\label{lem:compl-utotal-famC-tinstC}
+    When the set of sorts are inhabited (\cref{def:inhabited-sorts}),
+    a morphism $\phi : \Sigma \to \Sigma'$ is complete iff totality is satisfied uniquely
+    \begin{center}
+    \begin{tikzcd}
+        {\Sigma} \ar[rr, "\forall\me"] \ar[dr, "\phi"']
+                && {1_\vw}
+        \\
+            & {\Sigma'} \ar[ur, dashed, "\exists! \tilde\me"']
+    \end{tikzcd}
+    \end{center}
+\end{lemma}
+\begin{proof}
+    For $\to$, we only have to show that totality is satisfied uniquely which is immediate from $\phi$ being epi.
+    \nl
+    For $\from$ direction, uniqueness of totality implies that the mapping is compatible w.r.t. connectivity and so it is a total morphism.  
+    To show that $\phi$ is also epi, consider $\psi_1, \psi_2 : \Sigma' \to \Sigma''$ s.t. $\psi_1 \comp \phi = \psi_2 \comp \phi$.
+    Notice that for every $\vj \in \indF{\Sigma''}$ we have
+    \begin{center}
+        \begin{tikzcd}
+            {\Sigma} \ar[r, "\psi_1 \comp \phi"] \ar[dr, "\phi"']
+                & {\Sigma''} \ar[r, "\proj_\vj"]
+                    & {\sigma_\vj} \ar[r, "\me"]
+                        & {1_{\hat\vw}}
+            \\
+                & {\Sigma'} \ar[rru, dashed]
+        \end{tikzcd}
+    \end{center}
+    where $\me$ is given by \cref{def:inhabited-sorts-tinstC}.
+    By uniqueness we get $\me \comp \proj_\vj \comp \psi_1 = \me \comp \proj_\vj \comp \psi_2$ which implies by $\me$ being mono that
+    $\proj_\vj \comp \psi_1 = \proj_\vj \comp \psi_2$ for every $\vj \in \indF{\Sigma'}$.
+    Thus $\psi_1 = \psi_2$.
+\end{proof}
+
+\begin{lemma}[Connectivity is stable under pushouts]\label{lem:con-pushout}
+    In a pushout diagram, 
+    \begin{tikzcd}
+        {\Sigma} \ar[r, "\phi_2"] \ar[d, "\phi_1"']
+            & {\Sigma_2} \ar[d, "\ext^{\phi_2}\phi_1"]
+        \\
+        {\Sigma_1} \ar[r, "\ext^{\phi_1}\phi_2"']
+            & {\Sigma_1 \liplus\Sigma \Sigma_2} \posquare{ul}
+    \end{tikzcd}
+    if $\phi_1$ is connected, so is $\ext^{\phi_2}\phi_1$.
+\end{lemma}
+\begin{proof}
+    Directly by \cref{lem:general-unifier-con-prop}.
+\end{proof}
+
+\begin{lemma}[Connectivity and Non-Overlapping stable under pushousts]\label{lem:epi-pushout}
+    In a pushout diagram, 
+    \begin{tikzcd}
+        {\Sigma} \ar[r, "\phi_2"] \ar[d, "\phi_1"']
+            & {\Sigma_2} \ar[d, "\ext^{\phi_2}\phi_1"]
+        \\
+        {\Sigma_1} \ar[r, "\ext^{\phi_1}\phi_2"']
+            & {\Sigma_1 \liplus\Sigma \Sigma_2} \posquare{ul}
+    \end{tikzcd}
+    if $\phi_1$ is connected and non-overlapping, so is $\ext^{\phi_2}\phi_1$.
+\end{lemma}
+\begin{proof}
+    Connected, non-overlapping morphisms are epis, and epis are stable under pushouts.
+\end{proof}
+% it requires the stencils to be connected for non-overlapping to be preserved:
+% Consider a non-connected singleton cover, <a, 1_{a,b}> where the cell b is unreachable
+%  and rebase it over a -> a,b
+%  the resulting cover has two stencils, <a,b, 1_{a,b}, i^{a, b', b}> where in the second stencil, the cell b is unreachable.
+%  we can come up with instantiations to 1_{a,b,b'} such that they yield the same stencil
+
+\begin{lemma}[Totality is stable under pushouts]\label{lem:total-pushout}
+    In a pushout diagram, 
+    \begin{tikzcd}
+        {\Sigma} \ar[r, "\phi_2"] \ar[d, "\phi_1"']
+            & {\Sigma_2} \ar[d, "\ext^{\phi_2}\phi_1"]
+        \\
+        {\Sigma_1} \ar[r, "\ext^{\phi_1}\phi_2"']
+            & {\Sigma_1 \liplus\Sigma \Sigma_2} \posquare{ul}
+    \end{tikzcd}
+    if $\phi_1$ is total, so is $\ext^{\phi_2}\phi_1$.
+\end{lemma}
+\begin{proof}
+    To show totality for $\ext^{\phi_2}\phi_1$, it is enough to give an induced morphism $\tilde\me : \Sigma_1 \liplus\Sigma \Sigma_2 \to 1_{\hat\vw}$
+    for every connected $\me : \Sigma_2 \to 1_{\hat\vw}$.
+    By construction, the mapping will be compatible with connectivity.
+
+    Totality of $\phi_1$ at $\Sigma \xto{\phi_2} \Sigma_2 \xto\me 1_{\hat\vw}$ gives us a $\widetilde{\me \comp \phi_2}$ s.t.
+    $\me \comp \phi_2 = \phi_1 \comp \widetilde{\me \comp \phi_2}$ and so by the UP of the pushout we get $\tilde\me$.
+\end{proof}
+
+\begin{corollary}[Completeness is stable under pushouts]\label{lem:compl-pushout}
+    In a pushout diagram, 
+    \begin{tikzcd}
+        {\Sigma} \ar[r, "\phi_2"] \ar[d, "\phi_1"']
+            & {\Sigma_2} \ar[d, "\ext^{\phi_2}\phi_1"]
+        \\
+        {\Sigma_1} \ar[r, "\ext^{\phi_1}\phi_2"']
+            & {\Sigma_1 \liplus\Sigma \Sigma_2} \posquare{ul}
+    \end{tikzcd}
+    if $\phi_1$ is complete, so is $\ext^{\phi_2}\phi_1$.
+\end{corollary}

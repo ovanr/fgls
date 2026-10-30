@@ -1,0 +1,80 @@
+
+\section{Non-finitariness of FGLS Monad}
+
+\begin{theorem} The Full-Ground Local State Monad is not finitary. \end{theorem}
+\begin{proof}
+We will show that there exists a filtered category $\mcatC$ and functor $\vF : \mcatC \to \funC\worldC\setC$ such that
+\[ \monFLS(\colimit\vF) \not\iso \colimit(\monFLS\vF) \]
+in the category of cocones for the functor $\vF$.
+
+Take $\mcatC = \omega$, the posetal category where objects are natural numbers and morphisms are orderings $\vm \leq \vn$.
+This category is $\omega$-filtered.
+Further define $\vF : \omega \to \funC\worldC\setC$ to be $\vF\vn = \Delta_\vn$ that maps each natural number $\vn$ to the constant functor mapping to the downset of $\vn$ and $\vm \leq \vn$ are mapped to inclusions.
+
+Notice that we can simplify $\colimit\vF$:
+\[ (\colimit\vF)\vw = \tup{\quotient{\disunion{\vn \in \nat}\downset\vn}\sim}{\tlistr{\vi \in \downset\vn \mapsto \quot\vn(\vi)}{\vn \in \nat}} 
+                    \iso \tup\nat{\tlistr{\vi \in \downset\vn \mapsto \vi}{\vn \in \nat}} \]
+which extends to an isomorphism of cocones $\monFLS(\colimit\vF) \iso \tup{\monFLS(\Delta_\nat)}{\tlistr{\monFLS(\Delta_\vn \inclto \Delta_\nat)}{\vn \in \nat}}$.
+
+We also know that:
+\[ \colimit(\monFLS\vF)\vw \iso \tup{\quotient{\disunion{\vn \in \nat} \monFLS{\Delta_\vn}\vw}\sim}
+                                    {\tlistr{\vf \in \monFLS\Delta_\vn\vw \mapsto \quot\vn(\vf)}{\vn \in \nat}} \]
+where the quotienting says that $\tup\vn{\vf \in \monFLS(\Delta_\vn)\vw} \sim \tup\vm{\vg \in \monFLS(\Delta_\vm)\vw}$ iff they are the same morphisms after we compose them with their corresponding inclusions to $\monFLS(\Delta_{\vn + \vm})$.
+
+The above observations boil down to showing that for some $\vw \in \worldC$:
+\[ \quotient{\disunion{\vn \in \nat} \monFLS{\Delta_\vn}\vw}\sim \not\iso \monFLS(\Delta_\nat)\vw \]
+where the mapping is given by $\quot\vn(\vf \in \monFLS(\Delta_\vn)\vw) \mapsto \monFLS(\Delta_\vn \inclto \Delta_\nat)_\vw(\vf)$.
+We show that this mapping is not surjective.
+
+\paragraph{Counterexample}
+
+W.l.g. assume we only have one sort $\phi(\vC) = \tyUnit \tySum \tyRef\vC$ and let $\vw = \va : \vC$ be a singleton world. 
+We define $\countFun : \monFLS(\Delta_\nat)\vw$ such that there cannot be element in $\monFLS(\Delta_\vn)\vw$ for some $\vn$ that represents it after post-composition with inclusion.
+
+\[\begin{array}{ll}
+    &\countFun : \End{\va : \vC \injto \vw' \in \commaC{\va : \vC}\vU} \heapF\vw' \to \Coend{\vw' \injto \vw'' \in \commaC{\vw'}\vU} \nat \times \heapF\vw'' \\
+    &\countFun(\rho : \va : \vC \injto \vw')(\vh : \heapF\vw') = \quot{1_{\vw'}}\tup\vn\vh \\
+    \text{where}& \\
+                &  \mathit{go} = \mathsf{fix}\;\Lam{\mathit{rec}} \Lam{\tup{\va \in \vw'}{\vS \subseteq \vw'}} 
+                                                                \CaseVertical{\proj\va(\vh)}
+                                                                             {\InjL\Unit}{1}
+                                                                             {\InjR\vb}{\begin{cases}1 & \text{if } \vb \in \vS \\
+                                                                                                     1 + \mathit{rec}(\vb, \{ \vb \} \cup \vS)  & \text{otherwise}\end{cases}} \\
+                &  \vn = \mathit{go}\tup\va{\{\va\}}
+\end{array}\]
+Intuitively, \countFun traverses the heap $\vh$ starting from $\va$ and counts the number of different memory cells that it has encountered.
+Notice that \countFun is defined for every extension of $\va : \vC$ to $\vw'$ and so there cannot be a finite $\downset\vn$ that defines it and thus the mapping is not surjective.
+\end{proof}
+
+\paragraph{A note about the End in the FGLS monad}
+
+The \countFun function above is well-defined, \ie it satisfies the End relation.
+To see why this is the case, notice that the End quantifies over all injections $\rho : \vw \to \vw'$, and thus it gives an $\rho$-ary product: 
+\[ \left\{\vf_\rho : \heapF\vw' \to \vP(\Delta_\nat \times \heapF)\vw'\right\}_{\rho : \vw \to \vw' \in \commaC\vw\vU} \]
+such that the following coherence condition holds:
+
+For every initialisation of the form 
+ \begin{tikzcd} & {\vw} \arrow[dl, "\rho_1"'] \arrow[dr, "\rho_2"] & \\ 
+               {\vw_1} \arrow[rr, "\vU\varepsilon"] && {\vw_2} 
+ \end{tikzcd} and heap $\vh : \heapF\vw_1$
+we have: \[\vP(\Delta_\nat\times\heapF)(\varepsilon)(\vf_{\rho_1}(\vh)) = \vf_{\rho_2}(\heapF\varepsilon\vh)\]
+
+Intuitively, it says each component can only use the reachable part of a heap starting from locations in $\vw$.
+That is, take the following heap $\vh$ where the location $\vb$ is not reachable from locations in $\vw$. 
+\begin{center}
+\begin{tikzpicture}[node distance=5mm]
+    \node[pricell=$\vb$] (n1) {};
+    \node[mpricell] (n2) [below=0pt of n1] {};
+    \node[mpricell] (n3) [below=0pt of n2] {};
+    \node[mpricell] (n4) [below=0pt of n3] {};
+    \draw[ptr] (n1.center) to ++(0.5,0) to ++(0,-0.55) to (n2.east);
+    \draw[ptr] (n3.center) to ++(-0.5,0) to ++(0,0.55) to (n2.west);
+    \draw[ptr] (n4.center) to ++(0.5,0) to ++(0,0.55) to (n3.east);
+    \draw[brace] (n3.north) to node[labbrace,yshift=-0.1em]{$\vw$} (n4.south);
+    \draw[mbrace] (n1.north) to ++\south to node[lambrace,yshift=-0.75em]{$\vw'$} ++\south to++\south to ++\south;
+\end{tikzpicture}
+\end{center}
+
+The End relation says that the component $\vf$ at world $\vw'$ and heap $\vh$ is completely determined by $\vf$ at $\vw' \setminus \{ \vb \}$ together with $\vh$ without cell $\vb$.
+It is then clear to see that \countFun satisfies the End relation as it traverses the heap \emph{starting} from location $\va$.
+

@@ -1,0 +1,14 @@
+# Fdb version 4
+["pdflatex"] 1782143038.07211 "cat-fam-TI.tex" "cat-fam-TI.pdf" "cat-fam-TI" 1782143038.60269 2
+  "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1775415801 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1775415801 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
+  "/usr/share/texmf-dist/web2c/texmf.cnf" 1775415801 43569 fd570f2fa160877d211e859f687312ba ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1780301966 5422491 3b25fbbbcb2c1af6a14f1637976e2e1c ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1780301906 2358086 9a1456e3f5dbcc0a47dc07a503f4087c ""
+  "cat-fam-TI.aux" 1782143030.07036 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "cat-fam-TI.tex" 1782143029.06019 12648 bba97ec10f39e316b0917c9684435ae2 ""
+  (generated)
+  "cat-fam-TI.aux"
+  "cat-fam-TI.log"
+  "cat-fam-TI.pdf"
+  (rewritten before read)

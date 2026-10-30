@@ -1,0 +1,1741 @@
+
+\subsection[Category of Template Instantiations]{The category of template instantiations $\tinstC$}
+
+We extend category $\tempC$ with instantiation data. 
+This is where our template heap functor will be indexed over.
+\begin{itemize}
+    \item Objects: Sort-preserving injective renamings between worlds $\Minus\vw \injto \Plus\vw$.
+    \item Morphisms: Injective, sort-preserving $\concL\me$ and $\anyL\me$ such that
+                    \begin{center}
+                    \begin{tikzcd}{\Plus\vw} \ar[r, tail, "{\anyL\me}"] & {\Plus{\hat\vw}} \\
+                                  {\Minus\vw} \ar[u, tail, "\sigma"] \ar[r, tail, "{\concL\me}"'] & {\Minus{\hat\vw}} \ar[u, tail, "\hat\sigma"']
+                     \end{tikzcd}
+                    \end{center}
+                    and instantiation data $\mvarM_\me : \dheapF(\Minus{\hat\vw} \ominus \concL\me, \Plus{\hat\vw})$.
+\end{itemize}
+We have a forgetful functor $\tinstU : \tinstC \to \tempC$, and an inclusion functor
+$\inclITI\dash : \instC \inclto \tinstC$ which maps to its identity morphism.
+We inherit the terminology of $\tempC$ and talk about concrete locations and location variables, 
+we overload functors $\concL\dash,\anyL\dash : \tinstC \to \worldC$ by precomposing them with $\tinstU$,
+and talk about variable preserving and reflecting morphisms by noticing that $\tinstU$ reflects these properties.
+
+\begin{definition}[Composition of morphisms in $\tinstC$]
+Composition of $\sigma_1 \xto{\me_1} \sigma_2 \xto{\me_2} \sigma_3$ is defined as composition of the underlying injections and composition of the instantiation data is given by
+\begin{align*}
+        \mvarM_{\me_2 \comp \me_1} &: \dheapF(\concL{\sigma_3} \ominus \concL{\me_2 \comp \me_1}, \anyL{\sigma_3}) \\
+        \va : \vC & \mapsto \begin{cases}\sem{\phi(\vC)}\anyL{\me_2}(\proj_{\va'}\mvarM_{\me_1}) & \mif \concL{\me_2}(\va') = \va \\
+                                         \proj_\va{\mvarM_{\me_2}} & \mif \va \in \concL{\sigma_3} \ominus \concL{\me_2}
+                            \end{cases}
+\end{align*}
+\end{definition}
+
+\begin{remark}
+    Every $\sigma, \mvarM \in \dheapF(\concL\sigma, \anyL\sigma)$ induces a morphism $?_\mvarM$
+    \begin{center}
+        \begin{tikzcd}
+            {\emptyset} \ar[rr, "?_{\anyL\sigma}"] && {\anyL\sigma} \\
+            {\emptyset} \ar[u, "?_\emptyset"] \ar[rr, "?_{\concL\sigma}"'] && {\concL\sigma} \ar[u, "\concL\sigma"']
+        \end{tikzcd}
+    \end{center}
+\end{remark}
+
+\begin{definition}[Template Heap Functor]
+We define the template heap functor $\theapF : \tinstC \to \setC$ as
+\begin{align*}
+    \theapF(\sigma_1 \xto\me \sigma_2) &: \dheapF(\concL{\sigma_1}, \anyL{\sigma_1}) \to \dheapF(\concL{\sigma_2}, \anyL{\sigma_2}) \\
+    \theapF(\me)(\mvarM') &= \mvarM_{\me \comp ?_{\mvarM'}}
+\end{align*}
+Note that $\mvarM_\me : \theapF(\concL{\sigma_2} \ominus \concL\me \xto{\compl{\concL{\me}}} \concL{\sigma_2} \xto{\concL{\sigma_2}} \anyL{\sigma_2})$ 
+and we have that $\theapF \iso \homF\tinstC{?_\emptyset}\dash$.
+\end{definition}
+
+\begin{definition}[Variable Extension Functor]
+We lift the variable extension functor from $\tempC$ to $\tinstC$
+\[\begin{array}{r@{\,}c@{\,}l}
+    \extF\dash\vw & : & \tinstC \to \tinstC \\
+    \extF\sigma\vw & = & \incl_1 \comp \concL\sigma \\
+    \extF\me\vw & = & \Pair{\extF{\tinstU\me}\vw}{\dheapF\pair1{\incl_1}(\mvarM_\me)}
+\end{array}\]
+\end{definition}
+
+\begin{lemma}[Inhabitation in $\tinstC$]\label{def:inhabited-sorts-tinstC}
+    A set of sorts is inhabited (\cref{def:inhabited-sorts}) iff
+    for every template $\sigma$, there exists a concrete template $\inclITI{\vw'}$ and a morphism $\sigma \xto\me \inclITI{\vw'}$.
+\end{lemma}
+\begin{proof}
+    For the $\to$ direction, consider $\varL\sigma$ and so for every $\va : \vC \in \varL\sigma$ we have a $\va : \vC \to \vw$.
+    By induction on world $\varL\sigma$, this gives us a $\varL\sigma \to \hat\vw$ and a heap $\mvarM : \heapF(\hat\vw)$ by taking the disjoint sum of the worlds and heaps.
+    We use this data to construct a morphism from $\sigma$ to $1_{\concL\sigma \oplus \hat\vw}$.
+
+    For the $\from$ direction, we have a morphism $?_{\va : \vC} \xto\me 1_\vw$ for every $\va : \vC$ which is exactly the data needed.
+\end{proof}
+
+
+\begin{lemma}[Monomorphisms in $\tinstC$]\label{lem:monos-tinistC}
+    Every morphism in $\tinstC$ is mono.
+\end{lemma}
+\begin{proof}
+    We show $\hat\me : \sigma_2 \to \hat\sigma$ is mono.
+    Consider $\hat\me \comp \me_1 = \hat\me \comp \me_2$. 
+    We have that $\tinstU\me_1 = \tinstU\me_2$ from \cref{lem:monos-T}.
+    It remains to show $\mvarM_{\me_1} = \mvarM_{\me_2}$, so take $\va : \vC \in \concL{\sigma_2} \ominus \concL{\me_1}$.
+    \begin{align*}
+        \proj_\va\mvarM_{\me_1} & = \proj_\va\mvarM_{\me_2} \iff \\
+        \sem{\phi(\vC)}\anyL{\hat\me}(\proj_\va\mvarM_{\me_1}) & = \sem{\phi(\vC)}\anyL{\hat\me}(\proj_\va\mvarM_{\me_2}) \iff \\
+        \proj_{\concL{\hat\me}(\va)}(\mvarM_{\me \comp \me_1}) & = \proj_{\concL{\hat\me}(\va)}(\mvarM_{\me \comp \me_2})
+    \end{align*}
+\end{proof}
+
+\begin{lemma}[Forgetful Functor Preserves Equalizers]\label{lem:tinstU-eq-pres}
+    $\tinstU : \tinstC \to \tempC$ preserves equalizers. 
+\end{lemma}
+\begin{proof}
+    Let $\ve : \sigma_1 \to \sigma_2$ be an equalizer of $\me_1$, $\me_2$.
+    We show that $\sigma_1$ is canonically isomorphic to $\eqz{\tinstU{\me_1}}{\tinstU{\me_2}}$ when extended with appropriate instantiation data.
+
+    \begin{center}
+        \begin{tikzcd}
+            {\eqz{\tinstU{\me_1}}{\tinstU{\me_2}}} 
+                \ar[rr, "{\eqz{\tinstU{\me_1}}{\tinstU{\me_2}}}"]
+                && {\sigma_2} 
+                    \ar[r, yshift=3pt, "\tinstU{\me_1}"] \ar[r, yshift=-3pt, "\tinstU{\me_2}"']
+                & {\sigma_3}
+            \\
+            {\sigma_1} 
+                \ar[urr, "\tinstU\ve"'] 
+                \ar[u, dashed, "\vh"]
+        \end{tikzcd}
+    \end{center}
+    We equip $\vh$ and $\eqz{\tinstU\me_1}{\tinstU\me_2}$ by splitting $\mvarM_\ve$ using the canonical isomorphism
+    \[ \concL{\sigma_2} \ominus \concL{\tinstU\me} \iso (\concL{\sigma_2} \ominus \eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}) \oplus
+                                                        (\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}} \ominus \concL\vh) \]
+    and we show that the $(\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}} \ominus \concL\vh)$ part of data $\mvarM_\ve$ has locations in $\eqz{\anyL{\tinstU\me_1}}{\anyL{\tinstU\me_2}}$.
+
+    So consider $\va : \vC \in \eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}} \ominus \concL\vh$, and $\pi_{\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}(\va)} \mvarM_\ve$. 
+    Notice that
+    \begin{align*}
+        \mvarM_{\me_1 \comp \ve} &= \mvarM_{\me_2 \comp \ve} \implies  & \tag{def of $\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}$} \\
+        \pi_{\concL{\me_1}(\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}(\va))} \mvarM_{\me_1 \comp \ve} & = 
+        \pi_{\concL{\me_2}(\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}(\va))} \mvarM_{\me_2 \comp \ve} \implies      & \tag{def of $\mvarM_{\me' \comp \me}$} \\
+        \sem{\phi(\vC)}\anyL{\me_1}(\pi_{\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}(\va)} \mvarM_\ve) & = 
+        \sem{\phi(\vC)}\anyL{\me_2}(\pi_{\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}(\va)} \mvarM_\ve)
+    \end{align*}
+    and so for every $\vb : \vC' \in \anyL{\sigma_2}$, we have 
+    \[ \vb \isIn \pi_{\eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}(\va)} \mvarM_\ve \implies \anyL{\me_1}(\vb) = \anyL{\me_2}(\vb) \]
+
+    We show that $\mvarM_{\me_1 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}} = \mvarM_{\me_2 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}}$
+    and so consider $\va : \vC \in \concL{\sigma_3} \ominus \concL{\me_1 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}}$ and proceed by cases
+    \begin{itemize}
+        \item $\va \in \concL{\sigma_3} \ominus \concL{\tinstU\me_1}$ and $\va \in \concL{\sigma_3} \ominus \concL{\tinstU\me_2}$)
+            \begin{align*}
+                \proj_\va \mvarM_{\me_1 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}} & = \proj_\va \mvarM_{\me_2 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}} \iff \\
+                \proj_\va \mvarM_{\me_1} & = \proj_\va \mvarM_{\me_2} \iff \\
+                \proj_\va \mvarM_{\me_1 \comp \ve} & = \proj_\va \mvarM_{\me_2 \comp \ve}
+            \end{align*}
+        \item $\va \in \concL{\sigma_3} \ominus \concL{\tinstU\me_1}$, $\va' \in \concL{\sigma_2} \ominus \eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}$,
+              $\va = \concL{\me_2}(\va')$)
+            \begin{align*}
+                \proj_\va \mvarM_{\me_1 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}} & = \proj_\va \mvarM_{\me_2 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}} \iff \\
+                \proj_\va \mvarM_{\me_1} & = \sem{\phi(\vC)}\anyL{\me_2}(\proj_{\va'} \mvarM_{\eqz{\tinstU\me_1}{\tinstU\me_2}}) \iff \\
+                \proj_\va \mvarM_{\me_1} & = \sem{\phi(\vC)}\anyL{\me_2}(\proj_{\va'} \mvarM_\ve) \iff \\
+                \proj_\va \mvarM_{\me_1 \comp \ve} & = \proj_{\va} \mvarM_{\me_2 \comp \ve}
+            \end{align*}
+        \item $\va' \in \concL{\sigma_2} \ominus \eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}$,
+              $\va \in \concL{\sigma_3} \ominus \concL{\tinstU\me_2}$, $\va = \concL{\me_1}(\va')$)
+              Symmetric to case above.
+        \item $\va_1 \in \concL{\sigma_2} \ominus \eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}$,
+              $\va_2 \in \concL{\sigma_2} \ominus \eqz{\concL{\tinstU\me_1}}{\concL{\tinstU\me_2}}$,
+              $\concL{\me_1}(\va_1) = \va = \concL{\me_2}(\va_2)$)
+            \begin{align*}
+                \proj_\va \mvarM_{\me_1 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}} & = \proj_\va \mvarM_{\me_2 \comp \eqz{\tinstU\me_1}{\tinstU\me_2}} \iff \\
+                \sem{\phi(\vC)}\anyL{\me_1}(\proj_{\va_1} \mvarM_{\eqz{\tinstU\me_1}{\tinstU\me_2}}) & = 
+                \sem{\phi(\vC)}\anyL{\me_2}(\proj_{\va_2} \mvarM_{\eqz{\tinstU\me_1}{\tinstU\me_2}}) \iff \\
+                \sem{\phi(\vC)}\anyL{\me_1}(\proj_{\va_1} \mvarM_\ve) & = 
+                \sem{\phi(\vC)}\anyL{\me_2}(\proj_{\va_2} \mvarM_\ve) \iff \\
+                \proj_\va \mvarM_{\me_1 \comp \ve} & = \proj_\va \mvarM_{\me_2 \comp \ve}
+            \end{align*}
+    \end{itemize}
+
+
+    As a result, by the UP of $\ve$ we have a $\inv^\vh : \eqz{\tinstU\me_1}{\tinstU\me_2} \to \sigma_1$ in $\tinstC$.
+    It remains to show that $\inv^\vh$ is the inverse of $\vh$, that is
+    \begin{center}
+    \begin{tikzcd}
+        {\eqz{\tinstU{\me_1}}{\tinstU{\me_2}}} 
+            \ar[rr, "{\eqz{\tinstU{\me_1}}{\tinstU{\me_2}}}"]
+            \ar[d, bend left=30, dashed, "\inv^\vh" yshift=5pt]
+            && {\sigma_2} 
+        \\
+        {\sigma_1}
+            \ar[urr, "\ve"']
+            \ar[u, bend left=30, dashed, "\vh" yshift=5pt, "\iso"' yshift=-5pt]
+    \end{tikzcd}
+    \end{center}
+    which follows from $\ve$ and $\eqz{\tinstU\me_1}{\tinstU\me_2}$ being mono.
+\end{proof}
+% u does not reflect all equalizers necessarily:
+% consider \emptyset -{data: True, True}-> 1_{a1,a2 : Bool} -{id, swap}-> 1_{a1,a2 : Bool}
+% in T this is an equalizing diagram but in TI we make a choice on the data to be True, True
+% which breaks the UP. We could also have given {data: False, False}.
+
+\begin{lemma}[Forgetful Functor Reflects Pullbacks]\label{lem:tinstU-pls-refl}
+    $\tinstU : \tinstC \to \tempC$ reflects pullbacks.
+\end{lemma}
+\begin{proof}
+    Consider a diagram 
+        \begin{tikzcd}[sep=small]
+            & {\sigma} \ar[dl, "\vp_1"'] \ar[dr, "\vp_2"]
+        \\
+        {\sigma_1} \ar[dr, "\me_1"'] 
+                && {\sigma_2} \ar[dl, "\me_2"]
+        \\
+            & {\hat\sigma}
+        \end{tikzcd}
+    s.t. its $\tinstU$-image is a pullback.
+    Given $\me_1 : \sigma' \to \sigma_1$, $\me_2 : \sigma' \to \sigma_2$ s.t. $\me_1 \comp \me_1' = \me_2 \comp \me_2'$,
+    we get a $\vh : \sigma' \to \sigma$ in $\tempC$.
+
+    We equip $\vh$ with data using the canonical iso
+    \[ \concL{\sigma_1} \ominus \concL{\me_1'} \iso (\concL{\sigma_1} \ominus \concL{\vp_1}) \oplus (\concL\sigma \ominus \concL\vh) \]
+    by giving $\va : \vC \in \concL\sigma \ominus \concL\vh$, the cell $\proj_{\concL{\vp_1}(\va)} \mvarM_{\me_1'}$.
+    Notice that we can factor its locations through $\anyL\sigma$ since
+    \begin{align*}
+        \sem{\phi(\vC)}\anyL{\me_1}(\proj_{\concL{\vp_1}(\va)} \mvarM_{\me_1'}) & = 
+        \proj_{\concL{\me_1 \comp \vp_1}(\va)} \mvarM_{\me_1 \comp \me_1'} \\
+         & = \proj_{\concL{\me_2 \comp \vp_2}(\va)} \mvarM_{\me_2 \comp \me_2'} \\
+         & = \sem{\phi(\vC)}\anyL{\me_2}(\proj_{\concL{\vp_2}(\va)} \mvarM_{\me_2'})
+    \end{align*}
+    and so for every $\vb : \vC' \in \anyL{\sigma_1}$, we have 
+    \[ \vb \isIn \proj_{\concL{\vp_1}(\va)} \mvarM_{\me_1'} \implies \anyL{\me_1}(\vb) = \anyL{\me_2}(\vb) \]
+    and so we can factor its locations through $\inv^{\anyL{\vp_1}}$ since its $\tinstU$-image is a pullback. 
+
+    To show that $\me_1' = \vp_1 \comp \vh$, consider $\va : \vC \in \concL{\sigma_1} \ominus \concL{\vp_1}$.
+    Since the $\concL\dash$ image is a pullback, it must be that $\concL{\me_1}(\va) \in \concL{\hat\sigma} \ominus \concL{\me_2}$.
+    This implies that 
+        \[ \sem{\phi(\vC)}\anyL{\me_1}(\proj_\va \mvarM_{\vp_1}) = \proj_\va \mvarM_{\me_1'}
+                                                                 = \sem{\phi(\vC)}\anyL{\me_1}(\proj_\va \mvarM_{\me_1'}) \] 
+    which implies $\proj_\va \mvarM_{\vp_1} = \proj_\va \mvarM_{\me_1'}$.
+    The case for $\me_2' = \vp_1 \comp \vh$ is symmetric and uniqueness of $\vh$ follows from $\proj_1$ being mono.
+\end{proof}
+% u does not generally preserve pullbacks.
+% Consider cospan 1_{a : B} -{a \mapsto a, False}-> 1_{a,b : Bool} <-{a \mapsto a, True} 1_{a : B} 
+% In T, the vertex of the pullback is 1_a
+% but in TI the data would not match for vertex 1_a.
+% So its pullback becomes 1_a <-{a \mapsto a, True}- ?_a -{a \mapsto a, False}-> 1_a
+% This is a counterexample that u preserves pullbacks
+
+\begin{lemma}[Location Functor Preserves Pullbacks]\label{lem:anyL-pls-pres}
+    $\anyL\dash : \tinstC \to \worldC$ preserves pullbacks.
+\end{lemma}
+\begin{proof}
+    Consider 
+    \begin{tikzcd}
+        {\sigma} \ar[r, "\vp_2"] \ar[d, "\vp_1"'] \pbsquare{dr}
+            & {\sigma_2} \ar[d, "\me_2"]
+        \\
+        {\sigma_1} \ar[r, "\me_1"']
+            & {\hat\sigma}
+    \end{tikzcd}.
+    If there are $\va_1 : \vC \in \anyL{\sigma_1}$ and $\va_2 : \vC \in \anyL{\sigma_2}$ s.t. $\anyL{\me_1}(\va_1) = \anyL{\me_2}(\va_2)$,
+    we can form a new $\sigma' = \concL{\sigma} \to {\anyL\sigma \oplus \va : \vC}$ that maps $\va$ to $\va_1$ and $\va_2$ and notice that the data of $\vp_1$ and $\vp_2$ will be the same.
+    As a result, the new square with root $\sigma'$ will commute and thus it must be that $\va : \vC$ is already in $\sigma$.
+\end{proof}
+
+\subsubsection{Reachability}
+
+A concept that becomes relevant when we introduce instantiation data with location variables is the notion of reachable and unreachable locations.
+We talk about (un)reachable concrete locations and (un)reachable location variables, where reachability refers to whether we can reach the location by traversing the heap starting from a given concrete location.
+
+\begin{definition}[Reachable Locations]\label{def:reach-loc}
+    The reachable locations from $\vw \xto\tau \anyL\sigma$ w.r.t. a template heap $\mvarM : \theapF(\sigma)$
+    is the least $\vw^\reach \xto{\tau^\ureach} \anyL\sigma$ such that
+    \begin{enumerate}[(i)]
+        \item World $\vw$ factors through $\vw^\reach$
+            \begin{center}
+                \begin{tikzcd} {\vw} \ar[dr, "\exists{\tau^\reach}"'] \ar[r, "\tau"] & {\anyL\sigma} \\ 
+                                    & {\vw^\reach} \ar[u, "\tau^\ureach"'] 
+             k   \end{tikzcd}
+            \end{center}
+            \item For every $\vb : \vC \in \vw^\reach \pltimes{\anyL\sigma} \concL\sigma$ \ie every reachable concrete location, the locations in cell $\vd = \proj_{\res_{\concL\sigma}\tau^\ureach(\vb)} \mvarM$ are contained in $\vw^\reach$
+            \begin{center}
+                \begin{tikzcd}
+                    {1} \ar[r, "\vd"] \ar[dr, "\exists \vd^\reach"'] &  {\sem{\phi(\vC)}{\anyL\sigma}} \\
+                                                                  & {\sem{\phi(\vC)}\vw^\reach} \ar[u, "\sem{\phi(\vC)}{\tau^\ureach}"']
+                \end{tikzcd}
+            \end{center}
+    \end{enumerate}
+    Least here means that for any other compatible $\tau' : \vw' \to \anyL\sigma$,
+    there exists a unique $\vh : \vw^\reach \to \vw'$ that satisfies $\tau' \comp \vh = \tau^\ureach$.
+
+    We refer to $\vw^\reach$ as the reachable locations and $\anyL\sigma \ominus \tau^\ureach$ as the unreachable ones.
+\end{definition}
+
+\begin{example}\label{ex:reach-loc}
+    Consider $\tau = \incl^{\va \inclto \va,\vb,\vc}$ and template heap over $1_{\va,\vb,\vc}$ being: 
+    \begin{center}
+    \renewcommand\ndsize{15}
+    \begin{tikzpicture}
+        \node[ccell=$\vc$] (c) {};
+        \node[ccell=$\va$] (a) [below=0pt of c] {};
+        \node[ccell=$\vb$] (b) [below=0pt of a] {};
+        \draw[ptr] (c.center) to ++\east to ++\south to (a.east);
+        \draw[ptr] ($ (a.center) + (0,-\gap pt) $) to ++\east to ++\south to ($ (b.east) + (0,-\gap pt) $);
+    \end{tikzpicture}
+    \end{center}
+    The least $\tau^\ureach$ is $\incl^{\va,\vb \inclto \va,\vb,\vc}$ since $\vc$ is not reachable from $\va$.
+    Notice that $\incl^{\va \inclto \va,\vb,\vc}$ is not the least as it does not satisfy condition (ii) for $\va$.
+\end{example}
+
+\paragraph{Reachability in terms of Heap Walks}
+
+We give an alternative, algorithmic description of reachability (\cref{def:reach-loc}) in terms of \emph{heap walks} which describe finite, sequential traversals of the heap.
+\begin{definition}[Heap Walks]
+    For a heap $\mvarM \in \theapF(\sigma)$, a sequence 
+    \[ \va_0 : \vC_0, \hdots, \va_\vn : \vC_\vn, \vc : \vC \in \concL\sigma \times \klstar{\concL\sigma} \times \anyL\sigma \] 
+    is called a \emph{heap walk} if
+    \[ \All{\vi < \vn} \concL\sigma(\va_{\vi+1}) \isIn \proj_{\va_\vi} \mvarM  \Land \vc \isIn \proj_{\va_\vn} \mvarM \]
+    and it contains \emph{no duplicate locations}
+    \[ \All{\vi, \vj \le \vn} \vi \neq \vj \implies \va_\vi \neq \va_\vj \Land \All{\vi \le \vn} \concL\sigma(\va_\vi) \neq \vc \]
+\end{definition}
+We informally use the proposition $(\va \isIn \vd)$ to state that location $\va$ is accessed inside cell $\vd$.
+For brevity, we avoid defining this directly but the intuition should be clear.
+\begin{example}
+    Consider the heap from \cref{ex:reach-loc}. Its heap walks are 
+    (i) $\vc, \va, \vb$, 
+    (ii) $\vc, \va$, 
+    (iii) $\va, \vb$
+\end{example}
+
+\begin{definition}[Reachable Location via a Heap Walk]
+    A location $\vc : \vC \in \anyL\sigma$ is said to be reachable from $\va : \vC' \in \anyL\sigma$ in heap $\mvarM : \theapF(\sigma)$ if 
+    $\va = \vc$ or there exists a heap walk $\va' : \vC', \vec\vb, \vc : \vC$ via $\mvarM$ with $\concL\sigma(\va') = \va$.
+\end{definition}
+
+\begin{definition}[Reachable Locations via Heap Walks]\label{def:reach-loc-hwalks}
+    The reachable locations from $\vw \xto\tau \anyL\sigma$ w.r.t. a template heap $\mvarM : \theapF(\sigma)$
+    is a $\vw^\reach \xto{\tau^\ureach} \anyL\sigma$ that satisfies
+    \begin{enumerate}[(i)]
+        \item World $\vw$ factors through $\vw^\reach$
+            \begin{center}
+                \begin{tikzcd} {\vw} \ar[dr, "\exists{\tau^\reach}"'] \ar[r, "\tau"] & {\anyL\sigma} \\ 
+                                    & {\vw^\reach} \ar[u, "\tau^\ureach"'] 
+                \end{tikzcd}
+            \end{center}
+        \item For every $\vc : \vC \in \anyL\sigma$, $\vc \in \img{\tau^\ureach} \iff \vc \text{ is reachable from a } \tau(\va)$
+        \end{enumerate}
+\end{definition}
+
+\begin{lemma}[Reachable Locations Property Equivalence]\label{lem:reach-loc-prop-equiv}
+    The two definitions of reachability, \cref{def:reach-loc} and \cref{def:reach-loc-hwalks}, are equivalent.
+\end{lemma}
+\begin{proof}
+    Property (i) of both definitions is identical, so we only show that property (ii) in the two definitions is equivalent.
+
+    \cref{def:reach-loc} $\implies$ \cref{def:reach-loc-hwalks}) 
+
+    Direction $\To$) 
+    Let $\vc : \vC \in \vw^\reach$.
+    If $\tau^\ureach(\vc) \in \img\tau$ we are done as then $\vc$ is reachable from itself. 
+    If $\tau^\ureach(\vc) \not\in \img\tau$, we enumerate all heap walks $\va_0 : \vC_0, \hdots, \va_\vn : \vC_\vn, \tau^\ureach(\vc) : \vC$ of at most $\card{\vw^\reach}$ length, 
+    that further satisfy $\All\vi \sigma(\va_\vi) \in \img{\tau^\ureach}$.
+    There must exist at least one such heap walk as then $\vw^\reach \setDiff \{\vc\}$ would be the least world.
+    If any of these heap walks has $\sigma(\va_0) \in \img\tau$ we are done.  
+    Otherwise collect all $\va_\vi$ in all the enumerated heap walks and remove them from $\vw^\reach$, call this $\hat\vw^\reach$.
+    We show that $\hat\vw^\reach$ would be the least world which would be a contradiction.
+    Take a $\vb \in \hat\vw^\reach \pltimes{\anyL\sigma} \concL\sigma$, and consider the locations in $\vd_\vb$.
+    If $\vd_\vb$ contains a location $\vb'$ which is not in $\hat\vw^\reach$ it would mean that $\vb'$ is part of a heap walk generated above. 
+    Since the heap walks do not contain duplicates it must be less than $\card{\vw^\reach}$ and thus we can extend that heap walk with $\vb$.
+    So that would be a contradiction that $\vb \in \hat\vw^\reach$.
+    And so $\hat\vw^\reach$ is the least world which is itself a contradiction and so there must exist at least one heap walk with $\concL\sigma(\va_0) \in \img\tau$.
+
+    Direction $\From$) We have that $\vc : \vC$ is reachable from some $\tau(\va)$. If $\va = \vc$ we are done.
+    Otherwise we have a heap walk $\va_0 : \vC_0, \hdots, \va_\vn : \vC_\vn, \vc : \vC$ with $\concL\sigma(\va_0) \in \img\tau$.
+    Proceed by induction on $\vn$. If $\vn = 0$, then $\concL\sigma(\va_0) \in \img\tau$, and so it is also in $\img{\tau^\ureach}$.
+    If $\va_\vn \in \vw^\reach$ and $\va_{\vn+1} \in \vd_{\va_\vn}$, then $\va_{\vn + 1}$ must also be in $\vw^\reach$ by the  
+    fact that $\vd_{\va_\vn}$ factors through $\vw^\reach$.
+    So every $\va_\vi$ is in $\vw^\reach$, and thus $\vc$ must also be in $\vw^\reach$.
+    \nl
+    \cref{def:reach-loc-hwalks} $\implies$ \cref{def:reach-loc}) 
+    Consider a $\va : \vC \in \vw^\reach \pltimes{\anyL\sigma} \concL\sigma$, and $\vd_\va \in \sem{\phi(\vC)}\anyL\sigma$.
+    Since $\va$ is in $\vw^\reach$, $\va$ is reachable from a $\tau(\va')$ by assumption, and any location in $\vd_\va$ will also be reachable 
+    by extending the heap walk with that new location.
+    As a result, by the bi-implication, the new location will also be in $\vw^\reach$.
+\end{proof}
+
+\begin{lemma}[Decidability of Reachability]\label{lem:reach-loc-dec}
+    There exists an algorithm that computes $\vw^\reach \xto{\tau^\ureach} \anyL\sigma$ for every $\vw \xto\tau \anyL\sigma$.
+\end{lemma}
+\begin{proof} 
+    Intuitively, the algorithm will traverse the heap from $\vw \pltimes{\anyL\sigma} \concL\sigma$ and return all the locations found including $\img\tau$. 
+\end{proof}
+
+\subsubsection{Connectivity}
+
+We extend the notion of reachability to morphisms in $\tinstC$ to characterise morphisms that satisfy 
+(i) all cells in the instantiation data are reachable from locations in its domain, 
+or (ii) none of the cells in the instantiation data are reachable from locations in its domain. 
+We appropriately call morphisms that satisfy (i) as connected, and (ii) as disconnected.
+
+We first give a factorisation of morphisms in $\tinstC$, by factoring out the reachable and unreachable components of a morphism.
+
+\begin{definition}[Factorisation in $\tinstC$]\label{def:con-fact}
+    For a morphism $\me : \sigma_1 \to \sigma_2$, we consider the reachable locations from $\anyL\me$ w.r.t. $\mvarM_\me : \theapF(\concL{\sigma_2} \ominus \concL\me \xto{\compl{\concL\me}} \concL{\sigma_2} \xto{\concL{\sigma_2}} \anyL{\sigma_2})$.
+    By \cref{lem:reach-loc-dec} we get 
+    \[ \anyL{\sigma_1} \xto{{\anyL\me}^\reach} \vw^\reach \xto{{\anyL\me}^\ureach} \anyL{\sigma_2} \]
+
+    We extend ${\anyL\me}^\reach$ and ${\anyL\me}^\ureach$ into morphisms in $\tinstC$ by taking the \emph{largest possible choice} for the concrete locations,
+    that is, we consider the pullback
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_1}} 
+            \ar[r, "{\anyL\me}^\reach"] \ar[rrr, bend left=40, "\anyL\me"] 
+            & {\vw^\reach} 
+                \ar[rr, "{\anyL\me}^\ureach"] 
+                && {\anyL{\sigma_2}} 
+        \\
+        {\concL{\sigma_1}} 
+            \ar[u, "\concL{\sigma_1}"] \ar[r, dashed, "\vh"] \ar[rrr, bend right=40, "\concL\me"] 
+            & {\vw^\reach \pltimes{\anyL{\sigma_2}} \concL{\sigma_2}} 
+                \ar[u] \ar[rr] \pbsquare{urr} 
+                && {\concL{\sigma_2}} 
+                    \ar[u, "\concL{\sigma_2}"']
+    \end{tikzcd}
+    \end{center}
+    where the instantiation data are given by the canonical isomorphism
+    \[ \concL{\sigma_2} \ominus \concL\me \iso (\concL{\sigma_2} \ominus \res_{\concL{\sigma_2}}{\anyL\me}^\ureach) 
+                                          \mplus (\vw^\reach \pltimes{\anyL{\sigma_2}} \concL{\sigma_2} \ominus \vh) \]
+    
+    We show that locations $(\vw^\reach \pltimes{\anyL{\sigma_2}} \concL{\sigma_2}) \ominus \vh$ have cells that access only $\vw^\reach$ from
+    \[ (\vw^\reach \pltimes{\anyL{\sigma_2}} \concL{\sigma_2}) \ominus \vh \iso \vw^\reach \pltimes{\anyL{\sigma_2}} (\concL{\sigma_2} \ominus \concL\me) \]
+    which follows from pullback pasting
+    
+    \begin{center}
+    \begin{tikzcd}
+        {\vw^\reach} 
+            \ar[r, "{\anyL\me}^\ureach"] 
+            & {\anyL{\sigma_2}} 
+        \\
+        {\vw^\reach \pltimes{\anyL{\sigma_2}} \concL{\sigma_2}} \pbsquare{ur}
+            \ar[u, "\res_{{\anyL\me}^\ureach}\concL{\sigma_2}"]
+            \ar[r, "\res_{\concL{\sigma_2}}{\anyL\me}^\ureach"]
+            & {\concL{\sigma_2}}
+                \ar[u, "\concL{\sigma_2}"']
+        \\
+        {(\vw^\reach \pltimes{\anyL{\sigma_2}} \concL{\sigma_2}) \ominus \vh} \pbsquare{ur}
+            \ar[u, "\compl\vh"]
+            \ar[r, "\res_{\concL{\sigma_2}}{\anyL\me}^\ureach"' yshift=-2pt]
+            & {\concL{\sigma_2} \ominus \concL\me}
+                \ar[u, "\compl{\concL\me}"']
+    \end{tikzcd}
+    \end{center}
+
+    and so \cref{def:reach-loc} gives us the factoring of the cells through $\vw^\reach$.
+\end{definition}
+
+\begin{notation}
+    For a morphism $\me : \sigma_1 \to \sigma_2$, we write $\con\me : \sigma_1 \to \sigma_{\con\me}$ and $\uncon\me : \sigma_{\con\me} \to \sigma_2$ for its factorisation given by \cref{def:con-fact}.
+    We also write $\sigma_{\uncon\me} \eqdef \sigma_2 \ominus \uncon\me$.
+\end{notation}
+
+\begin{example}
+    \renewcommand\ndsize{15}
+
+    Consider the morphism $?_\va \xto{\pair{?_{\{\va,\vb\}}}{\incl^{\va \inclto \va,\vb,\vc}}} \incl^{\va,\vb \inclto \va,\vb,\vc}$ with data
+    \begin{tikzpicture}[baseline={(a.base)}]
+        \node[vcell=$\vc$] (c) {};
+        \node[ccell=$\va$] (a) [below=0pt of c] {};
+        \node[ccell=$\vb$] (b) [below=0pt of a] {};
+        \draw[ptr] (c.center) to ++\east to ++\south to (a.east);
+        \draw[ptr] ($ (a.center) + (0,-\gap pt) $) to ++\east to ++\south to ($ (b.east) + (0,-\gap pt) $);
+    \end{tikzpicture}
+
+    Its reachable/unreachable factoring given by \cref{def:con-fact} is
+    \[ ?_\va \xto{\pair{?_{\{\va,\vb\}}}{\incl^{\va \inclto \va,\vb}}} 1_{\va,\vb} \xto{\pair{\incl^{\va,\vb \inclto \va,\vb,\vc}}{\incl^{\va,\vb \inclto \va,\vb,\vc}}} \incl^{\va,\vb \inclto \va,\vb,\vc} \]
+    with data
+    \begin{tikzpicture}
+        \node[ccell=$\va$] (a) {};
+        \node[ccell=$\vb$] (b) [below=0pt of a] {};
+        \draw[ptr] ($ (a.center) + (0,-\gap pt) $) to ++\east to ++\south to ($ (b.east) + (0,-\gap pt) $);
+    \end{tikzpicture} for the reachable morphism.
+\end{example}
+
+\begin{definition}[Connected morphisms]\label{def:connected-morph}
+    A morphism $\me : \sigma_1 \to \sigma_2$ is said to be connected if $\uncon\me$ is an isomorphism.
+\end{definition}
+\begin{definition}[Disconnected morphisms]
+    A morphism $\me : \sigma_1 \to \sigma_2$ is said to be disconnected if $\con\me$ is an isomorphism.
+\end{definition}
+
+\begin{lemma}[Factoring Connectedness]\label{lem:con-fact-is-con}
+    For a morphism $\me : \sigma_1 \to \sigma_2$, its $\con\me$ part is connected.
+\end{lemma}
+\begin{proof}
+    We have the diagram
+    \begin{tikzcd}
+        {\sigma_1} \ar[rr, "\con\me"] \ar[dr, "\con{\con\me}"'] 
+                && {\sigma_{\con\me}} \ar[r, "\uncon\me"] 
+                    & {\sigma_2}
+        \\
+                & {\sigma_{\con{\con\me}}} \ar[ur, "\uncon{\con\me}"']
+    \end{tikzcd} and we want to show that $\uncon{\con\me}$ is iso.
+
+    It is enough to show that $\anyL{\uncon{\con\me}}$ is iso, as $\concL{\uncon{\con\me}}$ is given by the pullback
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_{\con{\con\me}}}} 
+            \ar[r, "\anyL{\uncon{\con\me}}"] 
+            & {\anyL{\sigma_{\con\me}}}
+        \\
+        {\concL{\sigma_{\con{\con\me}}}} \pbsquare{ur}
+            \ar[u] \ar[r, "\concL{\uncon{\con\me}}"']
+            & {\concL{\sigma_{\con\me}}} 
+                \ar[u, "\concL{\sigma_{\con\me}}"']
+    \end{tikzcd}
+    \end{center}
+    and so if $\anyL{\uncon{\con\me}}$ is iso, so is $\concL{\uncon{\con\me}}$.
+
+    We proceed by showing that 
+    \[ \anyL{\sigma_1} \xto{\anyL{\con{\con\me}}} \anyL{\sigma_{\con{\con\me}}} (\xto{\anyL{\uncon{\con\me}}} \anyL{\sigma_{\con\me}} \xto{\anyL{\uncon\me}} \anyL{\sigma_2}) \] 
+    satisfies \cref{def:reach-loc} for $\anyL{\sigma_1} \xto{\anyL\me} \anyL{\sigma_2}$ and $\mvarM_\me$.
+    As a result, by the least property of \cref{def:reach-loc} for $\anyL{\con\me}$, we get that $\anyL{\uncon{\con\me}}$ must be iso.
+
+    Property (i) is immediate, and so consider property (ii).
+    Consider $\va : \vC \in (\concL{\sigma_2} \ominus \concL\me) \pltimes{\anyL{\sigma_2}} \anyL{\sigma_{\con{\con\me}}}$,
+    where the pullback is given by
+    \begin{center}
+        \begin{tikzcd}
+        {\anyL{\sigma_{\con{\con\me}}}}
+            \ar[r, "\anyL{\uncon{\con\me}}"] 
+            & {\anyL{\sigma_{\con\me}}} 
+                \ar[r, "\anyL{\uncon\me}"] 
+                & {\anyL{\sigma_2}}
+        \\
+        {\concL{\sigma_{\con{\con\me}}}} \pbsquare{ur}
+            \ar[u]
+            \ar[r, "\concL{\uncon{\con\me}}"'] 
+            & {\concL{\sigma_{\con\me}}} \pbsquare{ur}
+                \ar[u]
+                \ar[r, "\concL{\uncon\me}"'] 
+                & {\concL{\sigma_2}}
+                    \ar[u, "\concL{\sigma_2}"']
+        \\
+        {\concL{\sigma_{\con{\con\me}}} \ominus \concL{\con{\con\me}}} \pbsquare{ur}
+            \ar[u, "\compl{\concL{\con{\con\me}}}"]
+            \ar[r, "\concL{\uncon{\con\me}}"]
+                & {\concL{\sigma_{\con\me}} \ominus \concL{\con\me}} \pbsquare{ur}
+                    \ar[u, "\compl{\concL{\con\me}}"]
+                    \ar[r, "\concL{\uncon\me}"]
+                & {\concL{\sigma_2} \ominus \concL\me}
+                    \ar[u, "\compl{\concL\me}"]
+        \end{tikzcd}
+    \end{center}
+    which we use to prove that cell $\va$ has locations in $\anyL{\sigma_{\con\con\me}}$
+    \begin{align*}
+        \proj_{\concL{\uncon\me}\concL{\uncon{\con\me}}(\va)} \mvarM_\me
+            & = \sem{\phi(\vC)}\anyL{\uncon\me}(\proj_{\concL{\uncon{\con\me}}(\va)} \mvarM_{\con\me}) \\
+            & = \sem{\phi(\vC)}\anyL{\uncon\me}(\sem{\phi(\vC)}\anyL{\uncon{\con\me}}(\proj_{\va} \mvarM_{\con{\con\me}}))
+    \end{align*}
+\end{proof}
+
+\begin{lemma}[Factoring and Variable Preservation]\label{lem:con-fact-is-vpres}
+    For a morphism $\me : \sigma_1 \to \sigma_2$, its $\uncon\me$ part is variable preserving.
+\end{lemma}
+\begin{proof}
+    Morphism $\uncon\me$ is given by the following diagram
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_1}} \ar[r, "\anyL{\con\me}"] \ar[rr, bend left=40, "\anyL\me"] & {\anyL{\sigma_\me}} \ar[r, "\anyL{\uncon\me}"] & {\anyL{\sigma_2}} \\
+        {\concL{\sigma_1}} \ar[u, "\concL{\sigma_1}"] \ar[r, dashed, "\concL{\con\me}"'] \ar[rr, bend right=40, "\concL\me"] & {\concL{\sigma_\me}} \ar[u, "\concL{\sigma_\me}"] \ar[r, "\concL{\uncon\me}"'] \pbsquare{ur} & {\concL{\sigma_2}} \ar[u, "\concL{\sigma_2}"']
+    \end{tikzcd}
+    \end{center}
+    which by \cref{lem:vpres-prop} since $\uncon\me$ is a pullback it is also variable preserving.
+\end{proof}
+
+\begin{lemma}[Epimorphisms in $\tinstC$]\label{lem:epis-tinstC}
+   A morphism $\me : \sigma_1 \to \sigma_2$ in $\tinstC$ is epi iff $\me$ is connected.
+\end{lemma}
+\begin{proof}\nl
+    $\to$)  
+    From \cref{def:con-fact} we can factor $\me$ into $\sigma_1 \xto{\con\me} \sigma_\me \xto{\uncon\me} \sigma_2$ and
+    to show that $\me$ is connected it is enough to show that $\anyL{\uncon\me}$ is surjective.
+
+    By \cref{lem:con-fact-is-vpres} we form morphisms $1 \mplus \incl_1$ and $1 \mplus \incl_2$ in $\tinstC$
+    \begin{center}
+    \begin{tikzcd}
+            & {\anyL{\sigma_\me} \mplus (\anyL{\sigma_2} \ominus \anyL{\uncon\me})} 
+                \ar[rr, shift left=1, "1 \mplus \incl_1"] \ar[rr, shift right=1, "1 \mplus \incl_2"'] 
+                && {\anyL{\sigma_\me} \mplus \Exp{(\anyL{\sigma_2} \ominus \anyL{\uncon\me})}2}
+            \\
+        {\sigma_2} 
+            \ar[r, phantom, "\iso_{\mathsf{r}}" xshift=-28pt] 
+            & {}
+            \\
+            & {\concL{\sigma_\me} \mplus (\concL{\sigma_2} \ominus \concL{\uncon\me})} 
+                \ar[uu, "\concL{\sigma_\me} \mplus \concL{\sigma_2}\res|{\uncon\me}"] 
+                \ar[rr, shift left=1, "1 \mplus \incl_1"] 
+                \ar[rr, shift right=1, "1 \mplus \incl_2"']    
+                && {\concL{\sigma_\me} \mplus \Exp{(\concL{\sigma_2} \ominus \concL{\uncon\me})}2}
+                    \ar[uu, "\concL{\sigma_\me} \mplus \Exp{\concL{\sigma_2}\res|{\uncon\me}}2"']
+    \end{tikzcd}
+    \end{center}
+    with data $\mvarM_{1 \mplus \incl_\vi} = \dheapF(\iso, 1 \oplus \incl_{\vi \mod 2 + 1} \comp \anyL{\iso_{\mathsf{r}}})(\mvarM_{\uncon\me})$.
+    The data $\mvarM_{(1 \oplus \incl_\vi) \comp \uncon\me}$ results in two copies of $\mvarM_{\uncon\me}$ and so
+    $\mvarM_{(1 \oplus \incl_1) \comp \uncon\me} = \mvarM_{(1 \oplus \incl_2) \comp \uncon\me}$. 
+    As a result 
+    \begin{align*}
+        (1 \oplus \incl_1) \comp \uncon\me & = (1 \oplus \incl_2) \comp \uncon\me \implies \\
+        (1 \oplus \incl_1) \comp \me        & = (1 \oplus \incl_2) \comp \me \implies \\
+        1 \oplus \incl_1                    & = 1 \oplus \incl_2 \implies \\
+        \anyL{\uncon\me}                   &\text{ is surjective} \implies \\
+        \uncon\me                          &\text{ is iso} \\
+    \end{align*}
+
+    $\from$) Consider $\me_1 \comp \me = \me_2 \comp \me$.
+             We show that $\anyL{\me_1} = \anyL{\me_2}$ which in turn implies $\me_1 = \me_2$.
+
+             Consider $\va' : \vC \in \anyL{\sigma_2}$, which by connectedness gives us a $\va : \vC \in \anyL{\sigma_\me}$ s.t. $\anyL{\uncon\me}(\va) = \va'$.
+             If $\va$ is in the image of $\anyL{\con\me}$ we are done.
+             Otherwise by \cref{lem:reach-loc-prop-equiv} we have a heap walk $\vb_0 : \vC_0, \hdots, \vb_\vn : \vC_\vn, \va : \vC$
+             along $\mvarM_{\sigma_\me}$ where $\concL{\sigma_\me}(\vb_0) \in \img{\anyL{\con\me}}$.
+
+             We proceed by induction on the length of the sequence to show that 
+             \[ \All{\vi \le \vn} \anyL{\me_1}\concL{\sigma_\me}(\vb_\vi) = \anyL{\me_2}\concL{\sigma_\me}(\vb_\vi) \]
+             $\vn = 0$) Then $\vb_0$ is in the image of $\anyL{\con\me}$ and so $\anyL{\me_1}\concL{\sigma_\me}(\vb_0) = \anyL{\me_2}\concL{\sigma_\me}(\vb_0)$
+                        by $\me \comp \me_1 = \me \comp \me_2$.\nl
+             $\vn = \vn' + 1$) 
+                        We have
+                        \begin{align*}
+                            \anyL{\me_1}\concL{\sigma_\me}(\vb_{\vn'}) &= \anyL{\me_2}\concL{\sigma_\me}(\vb_{\vn'}) = \tag{$\mathsf{IH}$} \\
+                            \concL{\sigma_2}\concL{\me_1}(\vb_{\vn'})  &= \concL{\sigma_2}\concL{\me_2}(\vb_{\vn'}) \implies \tag{by $\concL{\sigma_2}$ is injective} \\
+                            \concL{\me_1}(\vb_{\vn'})                  &= \concL{\me_2}(\vb_{\vn'}) \implies        \tag{by $\mvarM_{\me_1 \comp \me} = \mvarM_{\me_2 \comp \me}$} \\
+                            \sem{\phi(\vC_{\vn'})}\anyL{\me_1}(\vd_{\vn'})  &= \sem{\phi(\vC_{\vn'})}\anyL{\me_2}(\vd_{\vn'}) \implies  \tag{and since $\vb_\vn \isIn \vd_{\vn'}$} \\
+                            \anyL{\me_1}\concL{\sigma_\me}(\vb_\vn)    &= \anyL{\me_2}\concL{\sigma_\me}(\vb_\vn)                       
+                        \end{align*}
+             Since $\va \text{ is in } \vd_\vn$ and $\anyL{\me_1}\concL{\sigma_\me}(\vb_\vn) = \anyL{\me_2}\concL{\sigma_\me}(\vb_\vn)$,
+             we have that $\anyL{\me_1}(\va) = \anyL{\me_2}(\va)$.
+\end{proof}
+
+\begin{lemma}[Composition of Connected Morphisms]
+    Connected morphisms are closed under composition.
+\end{lemma}
+\begin{proof}
+    Follows immediately from \cref{lem:epis-tinstC} and epis being closed under composition.
+\end{proof}
+
+\begin{lemma}[Regular Monos in $\tinstC$]\label{lem:rmono-dcon-tinstC}
+    A morphism $\me : \sigma_1 \to \sigma_2$ in $\tinstC$ is regular mono iff $\me$ is variable preserving.
+\end{lemma}
+\begin{proof}\nl
+    $\to$) If $\me$ is part of an equalizer diagram, by \cref{lem:tinstU-eq-pres}, if we forget the data we still have an equalizer diagram in $\tempC$.
+           By \cref{lem:rmono-vpres-tempC}, $\tinstU\me$ will be variable preserving and since variable preservation is reflected by $\tinstU$, $\me$ is variable preserving.\nl
+    \def\ciso{\iso^{\mathsf{c}}}
+    \def\isoO{\iso^1}
+    \def\isoT{\iso^2}
+    $\from$) 
+    We show that this is an equalizer diagram (\cref{lem:vpres-prop} gives us $\concL{\sigma_2}\res|\me$, and $\ciso$ is the canonical isomorphism induced)
+    \begin{center}
+    \begin{tikzcd}
+            & {\anyL{\sigma_1} \mplus (\anyL{\sigma_2} \ominus \anyL\me)} 
+                \ar[rr, shift left=1, "1 \mplus \incl_1"] 
+                \ar[rr, shift right=1, "1 \mplus \incl_2"'] 
+                    && {\anyL{\sigma_1} \mplus (\anyL{\sigma_2} \ominus \anyL\me) \mplus (\anyL{\sigma_2} \ominus \anyL\me)}
+\\
+        {\sigma_2} \ar[r, phantom, pos=0.20, "\ciso"] & {}
+\\
+            & {\concL{\sigma_1} \mplus (\concL{\sigma_2} \ominus \concL\me)} 
+                \ar[uu, "\concL{\sigma_1} \mplus \concL{\sigma_2}\res|\me"'] 
+                \ar[rr, shift left=1, "1 \mplus \incl_1"] 
+                \ar[rr, shift right=1, "1 \mplus \incl_2"']    
+                    && {\concL{\sigma_1} \mplus (\concL{\sigma_2} \ominus \concL\me) \mplus (\concL{\sigma_2} \ominus \concL\me)} 
+                        \ar[uu, "\concL{\sigma_1} \mplus \concL{\sigma_2}\res|\me \mplus \concL{\sigma_2}\res|\me"']
+    \end{tikzcd}
+    \end{center}
+    We equip $1 \oplus \incl_1$ with instantiation data $\dheapF(\isoO, 1 \oplus \incl_2 \comp \anyL\ciso)(\mvarM_\me)$ by noticing the isomorphism
+    \[ (\concL{\sigma_1} \mplus (\concL{\sigma_2} \ominus \concL\me) \mplus (\concL{\sigma_2} \ominus \concL\me)) \ominus (1 \oplus \incl_1)
+        \isoO \concL{\sigma_2} \ominus \concL\me \]
+    We do the same for $1 \oplus \incl_2$, \ie we use $\dheapF(\isoT, 1 \oplus \incl_1 \comp \anyL\ciso)(\mvarM_\me)$.
+
+    To show that $1 \oplus \incl_1 \comp \ciso \comp \me = 1 \oplus \incl_2 \comp \ciso \comp \me$, we need to show that the data match.
+    Notice that 
+    \[ (\concL{\sigma_1} \mplus \Exp{(\concL{\sigma_2} \ominus \concL\me)}2) \ominus (1 \oplus \incl_1 \comp \concL\me) \iso \Exp{(\concL{\sigma_2} \ominus \concL\me)}2 \]
+    and $\mvarM_{1 \oplus \incl_1 \comp \ciso \me} = \mvarM_{1 \oplus \incl_2 \comp \ciso \me}$ as they have two identical copies of $\dheapF(1, \ciso)(\mvarM_\me)$. 
+
+    Now consider $(1 \mplus \incl_1) \comp \ciso \comp \me' = (1 \mplus \incl_2) \comp \ciso \comp \me'$. 
+    Then $\tinstU\me'$ must factor through $\tinstU\me$ and $\mvarM_{\me'}$ can be split between the factoring through the canonical isomorphism.
+    Uniqueness of this factoring follows from $\me$ being mono.
+\end{proof}
+
+\begin{lemma}[Regular Monos are closed under composition in $\tinstC$]\label{lem:rmono-comp}
+    Regular monos in $\tinstC$ are closed under composition.
+\end{lemma}
+\begin{proof}
+    Follows from \cref{lem:rmono-dcon-tinstC} and \cref{lem:vpres-dcon-equiv}, $\vu$ preserving and reflecting variable preserving morphisms and \cref{lem:comp-vpres}.
+\end{proof}
+
+\begin{lemma}[Variable Preservation and Disconnectedness]\label{lem:vpres-dcon-equiv}
+    A morphism $\me : \sigma_1 \to \sigma_2$ is variable preserving iff it is disconnected.
+\end{lemma}
+\begin{proof}
+    The $\from$ direction follows from \cref{lem:con-fact-is-vpres} and since $\con\me$ is iso it is also variable preserving, and variable preservation is closed under composition.
+    For the $\to$ direction, by \cref{lem:con-fact-is-vpres} and \cref{lem:vpres-cancl} we have that $\con\me$ is variable preserving.
+    Since $\con\me$ is epi and regular mono it is also iso.
+\end{proof}
+
+\begin{lemma}[Factoring Disconnectedness]\label{lem:con-fact-is-dcon}
+    For a morphism $\me : \sigma_1 \to \sigma_2$, its $\uncon\me$ part is disconnected.
+\end{lemma}
+\begin{proof}
+    By \cref{lem:con-fact-is-vpres}, $\uncon\me$ is variable preserving which by \cref{lem:vpres-dcon-equiv} means it disconnected.
+\end{proof}
+
+\subsubsection{Factorisation System}\label{sec:fact-tinstC}
+
+\begin{lemma}[Factorisation is Unique]\label{lem:fact-uniq-tinstC}
+    The connectivity (epi-regular mono) factorisation in $\tinstC$ is unique up to unique isomorphism.
+\end{lemma}
+\begin{proof}
+    We show that the $\sigma_1 \xto{\con\me} \sigma_{\con\me} \xto{\uncon\me} \sigma_2$ factorisation is unique up to unique iso, 
+    so consider 
+    \begin{center}
+        \begin{tikzcd}
+            {\sigma_1} 
+                \ar[r, twoheadrightarrow,  "\con\me"] \ar[rr, twoheadrightarrow, bend left=35, "\me"] \ar[drr, twoheadrightarrow, bend right=70,  "\me_1"'] \ar[dr, "\con{\me_1}"' yshift=2pt]
+                & {\sigma_{\con\me}}
+                    \ar[-rmonotip, r, "\uncon\me"] \ar[d, dashed, "\vh"', "\iso"]
+                    & {\sigma_2}
+            \\
+                & {\sigma_{\con{\me_1}}}
+                    \ar[-rmonotip, r, "\uncon{\me_1}"', "\iso"]
+                    & {\sigma'}
+                        \ar[-rmonotip, u, "\me_2"']
+        \end{tikzcd}
+    \end{center}
+    and we show that there exists a unique iso $\vh : \sigma_{\con\me} \to \sigma_{\con{\me_1}}$ that commutes in the diagram above.
+
+    We first show that 
+    \[ \anyL{\sigma_1} \xto{\anyL{\con{\me_1}}} \anyL{\sigma_{\con{\me_1}}} (\xto{\uncon{\me_1}} \sigma' \xto{\anyL{\me_2}} \sigma_2) \]
+    satisfies \cref{def:reach-loc} for $\anyL{\sigma_1} \xto{\anyL\me} \anyL{\sigma_2}$ and $\mvarM_\me$.
+
+    Property (i) is obvious, and for property (ii) consider $(\concL{\sigma_2} \ominus \concL\me) \pltimes{\anyL{\sigma_2}} \anyL{\sigma_{\con{\me_1}}}$, given by
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL{\sigma_{\con{\me_1}}}}
+                \ar[r, "\anyL{\uncon{\me_1}}"]
+                & {\anyL{\sigma'}}
+                    \ar[r, "\anyL{\me_2}"]
+                    & {\anyL{\sigma_2}}
+            \\
+            {\concL{\sigma_{\con{\me_1}}}}
+                \pbsquare{ur} \ar[u, "\concL{\sigma_{\con{\me_1}}}"] \ar[r, "\concL{\uncon{\me_1}}"]
+                & {\concL{\sigma'}}
+                    \pbsquare{ur} \ar[u, "\concL{\sigma'}"] \ar[r, "\concL{\me_2}"]
+                    & {\concL{\sigma_2}} 
+                        \ar[u, "\concL{\sigma_2}"]
+            \\
+            {\concL{\sigma_{\con{\me_1}}} \ominus \concL{\con{\me_1}}}
+                \pbsquare{ur} \ar[u, "\compl{\concL{\con{\me_1}}}"] \ar[r, "\concL{\uncon{\me_1}}"]
+                & {\concL{\sigma'} \ominus \concL{\me_1}}
+                    \pbsquare{ur} \ar[u, "\compl{\concL{\me_1}}"] \ar[r, "\concL{\me_2}"]
+                & {\concL{\sigma_2} \ominus \concL\me}
+                    \ar[u, "\compl{\concL{\me}}"]
+        \end{tikzcd}
+    \end{center}
+    and we show that locations in every $\proj_{\concL{\me_2}\concL{\uncon{\me_1}}(\va)} \mvarM_\me$ factor through $\anyL{\sigma_{\con{\me_1}}}$ 
+    \begin{align*}
+        \proj_{\concL{\me_2}\concL{\uncon{\me_1}}(\va)} \mvarM_\me & = \proj_{\concL{\me_2}\concL{\uncon{\me_1}}(\va)} \mvarM_{\me_2 \comp \me_1} \\
+                                                                    & = \sem{\phi(\vC)}\anyL{\me_2}(\proj_{\concL{\uncon{\me_1}}(\va)} \mvarM_{\me_1}) \\
+                                                                    & = \sem{\phi(\vC)}\anyL{\me_2 \comp \uncon{\me_1}}(\proj_\va \mvarM_{\con{\me_1}})
+    \end{align*}
+
+    By the UP of reachable locations we have $\anyL\vh : \anyL{\sigma_{\con\me}} \to \anyL{\sigma_{\con{\me_1}}}$, which we extend to $\tinstC$ by
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_{\con\me}}}
+            \ar[r, "\anyL\vh"] \ar[rrr, bend left=30, "\anyL{\uncon\me}"]
+            & {\anyL{\sigma_{\con{\me_1}}}}
+                \ar[r, "\anyL{\uncon{\me_1}}"]
+                & {\anyL{\sigma'}}
+                    \ar[r, "\anyL{\me_2}"]
+                    & {\anyL{\sigma_2}}
+        \\
+        {\concL{\sigma_{\con\me}}}
+            \pbsquare{ur} \ar[r, dashed, "\concL\vh"] \ar[u, "\concL{\sigma_{\con\me}}"] \ar[rrr, bend right=30, "\concL{\uncon\me}"]
+            & {\concL{\sigma_{\con{\me_1}}}}
+                \pbsquare{ur} \ar[r, "\concL{\uncon{\me_1}}"] \ar[u, "\concL{\sigma_{\con{\me_1}}}"]
+                & {\concL{\sigma'}}
+                    \pbsquare{ur} \ar[r, "\anyL{\me_2}"] \ar[u, "\concL{\sigma'}"]
+                    & {\concL{\sigma_2}}
+                        \ar[u, "\concL{\sigma_2}"]
+    \end{tikzcd}
+    \end{center}
+    Notice that since the outer square and the right (combined) square are pullbacks, so is the left square,
+    and $\con{\me_1} = \vh \comp \con\me$ and $\uncon\me = \me_2 \comp \uncon{\me_1} \comp \vh$.
+
+    We further show that
+    \[ \anyL{\sigma_1} \xto{\anyL{\con\me}} \anyL{\sigma_{\con\me}} (\xto{\anyL\vh} \anyL{\sigma_{\con{\me_1}}} \xto{\anyL{\uncon{\me_2}}} \anyL{\sigma'}) \]
+    satisfies \cref{def:reach-loc} for $\anyL{\sigma_1} \xto{\anyL{\me_1}} \anyL{\sigma'}$ and $\mvarM_{\me_1}$.
+
+    Property (i) is obvious, and for property (ii) consider $(\concL{\sigma'} \ominus \concL{\me_1}) \pltimes{\anyL{\sigma'}} \anyL{\sigma_{\con\me}}$, given by 
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL{\sigma_{\con\me}}} \ar[r, "\anyL\vh"] 
+                & {\anyL{\sigma_{\con{\me_1}}}}
+                    \ar[r, "\anyL{\uncon{\me_2}}"]
+                    & {\anyL{\sigma'}}
+            \\
+            {\concL{\sigma_{\con\me}}}
+                \pbsquare{ur} \ar[u, "\concL{\sigma_{\con\me}}"] \ar[r, "\concL\vh"]
+                & {\anyL{\sigma_{\con{\me_1}}}}
+                    \pbsquare{ur} \ar[u, "\concL{\sigma_{\con{\me_1}}}"] \ar[r, "\concL{\uncon{\me_2}}"]
+                    & {\concL{\sigma'}}
+                        \ar[u, "\concL{\sigma'}"]
+            \\
+            {\concL{\sigma_{\con\me}} \ominus \concL{\con\me}}
+                \pbsquare{ur} \ar[u, "\compl{\concL{\con\me}}"] \ar[r, "\concL\vh"]
+                & {\concL{\sigma_{\con{\me_1}}} \ominus \concL{\con{\me_1}}}
+                    \pbsquare{ur} \ar[u, "\compl{\concL{\con{\me_1}}}"] \ar[r, "\concL{\uncon{\me_2}}"]
+                    & {\concL{\sigma'} \ominus \concL{\me_1}}
+                        \ar[u, "\compl{\concL{\me_1}}"]
+        \end{tikzcd}
+    \end{center}
+    and we show that locations in every $\proj_{\concL{\uncon{\me_1}}\concL\vh(\va)} \mvarM_{\me_1}$ factor through $\anyL{\sigma_{\con\me}}$ 
+    \begin{align*}
+        \proj_{\concL{\uncon{\me_1}}\concL\vh(\va)} \mvarM_{\me_1} & = \proj_{\concL{\uncon{\me_1}}\concL\vh(\va)} \mvarM_{\uncon{\me_1} \comp \con{\me_1}} \\
+                                                                    & = \sem{\phi(\vC)}\anyL{\uncon{\me_1}}(\proj_{\concL\vh(\va)} \mvarM_{\con{\me_1}}) & \tag{def of $\mvarM_{\uncon{\me_1} \comp \con{\me_1}}$}\\
+                                                                    & = \sem{\phi(\vC)}\anyL{\uncon{\me_1} \comp \anyL\vh}(\proj_\va \mvarM_{\con\me}) & \tag{UP of $\anyL{\sigma_{\con\me}}$}
+    \end{align*}
+
+    As a result, we get a $\anyL{\inv^\vh} : \anyL{\sigma_{\con{\me_1}}} \to \anyL{\sigma_{\con\me}}$ which is the inverse of $\anyL\vh$ by
+    \begin{align*}
+        \anyL\vh \comp \anyL{\inv^\vh} & = 1 \iff \\
+        \anyL{\uncon\me_1} \comp \anyL\vh \comp \anyL{\inv^\vh} & = \anyL{\uncon{\me_1}} \iff \\
+        \anyL{\me_2} \comp \anyL{\uncon\me_1} \comp \anyL\vh \comp \anyL{\inv^\vh} & = \anyL{\me_2} \comp \anyL{\uncon{\me_1}} \iff \\
+        \anyL{\uncon\me} \comp \anyL{\inv^\vh} & = \anyL{\me_2} \comp \anyL{\uncon{\me_1}}
+    \end{align*}
+    and $\anyL\vh \comp \anyL{\inv^\vh} \comp \anyL\vh = \anyL\vh \iff \anyL{\inv^\vh} \comp \anyL\vh = 1$.
+
+    We extend $\anyL{\inv^\vh}$ into a morphism in $\tempC$ by
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_{\con{\me_1}}}} 
+            \ar[r, "\anyL{\inv^\vh}"] \ar[rr, bend left=30, "\anyL{\me_2} \comp \anyL{\uncon{\me_1}}"]
+            & {\anyL{\sigma_{\con\me}}}
+                \ar[r, "\anyL{\uncon\me}"]
+                    & {\anyL{\sigma_2}}
+        \\
+        {\concL{\sigma_{\con{\me_1}}}} 
+            \pbsquare{ur} \ar[u, "\concL{\sigma_{\con{\me_1}}}"] \ar[r, dashed, "\concL{\inv^\vh}"] \ar[rr, bend right=30, "\concL{\me_2} \comp \concL{\uncon{\me_1}}"']
+            & {\concL{\sigma_{\con\me}}}
+                \pbsquare{ur} \ar[u, "\concL{\sigma_{\con\me}}"] \ar[r, "\concL{\uncon\me}"]
+                    & {\concL{\sigma_2}}
+                        \ar[u, "\concL{\sigma_2}"]
+    \end{tikzcd}
+    \end{center}
+    where the left square is a pullback because the outer and right square are pullbacks, and regular monos compose (\cref{lem:rmono-comp}).
+    As a result, $\concL{\inv^\vh}$ is also iso.
+    
+    Uniqueness of iso $\vh$ follows from uniqueness of the underlying components.  
+\end{proof}
+
+\begin{lemma}[Orthogonal Factorisation System in $\tinstC$]\label{lem:ofs-tinstC}
+    The classes of epis (connected) and regular monos (disconnected) morphisms gives rise to an orthogonal factorisation system in $\tinstC$.
+\end{lemma}
+\begin{proof}
+    Follows from \cref{lem:fact-uniq-tinstC}, 
+    epis being closed under composition and including all isomorphisms,
+    and regular monos in $\tinstC$ being closed under composition (\cref{lem:rmono-comp}) and include all isomorphisms.
+\end{proof}
+ 
+\subsubsection{Unification}
+\label{sec:unification-theaps}
+
+A natural question to ask when dealing with two template heaps that have a common set of public locations is whether they unify,
+that is, if there exist instantiations that we can apply to both heaps respectively such that they result in the same heap.
+Through the isomorphism $\theapF \iso \homF\tinstC{?_\emptyset}\dash$, we simply phrase this question as whether  
+a span $\sigma_1 \xfrom{\me_1} \sigma \xto{\me_2} \sigma_2$ has a cospan $\sigma_1 \xto{\me_1'} \hat\sigma \xfrom{\me_2'} \sigma_2$ such that
+the obvious square commutes.
+
+\begin{definition}[Unifier of Morphisms in $\tinstC$]
+    We say that two morphisms $\sigma_1 \xfrom{\me_1} \sigma \xto{\me_2} \sigma_2$ unify if there exists a diagram
+    \begin{center}
+    \begin{tikzcd}
+                                      & {\sigma} \ar[dl, "\me_1"'] \ar[dr, "\me_2"] & \\
+        {\sigma_1} \ar[dr, "\me_1'"'] &                                             & {\sigma_2} \ar[dl, "\me_2'"] \\
+                                      & {\hat\sigma}                                &
+    \end{tikzcd}
+    \end{center}
+    We call $\me_1', \me_2'$ a unifier of $\me_1, \me_2$.
+\end{definition}
+Notice that some spans do not have any compatible cospan, that is, some pair of heaps do not unify as the following example shows.
+\begin{example}
+    Consider the following diagram where both morphisms instantiate the variable $\va$ but with different values (true (T) and false (F)).
+    \begin{center}
+    \begin{tikzcd}[remember picture]
+        & {?_\va} \ar[dl] \ar[dr] & \\ 
+        |[alias=s1]|{1_\va} & & 
+        |[alias=s2]|{1_\va} & & 
+    \end{tikzcd}
+    \renewcommand\ndsize{9}
+    \begin{tikzpicture}[overlay, remember picture] 
+        \node[ccell=$\va$] (d1) [above=15pt of s1, xshift=15pt] {\tiny T};
+        \node[ccell=$\va$] (d2) [above=15pt of s2, xshift=-15pt] {\tiny F};
+    \end{tikzpicture}
+    \end{center}
+    There cannot be any unifiers that would make the diagram commute as the resulting heaps will always be different.
+\end{example}
+
+\paragraph{General Unifiers}
+
+We seek to identify the most general unifers of two morphisms $\sigma_1 \xfrom{\me_1} \sigma \xto{\me_2} \sigma_2$,
+that is, the least cospan $\sigma_1 \xto{\me_1'} \hat\sigma \xfrom{\me_2'} \sigma_2$ such that every other cospan factors uniquely thorough it. 
+Unfortunately such M.G.U. does not always exist as the following counterexample shows.
+\begin{example}\label{ex:mgu-counterexample}
+    Consider the following two unifers\nl\nl
+
+    \renewcommand\ndsize{9}
+    \hspace{-10pt}
+    \begin{tikzcd}[remember picture]
+        & {?_\va} \ar[dl] \ar[dr] & \\ 
+        |[alias=s1]|{\incl^{\va,\vb,\vd \inclto \va,\vb,\vc,\vd}} \ar[dr] & & 
+        |[alias=s2]|{\incl^{\va,\vc,\vd \inclto \va,\vb,\vc,\vd}} \ar[dl] & & \\
+        & |[alias=hs]|{1_{\va,\vb,\vc,\vd}} 
+    \end{tikzcd}\hspace{-50pt}
+    \begin{tikzcd}[remember picture]
+        & {?_\va} \ar[dl] \ar[dr] & \\ 
+        |[alias=t1]|{\incl^{\va,\vb,\vd \inclto \va,\vb,\vc,\vd}} \ar[dr] & & 
+        |[alias=t2]|{\incl^{\va,\vc,\vd \inclto \va,\vb,\vc,\vd}} \ar[dl] & & \\
+        & |[alias=ht]|{1_{\va,\vb,\vc,\vd_1, \vd_2}}
+    \end{tikzcd}
+
+    \begin{tikzpicture}[overlay, remember picture] 
+        \node[ccell=$\vd$] (sd1) [above=35pt of s1, xshift=30pt] {};
+        \node[ccell=$\vb$] (sb1) [below=0pt of sd1] {};
+        \node[ccell=$\va$] (sa1) [below=0pt of sb1] {};
+        \node[vcell=$\vc$] (sc1) [below=0pt of sa1] {};
+        \draw[ptr] (sb1.center) to ++\east to ++\north to (sd1.east);
+        \draw[ptr] ($ (sa1.center) + (0,\gap pt) $) to ++\east to ++\nnnorth to ($ (sb1.east) + (0,-\gap pt) $);
+        \draw[ptr] ($ (sa1.center) + (0,-\gap pt) $) to ++\east to ++\ssouth to (sc1.east);
+    
+        \node[vcell=$\vb$] (sb2) [above=35pt of s2, xshift=-30pt] {};
+        \node[ccell=$\va$] (sa2) [below=0pt of sb2] {};
+        \node[ccell=$\vc$] (sc2) [below=0pt of sa2] {};
+        \node[ccell=$\vd$] (sd2) [below=0pt of sc2] {};
+        \draw[ptr] ($ (sa2.center) + (0,\gap pt) $) to ++\east to ++\nnorth to (sb2.east);
+        \draw[ptr] ($ (sa2.center) + (0,-\gap pt) $) to ++\east to ++\sssouth to ($ (sc2.east) + (0,\gap pt) $);
+        \draw[ptr] (sc2.center) to ++\east to ++\south to (sd2.east);
+
+        \node[ccell=$\vc$] (sc1p) [left=15pt of hs,yshift=2pt] {};
+        \draw[ptr] (sc1p.center) to ++\east to node[midway,xshift=\gap pt, scale=\shpscale] {$\vd$} ++\north;
+
+        \node[ccell=$\vb$] (sb2p) [right=15pt of hs,yshift=5pt] {};
+        \draw[ptr] (sb2p.center) to ++\east to node[midway,xshift=\gap pt, scale=\shpscale] {$\vd$} ++\south;
+
+        \node[ccell=$\vd$] (td1) [above=35pt of t1, xshift=30pt] {};
+        \node[ccell=$\vb$] (tb1) [below=0pt of td1] {};
+        \node[ccell=$\va$] (ta1) [below=0pt of tb1] {};
+        \node[vcell=$\vc$] (tc1) [below=0pt of ta1] {};
+        \draw[ptr] (tb1.center) to ++\east to ++\north to (td1.east);
+        \draw[ptr] ($ (ta1.center) + (0,\gap pt) $) to ++\east to ++\nnnorth to ($ (tb1.east) + (0,-\gap pt) $);
+        \draw[ptr] ($ (ta1.center) + (0,-\gap pt) $) to ++\east to ++\ssouth to (tc1.east);
+    
+        \node[vcell=$\vb$] (tb2) [above=35pt of t2, xshift=-30pt] {};
+        \node[ccell=$\va$] (ta2) [below=0pt of tb2] {};
+        \node[ccell=$\vc$] (tc2) [below=0pt of ta2] {};
+        \node[ccell=$\vd$] (td2) [below=0pt of tc2] {};
+        \draw[ptr] ($ (ta2.center) + (0,\gap pt) $) to ++\east to ++\nnorth to (tb2.east);
+        \draw[ptr] ($ (ta2.center) + (0,-\gap pt) $) to ++\east to ++\sssouth to ($ (tc2.east) + (0,\gap pt) $);
+        \draw[ptr] (tc2.center) to ++\east to ++\south to (td2.east);
+
+        \node[ccell=$\vc$] (tc1p) [left=15pt of ht,yshift=5pt] {};
+        \node[ccell=$\vd_2$] (td12p) [below=0pt of tc1p] {};
+        \draw[ptr] (tc1p.center) to ++\east to ++\south to (td12p.east);
+
+        \node[ccell=$\vd_1$] (td21p) [right=15pt of ht,yshift=5pt] {};
+        \node[ccell=$\vb$] (tb2p) [below=0pt of td21p] {};
+        \draw[ptr] (tb2p.center) to ++\east to ++\north to (td21p.east);
+    \end{tikzpicture}
+
+    \renewcommand\ndsize{15}
+    The unifier on the left results in the heap
+    \begin{tikzpicture}[baseline={(b1.base)}]
+        \node[ccell=$\vd$] (d1) [] {};
+        \node[ccell=$\vb$] (b1) [below=0pt of d1] {};
+        \node[ccell=$\va$] (a1) [below=0pt of b1] {};
+        \node[ccell=$\vc$] (c1) [below=0pt of a1] {};
+        \draw[ptr] (b1.center) to ++\east to ++\north to (d1.east);
+        \draw[ptr] ($ (a1.center) + (0,\gap pt) $) to ++\east to ++\nnnorth to ($ (b1.east) + (0,-\gap pt) $);
+        \draw[ptr] ($ (a1.center) + (0,-\gap pt) $) to ++\east to ++\sssouth to ($ (c1.east) + (0,\gap pt) $);
+        \draw[ptr] (c1.center) to ++\eeast to ++\north to ++\north to ++\north to ++(0,\gap pt) to ($ (d1.east) + (0,\gap pt) $);
+    \end{tikzpicture}
+    whereas the one on the right results in
+    \begin{tikzpicture}[baseline={(b1.base)}]
+        \node[ccell=$\vd_1$] (d1) [] {};
+        \node[ccell=$\vb$] (b1) [below=0pt of d1] {};
+        \node[ccell=$\va$] (a1) [below=0pt of b1] {};
+        \node[ccell=$\vc$] (c1) [below=0pt of a1] {};
+        \node[ccell=$\vd_2$] (d2) [below=0pt of c1] {};
+        \draw[ptr] (b1.center) to ++\east to ++\north to (d1.east);
+        \draw[ptr] ($ (a1.center) + (0,\gap pt) $) to ++\east to ++\nnnorth to ($ (b1.east) + (0,-\gap pt) $);
+        \draw[ptr] ($ (a1.center) + (0,-\gap pt) $) to ++\east to ++\sssouth to ($ (c1.east) + (0,\gap pt) $);
+        \draw[ptr] ($ (c1.center) + (0,-\gap pt) $) to ++\east to ++\sssouth to ($ (d2.east) + (0,\gap pt) $);
+    \end{tikzpicture}
+    which are mutually incomparable.
+\end{example}
+
+Even though most general unifiers do not always exist, we do have that every unifier can be factored though "special" unifiers that are themselves mutually incomparable. 
+We call these special unifiers \emph{general unifiers}.
+
+\begin{definition}[General Unifiers]\label{def:general-unifiers}
+    We call a unifier $\sigma_1 \xto{\me_1'} \hat\sigma \xfrom{\me_2'} \sigma_2$ general if 
+    $\concL{\sigma_1} \xto{\concL{\me_1'}} \concL{\hat\sigma} \xfrom{\concL{\me_2'}} \concL{\sigma_2}$ are jointly surjective and
+    $\anyL{\sigma_1} \xto{\anyL{\me_1'}} \anyL{\hat\sigma} \xfrom{\anyL{\me_2'}} \anyL{\sigma_2}$ are jointly surjective.
+\end{definition}
+\begin{remark}
+    By \cref{lem:gen-cospan-epi-prop}, this is equivalent to saying that a unifier is general if it is generated by a jointly surjective cospan
+    $\anyL{\sigma_1} \xto{\anyL{\me_1'}} \anyL{\hat\sigma} \xfrom{\anyL{\me_2'}} \anyL{\sigma_2}$.
+\end{remark}
+
+\begin{example}
+    Both unifiers from \cref{ex:mgu-counterexample} are general unifiers.
+    The unifier on the left is generated by 
+        \[ \va,\vb,\vc,\vd \xto{1} \va,\vb,\vc,\vd \xfrom{1} \va,\vb,\vc,\vd \]
+    whereas the one on the right by 
+        \[ \va,\vb,\vc \mplus \vd \xto{1 \mplus \incl_1} \va,\vb,\vc,\vd_1,\vd_2 \xfrom{1 \mplus \incl_2} \va,\vb,\vc \mplus \vd \]
+\end{example}
+
+\begin{lemma}[Data of General Unifiers]\label{lem:general-unifier-data}
+    If 
+    \begin{tikzcd}[sep=small]
+        & {\sigma} 
+            \ar[dl, "\me_1"'] \ar[dr, "\me_2"] 
+    \\ 
+    {\sigma_1} 
+        \ar[dr, "\me_1'"']
+            && {\sigma_2} 
+                \ar[dl, "\me_2'"] 
+    \\ 
+        & {\hat\sigma}
+    \end{tikzcd}
+    is a general unifier then $\mvarM_{\me_1'}$ and $\mvarM_{\me_2'}$
+    are completely determined by $\mvarM_{\me_1}$ and $\mvarM_{\me_2}$.
+\end{lemma}
+\begin{proof}
+    W.l.g. we show that $\mvarM_{\me_2'}$ is completely determined by $\mvarM_{\me_1}$ and the other direction is symmetric.
+    Since $\concL{\me_1'}$ and $\concL{\me_2'}$ are jointly surjective, every $\va : \vC \in \concL{\hat\sigma} \ominus \concL{\me_2'}$
+    satisfies that there exists a unique $\va' : \vC \in \concL{\sigma_1} \ominus \concL{\me_1}$ s.t. $\concL{\me_1'}(\va') = \va$. 
+
+    This implies by definition of $\mvarM_{\me_2' \comp \me_2}$ and $\mvarM_{\me_2' \comp \me_2} = \mvarM_{\me_1' \comp \me_1}$ that
+    \[ \proj_\va \mvarM_{\me_2'} = \proj_\va \mvarM_{\me_2' \comp \me_2} = \proj_{\concL{\me_1'}(\va')} \mvarM_{\me_1' \comp \me_1} = \sem{\phi(\vC)}\anyL{\me_1'}(\proj_{\va'} \mvarM_{\me_1}) \]
+\end{proof}
+
+\begin{lemma}[General Unifier Property]\label{lem:general-unifier-prop}
+    Every unifier of $\sigma_1 \xfrom{\me_1} \sigma \xto{\me_2} \sigma_2$ factors uniquely (up to iso) through a general unifier.
+\end{lemma}
+\begin{proof}
+    For a unifier $\sigma_1 \xto{\me_1'} \sigma' \xfrom{\me_2'} \sigma_2$ we show the following diagram:
+    \begin{center}
+    \begin{tikzcd}
+            & \sigma \ar[dl, "\me_1"'] \ar[dr, "\me_2"] & 
+        \\
+        {\sigma_1} \ar[ddr, "\me_1'"'] \ar[dr, "\hat\me_1"]
+            && {\sigma_2} \ar[ddl, "\me_2'"] \ar[dl, "\hat\me_2"']
+        \\
+            & {\hat\sigma} \ar[d, dashed, "\vh" yshift=5pt]
+        \\
+            & {\sigma'}
+    \end{tikzcd}
+    \end{center}
+    We define the general unifier $\sigma_1 \xto{\hat\me_1} \hat\sigma \xfrom{\hat\me_2} \sigma_2$ as follows.
+    \begin{enumerate}
+        \item We define $\anyL{\hat\me_1}$ and $\anyL{\hat\me_2}$ as
+              \begin{center}
+              \begin{tikzcd}
+                  {\anyL{\sigma_1}} \ar[dr, dashed, "\anyL{\hat\me_1}"'] \ar[r, "\anyL{\me_1'}"] 
+                      & {\anyL{\sigma'}} 
+                          & {\anyL{\sigma_2}} 
+                              \ar[dl, dashed, "\anyL{\hat\me_2}"] \ar[l, "\anyL{\me_2'}"'] \\ 
+                          & {\anyL{\hat\sigma} \eqdef \img{\anyL{\me_1'}} \setUnion \img{\anyL{\me_2'}}} \ar[u, hook, "\anyL\vh"']
+              \end{tikzcd}
+              \end{center}
+              It is clear that they are jointly surjective.
+        \item We generate morphisms $\tinstU\hat\me_1$ and $\tinstU\hat\me_2$ from $\anyL{\hat\me_1}$ and $\anyL{\hat\me_2}$ using \cref{lem:gen-cospan},
+              and so by the universal property of generated morphisms we have the following diagram in $\tempC$
+              \begin{center}
+              \begin{tikzcd}
+                      & \sigma \ar[dl, "\tinstU\me_1"'] \ar[dr, "\tinstU\me_2"] & 
+                  \\
+                  {\sigma_1} \ar[ddr, "\tinstU\me_1'"'] \ar[dr, "\tinstU\hat\me_1"]
+                      && {\sigma_2} \ar[ddl, "\tinstU\me_2'"] \ar[dl, "\tinstU\hat\me_2"']
+                  \\
+                      & {\hat\sigma} \ar[d, dashed, "\tinstU\vh" yshift=5pt]
+                  \\
+                      & {\sigma'}
+              \end{tikzcd}
+              \end{center}
+              That $\tinstU\hat\me_1 \comp \tinstU\me_1 = \tinstU\hat\me_2 \comp \tinstU\me_2$ follows from the outer square and inner triangles commuting.
+        \item For the instantiation data we show that $\mvarM_{\me_\vi'}$ can be factored into $\mvarM_\vh$ and $\mvarM_{\hat\me_\vi}$. 
+              W.l.g. let $\vi = 1$.
+              Through the canonical isomorphism
+              \[ \concL{\sigma'} \ominus \concL{\vu\me_1'} \iso (\concL{\sigma'} \ominus \concL{\vu\vh}) \mplus (\concL{\hat\sigma} \ominus \concL{\vu\hat\me_1}) \]
+              we have heaps
+\[ \mvarM_{\hat\me_1} : \dheapF(\concL{\hat\sigma} \ominus \concL{\hat\me_1}, \anyL{\sigma'}) \;\text{ and }\; \mvarM_\vh : \dheapF(\concL{\sigma'} \ominus \concL\vh, \anyL{\sigma'}) \]
+              We further show for every $\va : \vC \in \concL{\hat\sigma} \ominus \hat\me_1$ that $\vd = \proj_\va \mvarM_{\hat\me_1}$ satisfies
+              \begin{center}
+                  \begin{tikzcd}
+                      {1} \ar[dr, "\exists \hat\vd"'] \ar[r, "\vd"] & {\sem{\phi(\vC)}\anyL{\sigma'}} \\
+                                                                    &  {\sem{\phi(\vC)}\anyL{\hat\sigma}} \ar[u, "\anyL\vh"']
+                  \end{tikzcd}
+              \end{center}
+              By \cref{lem:gen-cospan-epi-prop} we have that $\concL{\hat\me_1}$ and $\concL{\hat\me_2}$ are jointly surjective, 
+              and since $\va : \vC \in \concL{\hat\sigma} \ominus \concL{\hat\me_1}$, and $\vu\hat\me_1 \comp \vu\me_1 = \vu\hat\me_2 \comp \vu\me_2$ we must have a $\va' : \vC \in \concL{\sigma_2} \ominus \concL{\me_2}$ s.t. $\concL{\hat\me_2}(\va') = \va$.
+              And so
+              \begin{align*}
+                  \proj_\va \mvarM_{\hat\me_1} &= \proj_{\concL\vh(\va)} \mvarM_{\me_1'} \\
+                                               &= \proj_{\concL\vh(\va)} \mvarM_{\me_1' \comp \me_1} \\
+                                               &= \proj_{\concL\vh(\va)} \mvarM_{\me_2' \comp \me_2} \\
+                                               &= \proj_{\concL\vh(\concL{\hat\me_2}(\va'))} \mvarM_{\me_2' \comp \me_2} \\
+                                               &= \proj_{\concL{\me_2'}(\va')} \mvarM_{\me_2' \comp \me_2} \\
+                                               &= \sem{\phi(\vC)}\anyL{\me_2'}(\proj_{\va'} \mvarM_{\me_2}) \\
+                                               &= \sem{\phi(\vC)}\anyL\vh(\sem{\phi(\vC)}\anyL{\hat\me_2}(\proj_{\va'} \mvarM_{\me_2}))
+              \end{align*}
+
+              Lastly, $\mvarM_{\hat\me_1 \comp \me_1} = \mvarM_{\hat\me_2 \comp \me_2}$ follows from $\vh$ being mono (\cref{lem:monos-tinistC}).
+    \end{enumerate}
+    To show uniqueness, consider another general unifier $\sigma_1 \xto{\check\me_1} \check\sigma \xfrom{\check\me_2} \sigma_2$.
+
+    Notice that the induced morphism from $\check\sigma \to \sigma'$ must factor through $\hat\sigma$ in an isomorphic way
+    \begin{center}
+        \begin{tikzcd}
+            {\sigma_1}
+                \ar[r, "\hat\me_1"]
+                    \ar[dr, "\check\me_1"']
+                    & {\hat\sigma}
+                        & {\sigma_2}
+                            \ar[l, "\hat\me_2"']
+                                \ar[dl, "\check\me_2"]
+            \\
+                    & {\check\sigma}
+                        \ar[u, dashed, "\iso"]
+        \end{tikzcd}
+    \end{center}
+    It remains to show that their data match which follows from \cref{lem:general-unifier-data}.
+\end{proof}
+
+\begin{lemma}[General Unifiers of Identities]\label{lem:general-unifier-id}
+    The general unifiers of a span $\sigma \xfrom{1} \sigma \xto\me \sigma'$ is only cospan $\sigma \xto\me \sigma' \xfrom{1} \sigma'$ (up to iso).
+\end{lemma}
+\begin{proof}
+    To show that cospan $\sigma \xto\me \sigma' \xfrom{1} \sigma'$ is a general unifier, we need it to be jointly surjective at the level $\concL\dash$ and $\anyL\dash$, which is immediate from the identity morphism.
+    That every other unifier factors through this (and so it is unique up to iso), is immediate.
+\end{proof}
+
+\begin{lemma}[Pasting Law for General Unifiers]\label{lem:general-unifier-pasting-law}
+    In a diagram
+    \begin{tikzcd}
+        {\sigma} \ar[r, "\me_1"] \ar[d, "\me_1'"']
+            & {\sigma_1} \ar[r, "\me_3"] \ar[d, "\me_2"]
+                & {\sigma_3} \ar[d, "\me_3'"]
+        \\
+        {\sigma_1'} \ar[r, "\me_2'"']
+            & {\sigma_2} \ar[r, "\me_3''"']
+                & {\sigma_3'}
+    \end{tikzcd}
+    where the left square is a general unifier,  
+    then the whole square is a general unifier iff the right square is.
+\end{lemma}
+\begin{proof}
+    For the $\to$ direction, it is clear that if any $\anyL{\me_3''}$ and $\anyL{\me_3'}$ are not jointly surjective then the whole square cannot be as well which is a contradiction.
+    The same applies to the $\concL\dash$ level, and so the right square must be a general unifier.
+    \nl
+    For the $\from$ direction, consider a $\va : \vC \in \anyL{\sigma_3'}$.
+    Then by the right square being a general unifier, either $\va$ is mapped from $\anyL{\sigma_3}$ or it comes from $\anyL{\sigma_2}$.
+    If it comes from $\anyL{\sigma_2}$, then by the left square being a general unifier either it is mapped from $\sigma_1'$ or it is mapped from $\sigma_1$ and since it is a commuting square, it must also be mapped from $\sigma_3$.
+    The same reasoning applies to $\concL\dash$.
+\end{proof}
+
+\begin{lemma}[General Unifiers Preserve Connectivity]\label{lem:general-unifier-con-prop}
+    If 
+    \begin{tikzcd}[sep=small]
+        & {\sigma} 
+            \ar[dl, twoheadrightarrow, "\me_1"'] \ar[dr, "\me_2"] 
+    \\ 
+    {\sigma_1} 
+        \ar[dr, "\me_1'"']
+            && {\sigma_2} 
+                \ar[dl, "\me_2'"] 
+    \\ 
+        & {\hat\sigma}
+    \end{tikzcd}
+    is a general unifier and $\me_1$ is connected, then so is $\me_2'$.
+\end{lemma}
+\begin{proof}
+    Consider a $\va : \vC \in \anyL{\hat\sigma} \ominus \anyL{\uncon{\me_2'}}$.
+    This means that $\va : \vC \in \anyL{\hat\sigma} \ominus \anyL{\me_2'}$, and so there exists $\va' : \vC \in \anyL{\sigma_1}$ s.t.
+    $\anyL{\me_1'}(\va') = \va$ by definition of general unifiers (\cref{def:general-unifiers}).
+    From the factorisation we have a diagram which leads to a contradiction that it commutes unless $\anyL{\hat\sigma} \ominus \anyL{\uncon{\me_2'}} = \emptyset$.
+    \begin{center}
+        \begin{tikzcd}
+            & {\sigma} 
+                \ar[dl, twoheadrightarrow, "\me_1"'] \ar[d, twoheadrightarrow, "\con{\me_2' \comp \me_2}" yshift=-3pt] \ar[dr, "\me_2"]
+        \\
+        {\sigma_1}
+            \ar[ddr, "\me_1'"'] \ar[r, twoheadrightarrow, dashed]
+            & {\sigma_{\con{\me_2' \comp \me_2}}}
+                \ar[dd, -rmonotip] \ar[rd, -rmonotip, dashed]
+                & {\sigma_2}
+                    \ar[d, twoheadrightarrow, "\con{\me_2'}"]
+        \\
+                && {\sigma_{\con{\me_2'}}} 
+                    \ar[dl, -rmonotip, "\uncon{\me_2'}"]
+        \\
+            & {\hat\sigma}
+        \end{tikzcd}
+    \end{center}
+    Since $\anyL{\uncon{\me_2'}}$ is iso and $\uncon{\me_2'}$ is a regular mono, we have that $\concL{\uncon{\me_2'}}$ is iso and thus connected.
+\end{proof}
+
+
+\begin{lemma}[Decidability of Unification]\label{lem:unification-dec}
+    There exists an algorithm that decides for a span $\sigma_1 \xfrom{\me_1} \sigma \xto{\me_2} \sigma_2$ if they unify or not.
+    If they unify, it returns a non-empty finite set of general unifiers
+    $\GU{\me_1}{\me_2} \subseteqfin \Coprod{\hat\sigma \in \objC\tempC}{\homF\tinstC{\sigma_1}{\hat\sigma} \times \homF\tinstC{\sigma_2}{\hat\sigma}}$
+    that contains all its general unifiers up to isomorphism.
+\end{lemma}
+\begin{proof}
+    By \cref{lem:general-unifier-prop} we have that every unifier factors through a general one and there are only a finite number of isomorphic classes of general unifiers by definition of their jointly surjective property.
+    As a result, the algorithm will enumerate every isomorphic class of jointly surjective cospans $\anyL{\sigma_1} \xto{\tau_1} \hat\vw \xfrom{\tau_2} \anyL{\sigma_2}$
+    by considering a representative for each class (note that $\objC\worldC$ is countable when $\typeSort$ is, which makes it possible to constructively pick one). 
+
+    It will then equip every representative cospan with data given by \cref{lem:gen-cospan-data} for every side which by \cref{lem:general-unifier-data} tells us that it should be the only data that we have to consider. 
+    All that is left to check for it to be a general unifier is that it forms a commuting square in $\tinstC$.
+    If the algorithm finds no such commuting generated cospans then it must be that the span does not unify.
+\end{proof}
+
+\paragraph{Unification and Local Independence Structure}\nl
+
+\begin{definition}[Local Independent Unifiers]
+    A unifier is called a local independent unifier (L.I.U.) if its $\tinstU$ image is a local independent square.
+\end{definition}
+
+\begin{definition}[Local Independent General Unifiers]
+    A unifier is called a local independent general unifier (L.I.G.U.) if its $\tinstU$ image is a local independent coproduct square.
+\end{definition}
+
+\begin{lemma}[Local Independent General Unifier is General]
+    A local independent general unifier is a general unifier.
+\end{lemma}
+\begin{proof}
+    To show that a L.I.G.U. $\sigma_1 \xto{\me_1'} \hat\sigma \xto{\me_2'} \sigma_2$ 
+    is a general unifier it is enough to show that it is generated by
+    $\anyL{\sigma_1} \xto{\anyL{\me_1'}} \anyL{\hat\sigma} \xfrom{\anyL{\me_2'}} \anyL{\sigma_2}$ 
+    and moreover this cospan is jointly surjective.
+    This is the case as L.I.C. in $\tempC$ is generated from the L.I.C. in $\worldC$ which is itself a jointly surjective cospan. 
+\end{proof}
+
+\begin{lemma}[Uniqueness of Local Independent General Unifiers]\label{lem:ligu-uniq}
+    L.I.G.U. are unique up to iso.
+\end{lemma}
+\begin{proof}
+    Any two L.I.G.U. are iso in $\tempC$, by L.I.C. being unique up to iso.
+    That their data must also be match follows from \cref{lem:general-unifier-data}.
+\end{proof}
+
+\begin{lemma}[Local Independent General Unifiers Property]\label{lem:ligu-prop}
+    The general unifier of a local independent unifier is a local independent general unifier.
+\end{lemma}
+\begin{proof}
+    The general unifier of a L.I.U. $\sigma_1 \xto{\me_1'} {\sigma'} \xfrom{\me_2'} \sigma_2$ is given by
+    the generated cospan over
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_1}} \ar[dr, dashed] \ar[r, "\anyL{\me_1'}"]
+            & {\anyL{\sigma'}}
+                & {\anyL{\sigma_2}}
+                    \ar[dl, dashed] \ar[l, "\anyL{\me_2'}"'] \\
+                & {\img{\anyL{\me_1'}} \setUnion \img{\anyL{\me_2'}}} \ar[u, hook]
+    \end{tikzcd}
+    \end{center}
+    And since it is a local independent unifier we have
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_1}} \ar[dr, dashed] \ar[r, "\ext^{\anyL{\me_1}}\anyL{\me_2}"]
+            & {\anyL{\sigma_1} \liplus{\anyL\sigma} \anyL{\sigma_2}}
+                & {\anyL{\sigma_2}}
+                    \ar[dl, dashed] \ar[l, "\ext^{\anyL{\me_2}}\anyL{\me_1}"'] \\
+                & {\img{\anyL{\me_1'}} \setUnion \img{\anyL{\me_2'}}} \ar[u, "\iso"]
+    \end{tikzcd}
+    \end{center}
+    which is exactly the cospan that generates L.I.G.U.
+\end{proof}
+
+\begin{lemma}[Pasting Law for Local Independent General Unifiers]\label{lem:ligu-pasting}
+    In a diagram
+    \begin{tikzcd}
+        {\sigma} \ar[r, "\me_1"] \ar[d, "\me_1'"']
+            & {\sigma_1} \ar[r, "\me_3"] \ar[d, "\me_2"]
+                & {\sigma_3} \ar[d, "\me_3'"]
+        \\
+        {\sigma_1'} \ar[r, "\me_2'"']
+            & {\sigma_2} \ar[r, "\me_3''"']
+                & {\sigma_3'}
+    \end{tikzcd}
+    where the left square is a L.I.G.U., then the whole square is a L.I.G.U. iff the right square is.
+\end{lemma}
+\begin{proof}
+    Immediate from \cref{lem:lic-pasting}.
+\end{proof}
+
+\begin{lemma}\label{lem:ligu-rmono-exist}
+    Every span of the form $\sigma_1 \xfrom{\me_1} \sigma \xrto{\me_2} \sigma_2$ has a local independent general unifier.
+\end{lemma}
+
+\begin{proof}
+    We have that the L.I.C. in $\tempC$ commutes
+    \begin{tikzcd}[sep=small]
+        & {\sigma} 
+            \ar[dl, "\tinstU\me_1"'] \ar[dr, -rmonotip, "\tinstU\me_2"] 
+    \\ 
+    {\sigma_1} 
+        \ar[dr, "\ext^{\tinstU\me_1}\tinstU\me_2"']
+            && {\sigma_2}
+                \ar[dl, "\ext^{\tinstU\me_2}\tinstU\me_1"] 
+    \\ 
+        & {\sigma_1 \liplus\sigma \sigma_2}
+    \end{tikzcd}.
+    We need to show that it also commutes in $\tinstC$ with data given by \cref{rem:lic-T-data}.
+
+    Notice that by \cref{lem:lic-vpres}, we have that $\concL{\sigma_1 \liplus\sigma \sigma_2}$ is given by
+    \begin{center}
+        \begin{tikzcd}
+            {\concL\sigma} 
+                \ar[r, "\concL{\tinstU\me_2}"] \ar[d, "\concL{\tinstU\me_1}"']
+                & {\concL{\sigma_2}}
+                    \ar[d, "\concL{\ext^{\tinstU\me_2}\tinstU\me_1}"]
+            \\
+            {\concL{\sigma_1}}
+                \ar[r, "\concL{\ext^{\tinstU\me_1}\tinstU\me_2}"']
+                    & {\concL{\sigma_1} \liplus{\concL\sigma} \concL{\sigma_2}}
+        \end{tikzcd}
+    \end{center}
+    and $\ext^{\tinstU\me_1}\tinstU\me_2$ is variable preserving.
+
+    We equip $\ext^{\tinstU\me_1}\tinstU\me_2$ with data $\dheapF(\iso, \anyL{\ext^{\tinstU\me_2}\tinstU\me_1})(\mvarM_{\me_2})$ with the canonical iso
+    \[ (\concL{\sigma_1} \liplus{\concL\sigma} \concL{\sigma_2}) \ominus \concL{\ext^{\tinstU\me_1}\tinstU\me_2} \iso \concL{\sigma_2} \ominus \concL{\tinstU\me_2} \]
+    We equip $\ext^{\tinstU\me_2}\tinstU\me_1$ with data in the same way.
+    This gives that $\mvarM_{\ext^{\tinstU\me_1}\me_2 \comp \me_1} = \mvarM_{\ext^{\tinstU\me_2}\me_1 \comp \me_2}$.
+\end{proof}
+
+\subsubsection{Preservation of Connectivity}
+
+Given $\sigma_1 \xsurjto\me \sigma_2 \xto{\me'} \sigma_3$, we ask whether the connectivity of $\me$ is preserved,
+that is, whether every location introduced by $\me$ will remain reachable in the composite $\me' \comp \me$.
+
+\begin{definition}[Connectedness Preserving Morphisms]
+    A morphism $\me_2 : \sigma_2 \to \sigma_3$ preserves connectivity of a morphism $\me_1 : \sigma_1 \surjto \sigma_2$
+    if it satisfies $\anyL{\sigma_2} \pltimes{\anyL{\sigma_3}} (\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}) = \emptyset$.
+\end{definition}
+
+\begin{lemma}[Connectedness Preserving Morphisms Property Equivalence]\label{lem:con-pres-prop-equiv}
+    Let $\sigma_1 \xsurjto{\me_1} \sigma_2 \xto{\me_2} \sigma_3$.
+    We have the following equivalence.
+
+    \begin{center}
+    \begin{tikzcd}
+        {\emptyset} 
+            \ar[r] \ar[d] \pbsquare{dr} 
+                & {\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}}
+                    \ar[d, "\compl{\anyL{\uncon{\me_2 \comp \me_1}}}"] 
+        \\
+        {\anyL{\sigma_2}} 
+            \ar[r, "\anyL{\me_2}"']
+                & {\anyL{\sigma_3}}
+    \end{tikzcd} $\Leftrightarrow$
+    \begin{tikzcd}
+        {\anyL{\sigma_2}}
+            \ar[d, dashed, "\exists \reach_{\me_1}^{\me_2 \comp \me_1}"'] \ar[rd, "\anyL{\me_2}"]
+        \\
+        {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+            \ar[r, "\anyL{\uncon{\me_2 \comp \me_1}}"' yshift=-5pt] 
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}
+    \end{center}
+\end{lemma}
+\begin{proof}\nl
+    $\Rightarrow$) 
+        Consider the canonical iso $\anyL{\sigma_3} \iso \anyL{\sigma_{\con{\me_2 \comp \me_1}}} \oplus (\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}})$.
+        Now if any $\va : \vC \in \anyL{\me_2}$ maps to $\anyL{\sigma_{\con{\me_2 \comp \me_1}}}$, we would get a contradiction $\va : \vC \to \emptyset$ and so
+        it must factor through $\anyL{\sigma_{\con{\me_2 \comp \me_1}}}$.
+    \nl
+    $\Leftarrow$)
+        We $\img{\anyL{\me_2}} \setInt \img{\compl{\anyL{\uncon{\me_2 \comp \me_1}}}}$ that must be empty as the image of $\anyL{\me_2}$ factors through $\anyL{\sigma_{\con{\me_2 \comp \me_1}}}$. 
+\end{proof}
+
+\Cref{lem:con-pres-prop-equiv} tells us that connectivity preservation is exactly uniqueness of factorisation (\cref{lem:fact-uniq-tinstC}),
+and so every morphism preserves connectivity as the following lemma shows.
+
+\begin{lemma}[All Morphisms are Connectedness Preserving]
+    Every $\me_2 : \sigma_2 \to \sigma_3$ preserves the connectivity of every $\me_1 : \sigma_1 \surjto \sigma_2$.
+\end{lemma}
+\begin{proof}
+    By \cref{lem:fact-uniq-tinstC}, we have
+    \begin{center}
+        \begin{tikzcd}
+            {\sigma_1} 
+                \ar[r, twoheadrightarrow, "\me_1"] \ar[drr, twoheadrightarrow, "\con{\me_2 \comp \me_1}"'] \ar[rrr, bend left=30, "\me_2 \comp \me_1"]
+                & {\sigma_2}
+                    \ar[r, twoheadrightarrow, "\con{\me_2}"]
+                    & {\sigma_{\con{\me_2}}}
+                        \ar[d, "\iso"] \ar[r, -rmonotip, "\uncon{\me_2}"]
+                        & {\sigma_3}
+            \\
+                    && {\sigma_{\con{\me_2 \comp \me_1}}}
+                        \ar[ur, -rmonotip, "\uncon{\me_2 \comp \me_1}"']
+        \end{tikzcd}
+    \end{center}
+    which proves preservation of connectivity by \cref{lem:con-pres-prop-equiv}.
+\end{proof}
+
+\subsubsection{Preservation of Disconnectivity}
+
+Similarly, we ask if a morphism $\me' : \sigma_2 \surjto \sigma_3$ preserves a disconnected morphism $\me : \sigma_1 \rto \sigma_2$,
+that is, if every location in $\anyL{\sigma_2} \ominus \anyL\me$ remains unreachable in $\me' \comp \me$. 
+
+Such morphisms can only instantiate variables coming from $\sigma_1$ with data that do not point to locations $\anyL{\sigma_2} \ominus \anyL\me$ in order to 
+preserve the unreachability of $\anyL{\sigma_2} \ominus \anyL\me$ in the composite $\me_2 \comp \me_1$.
+
+\begin{definition}[Disconnectedness Preserving Morphisms]\label{def:dcon-pres-morph}
+    A morphism $\me_2 : \sigma_2 \to \sigma_3$ preserves the disconnectivity of a morphism $\me_1 : \sigma_1 \rto \sigma_2$
+    if it satisfies $(\anyL{\sigma_2} \ominus \anyL{\me_1}) \pltimes{\anyL{\sigma_3}} \anyL{\sigma_{\con{\me_2 \comp \me_1}}} = \emptyset$.
+\end{definition}
+
+\begin{lemma}[Disconnectedness Preserving Morphisms Property Equivalence]\label{lem:dcon-pres-prop-equiv}
+    Let $\sigma_1 \xrto{\me_1} \sigma_2 \xto{\me_2} \sigma_3$.
+    We have the following equivalence.
+
+    \begin{tikzcd}[sep=small]
+        {\emptyset} 
+            \ar[r] \ar[dd] \pbsquare{ddr} 
+            & {\anyL{\sigma_2} \ominus \anyL{\me_1}}
+                \ar[d, "\compl{\anyL{\me_1}}"] 
+        \\
+            & {\anyL{\sigma_2}}
+                \ar[d, "\anyL{\me_2}"]
+        \\
+        {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}} 
+            \ar[r, -rmonotip, "\anyL{\uncon{\me_2 \comp \me_1}}"' yshift=-3pt] 
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}$\mathclap{\xLeftrightarrow{(1)}}$
+    \begin{tikzcd}
+        {\anyL{\sigma_1}}
+            \ar[d, "\anyL{\con{\me_2 \comp \me_1}}"] \ar[r, -rmonotip, "\anyL{\me_1}"] \pbsquare{dr}
+            & {\anyL{\sigma_2}}
+                \ar[d, "\anyL{\me_2}"'] 
+        \\
+        {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+            \ar[r, -rmonotip, "\anyL{\uncon{\me_2 \comp \me_1}}"' yshift=-5pt] 
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}$\hspace{5pt}\mathclap{\xLeftrightarrow{(2)}}$
+    \begin{tikzcd}
+        {\sigma_1}
+            \ar[d, twoheadrightarrow, "\con{\me_2 \comp \me_1}"] \ar[r, -rmonotip, "\me_1"] \pbsquare{dr}
+            & {\sigma_2}
+                \ar[d, "\me_2"'] 
+        \\
+        {\sigma_{\con{\me_2 \comp \me_1}}}
+            \ar[r, -rmonotip, "\uncon{\me_2 \comp \me_1}"' yshift=-5pt] 
+            & {\sigma_3}
+    \end{tikzcd}$\hspace{5pt}\mathclap{\xLeftrightarrow{(3)}}$
+    \begin{tikzcd}[sep=small]
+        {\anyL{\sigma_2} \ominus \anyL{\me_1}}
+            \ar[d, dashed, "\exists \anyL{\me_2}\res|{\me_1}"'] \ar[r, "\compl{\anyL{\me_1}}"] 
+            & {\anyL{\sigma_2}}
+                \ar[d, "\anyL{\me_2}"'] 
+        \\
+        {\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}}
+            \ar[r, "\compl{\anyL{\uncon{\me_2 \comp \me_1}}}"' yshift=-5pt] 
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}
+\end{lemma}
+\begin{proof}
+    For (1), we consider the canonical isomorphism $\anyL{\sigma_2} \iso \anyL{\sigma_1} \oplus (\anyL{\sigma_2} \ominus \anyL{\me_1})$.
+    For $\xRightarrow{(1)}$ we cannot have anything factoring through $(\anyL{\sigma_2} \ominus \anyL{\me_1})$ as we get a contradiction 
+    and for $\xLeftarrow{(1)}$, if $\anyL{\sigma_{\con{\me_2 \comp \me_1}}} \xfrom{\pi_1} \vw \xto{\pi_2} (\anyL{\sigma_2} \ominus \anyL{\me_1})$ is the pullback
+    on the left, we can form a square in the right one to get a unique injection $\anyL{\sigma_{\con{\me_1}}} \oplus \vw \dashto \anyL{\sigma_{\con{\me_1}}}$
+    and so $\vw$ must be empty.
+    For $\xRightarrow{(2)}$, by \cref{lem:pullback-vpres}, the diagram in $\tempC$ is a pullback and by 
+    \cref{lem:tinstU-pls-refl} it is also a pullback in $\tinstC$.
+    For $\xLeftarrow{(3)}$, by \cref{lem:anyL-pls-pres} the $\anyL\dash$-image is a pullback.
+
+    For $\xLeftarrow{(3)}$, we have that 
+    \begin{tikzcd}[sep=small]
+        {\emptyset} 
+            \ar[r] \ar[dd]
+            & {\anyL{\sigma_2} \ominus \anyL{\me_1}}
+                \ar[r, dashed, "\anyL{\me_2}\res|{\me_1}" yshift=3pt] \ar[d, "\compl{\anyL{\me_1}}"']
+                & {\anyL{\sigma_3} \ominus \anyL{\uncon{\me_2 \comp \me_1}}}
+                    \ar[ddl, "\compl{\anyL{\uncon{\me_2 \comp \me_1}}}"]
+        \\
+            & {\anyL{\sigma_2}}
+                \ar[d, "\anyL{\me_2}"']
+        \\
+        {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+            \ar[r, "\anyL{\uncon{\me_2 \comp \me_1}}"' yshift=-3pt]
+            & {\anyL{\sigma_3}}
+    \end{tikzcd}
+    is a pullback as $\img{\anyL{\uncon{\me_2 \comp \me_1}}} \setInt \img{\compl{\anyL{\uncon{\me_2 \comp \me_1}}}} = \emptyset$ and so the inner square must be a pullback.
+
+    For $\xRightarrow{(3)}$, the second pullback gives that $\anyL{\me_2}(\compl{\anyL{\me_1}}(\va)) \not\in \img{\anyL{\uncon{\me_2 \comp \me_1}}}$.
+    
+\end{proof}
+
+\begin{lemma}[Regular Monos are Disconnectedness Preserving]\label{lem:dcon-pres-rmono}
+    For $\sigma_1 \xrto{\me_1} \sigma_2 \xrto{\me_2} \sigma_3$, $\me_2$ preserves disconnectivity of $\me_1$.
+\end{lemma}
+\begin{proof}
+    Notice that $\con{\me_2 \comp \me_1}$ is epi and a regular mono and thus iso.
+    As a result,
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL{\sigma_1}}
+            \ar[r, -rmonotip, "\anyL{\me_1}"] \ar[d, "\anyL{\con{\me_2 \comp \me_1}}"', "\iso"] \pbsquare{dr}
+                    & {\anyL{\sigma_2}}
+                        \ar[d, -rmonotip, "\anyL{\me_2}"]
+            \\
+            {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+                \ar[r, -rmonotip, "\anyL{\uncon{\me_2 \comp \me_1}}"' yshift=-3pt]
+                    & {\anyL{\sigma_3}}
+        \end{tikzcd}
+    \end{center}
+    is a pullback by \cref{lem:pullback-iso-mono}.
+\end{proof}
+
+\begin{lemma}[Disconnectedness Preservation is Downwards Closed]\label{lem:dcon-pres-dclosed}
+    For $\sigma_1 \xrto{\me_1} \sigma_2 \xto{\me_2} \sigma_3 \xto{\me_3} \sigma_4$, if $\me_3 \comp \me_2$ preserves disconnectivity of $\me_1$ then
+    $\me_2$ preserves disconnectivity of $\me_1$.
+\end{lemma}
+\begin{proof}
+    We have a diagram
+    \begin{center}
+        \begin{tikzcd}
+        {\emptyset}
+            \ar[r] \ar[dd]
+            & {\anyL{\sigma_2} \ominus \anyL{\me_1}} 
+                \ar[d, "\compl{\anyL{\me_1}}"]
+        \\
+            & {\anyL{\sigma_2}}
+                \ar[d, "\anyL{\me_2}"]
+        \\
+        {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+            \ar[r, "\anyL{\uncon{\me_2 \comp \me_1}}"] \ar[d, dashed, "\anyL{\lt{\me_3 \comp \uncon{\me_2 \comp \me_1}}}"']
+            & {\anyL{\sigma_3}}
+                \ar[d, "\anyL{\me_3}"]
+        \\
+        {\anyL{\sigma_{\con{\me_3 \comp \me_2 \comp \me_1}}}}
+            \ar[r, "\anyL{\uncon{\me_3 \comp \me_2 \comp \me_1}}"' yshift=-10pt]
+            & {\anyL{\sigma_4}}
+        \end{tikzcd}
+    \end{center}
+    Where the dashed morphism is given by \cref{lem:ofs-tinstC}.
+    That $\me_3 \comp \me_2$ preserves disconnectivity of $\me_1$ gives us that the outer square is a pullback,
+    and by \cref{lem:pullback-initial-obj}, the inner square is also pullback which translates to 
+    $\me_2$ preserves disconnectivity of $\me_1$.
+\end{proof}
+
+\begin{lemma}[L.I.G.U. and Disconnectedness Preservation]\label{lem:ligu-dcon}
+    Every L.I.G.U. diagram of the form 
+    \begin{tikzcd}
+        & {\sigma_1} 
+            \ar[dl, "\me_1'"'] \ar[dr, -rmonotip, "\me_1"]
+    \\
+    {\sigma_2'}
+        \ar[dr, "\me_2'"']
+            && {\sigma_2}
+                    \ar[dl, "\me_2"]
+    \\
+        & {\sigma_3}
+    \end{tikzcd}
+    satisfies $\me_2$ preserves the disconnectivity of $\me_1$.
+\end{lemma}
+\begin{proof}
+    By \cref{lem:pullback-vpres} we have that the $\tinstU$-image is a pullback in $\tempC$,
+    which by \cref{lem:tinstU-pls-refl} it is a pullback in $\tinstC$.
+
+    So we have a pullback
+    \begin{center}
+        \begin{tikzcd}
+            {\sigma_1}
+                \ar[r, "\me_1'"] \ar[d, -rmonotip, "\me_1"'] \pbsquare{dr}
+                    & {\sigma_2'}
+                        \ar[d, -rmonotip, "\me_2'"]
+            \\
+            {\sigma_2} \ar[r, "\me_2"']
+                    & {\sigma_3}
+        \end{tikzcd}
+    \end{center}
+    and notice $\me_2'$ is r.mono by \cref{lem:lic-vpres} and $\tinstU$ reflecting variable preserving morphisms. 
+    
+    By \cref{lem:pullback-factoring}, we have that 
+    \begin{center}
+        \begin{tikzcd}
+            {\sigma_1}
+                \ar[r, twoheadrightarrow, "\con{\me_1'}"] \ar[dd, -rmonotip, "\me_1"'] \pbsquare{ddr}
+                    & {\sigma_{\con{\me_2' \comp \me_1'}}}
+                        \ar[d, -rmonotip, "\uncon{\me_1'}"]
+            \\
+                    & {\sigma_2} 
+                        \ar[d, -rmonotip, "\me_2'"]
+            \\
+            {\sigma_2} \ar[r, "\me_2"']
+                    & {\sigma_3}
+        \end{tikzcd}
+    \end{center}
+    which proves that $\me_2$ preserves disconnectivity of $\me_1$ by \cref{lem:dcon-pres-prop-equiv}. 
+\end{proof}
+
+\begin{lemma}[Disconnectedness Preserving Morphisms are Data Agnostic]\label{lem:dcon-pres-data-agn}
+    For 
+    \begin{tikzcd}[sep=small]
+        {\sigma_1} 
+            \ar[r, -rmonotip, "\me_1"]
+            & {\sigma_2} \ar[r, "\me_2"]
+                & {\sigma_3}
+    \end{tikzcd}
+    if $\me_2$ preserves disconnectivity of $\me_1$, then for all $\mvarM' : \dheapF(\concL{\sigma_2} \ominus \concL{\me_1}, \anyL{\sigma_2})$,  $\me_2$ preserves disconnectivity of $\me_1' = \pair{\instU\me_1}{\mvarM'}$.
+\end{lemma}
+\begin{proof}
+    We first show that $\anyL{\sigma_1} \xto{\anyL{\con{\me_2 \comp \me_1}}} \anyL{\sigma_{\con{\me_2 \comp \me_1}}} \xto{\anyL{\uncon{\me_2 \comp \me_1}}} \anyL{\sigma_3}$
+    satisfies \cref{def:reach-loc} for $\mvarM_{\me_2 \comp \me_1'}$.
+    This would give us a $\vh$ that satisfies
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL{\sigma_1}} 
+                \ar[r, "\anyL{\con{\me_2 \comp \me_1}}"] \ar[dr, "\anyL{\con{\me_2 \comp \me_1'}}"']
+                & {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+                    \ar[r, "\uncon{\me_2 \comp \me_1}"]
+                        & {\anyL{\sigma_3}}
+            \\
+                & {\anyL{\sigma_{\con{\me_2 \comp \me_1'}}}}
+                    \ar[ur, "\uncon{\me_2 \comp \me_1'}"'] \ar[u, dashed, "\vh"]
+        \end{tikzcd}
+    \end{center}
+    Property (i) follows immediately.
+    For Property (ii), first by the lifting property we have
+    \begin{tikzcd}
+        {\sigma_{\con{\me_2 \comp \me_1}}} 
+            \ar[rr, -rmonotip, "\uncon{\me_2 \comp \me_1}"] \ar[dr, dashed, -rmonotip, "\lt{\uncon{\me_2 \comp \me_1}}"']
+                && {\sigma_3}
+        \\
+            & {\sigma_{\con{\me_2}}}
+                \ar[ur, -rmonotip, "\uncon{\me_2}"']
+    \end{tikzcd},
+    and the pullback $\anyL{\sigma_{\con{\me_2 \comp \me_1}}} \pltimes{\anyL{\sigma_3}} (\concL{\sigma_3} \ominus \concL{\me_2 \comp \me_1})$
+    is given by the pullback
+    ${\concL{\sigma_{\con{\me_2 \comp \me_1}}} \pltimes{\concL{\sigma_{\con{\me_2}}}} (\concL{\sigma_{\con{\me_2}}} \ominus \concL{\con{\me_2} \comp \me_1})}$
+    from
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+                \ar[r, "\anyL{\lt{\uncon{\me_2 \comp \me_1}}}"] \ar[rr, bend left=15, "\anyL{\uncon{\me_2 \comp \me_1}}"] 
+                    & {\anyL{\sigma_{\me_2}}}
+                        \ar[r, "\anyL{\uncon{\me_2}}"]
+                        & {\anyL{\sigma_3}}
+            \\
+            {\concL{\sigma_{\con{\me_2 \comp \me_1}}}}
+                \ar[r, "\concL{\lt{\uncon{\me_2 \comp \me_1}}}"] \ar[u, "\concL{\sigma_{\con{\me_2 \comp \me_1}}}"] \pbsquare{ur}
+                    & {\concL{\sigma_{\con{\me_2}}}}
+                        \ar[r, "\concL{\uncon{\me_2}}"] \ar[u, "\concL{\sigma_{\con{\me_2}}}"] \pbsquare{ur}
+                        & {\concL{\sigma_3}}
+                            \ar[u, "\concL{\sigma_3}"']
+            \\
+            {\sigma_{\concL{\con{\me_2 \comp \me_1}}}
+             \pltimes\relax
+             (\concL{\sigma_{\con{\me_2}}} \ominus \concL{\con{\me_2} \comp \me_1})}
+                \ar[r] \ar[u] \pbsquare{ur}
+                & {\concL{\sigma_{\con{\me_2}}} \ominus \concL{\con{\me_2} \comp \me_1}}
+                    \ar[r, "\concL{\uncon{\me_2}}"' yshift=-4pt] \ar[u, "\compl{\concL{\con{\me_2} \comp \me_1}}"] \pbsquare{ur}
+                    & {\concL{\sigma_3} \ominus \concL{\me_2 \comp \me_1}}
+                        \ar[u, "\compl{\concL{\me_2 \comp \me_1}}"']
+        \end{tikzcd}
+    \end{center}
+    Now by \cref{lem:dcon-pres-dclosed}, we have that $\con{\me_2}$ preserves disconnectivity of $\me_1$ and so
+    \begin{center}
+    \begin{tikzcd}
+        {\anyL{\sigma_1}}
+            \ar[r, "\anyL{\me_1}"] \ar[d, "\anyL{\con{\me_2 \comp \me_1}}"'] \pbsquare{dr}
+                & {\anyL{\sigma_2}}
+                    \ar[d, "\anyL{\con{\me_2}}"]
+        \\
+        {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+            \ar[r, "\anyL{\lt{\uncon{\me_2 \comp \me_1}}}"']
+                & {\anyL{\sigma_{\con{\me_2}}}}
+    \end{tikzcd} 
+    \end{center}
+    which implies that $\res_{\compl{\concL{\con{\me_2} \comp \me_1}}}\concL{\lt{\uncon{\me_2 \comp \me_1}}}$ must factor as
+    \begin{center}
+    \begin{tikzcd}
+            {\concL{\sigma_{\con{\me_2 \comp \me_1}}}
+             \pltimes\relax
+             (\concL{\sigma_{\con{\me_2}}} \ominus \concL{\con{\me_2} \comp \me_1})}
+                \ar[rr, "\res_{\compl{\concL{\con{\me_2} \comp \me_1}}}\concL{\lt{\uncon{\me_2 \comp \me_1}}}"] \ar[dr, dashed]
+                    && {\concL{\sigma_{\con{\me_2}}} \ominus \concL{\con{\me_2} \comp \me_1}}
+            \\
+                & {\concL{\sigma_{\con{\me_2}}} \ominus \concL{\con{\me_2}}}
+                    \ar[ur, hook]
+    \end{tikzcd}
+    \end{center}
+    As a result, all locations $\anyL{\sigma_{\con{\me_2 \comp \me_1}}} \pltimes{\anyL{\sigma_3}} (\concL{\sigma_3} \ominus \concL{\me_2 \comp \me_1})$
+    in $\mvarM_{\me_2 \comp \me_1'}$ point to cells in $\mvarM_{\con{\me_2}}$.
+    Since $\tinstU\me_1 = \tinstU\me_1'$, the locations in these cells factor through $\anyL{\sigma_{\con{\me_2 \comp \me_1}}}$ by \cref{def:reach-loc}
+    for $\anyL{\con{\me_2 \comp \me_1}}$ at $\mvarM_{\me_2 \comp \me_1}$.
+
+    We now use $\vh$ to show
+    \begin{center}
+        \begin{tikzcd}
+            {\anyL{\sigma_1}} 
+                \ar[r, Rightarrow] \ar[d, "\anyL{\con{\me_2 \comp \me_1'}}"'] \pbsquare{dr}
+                & {\anyL{\sigma_1}}
+                    \ar[d, "\anyL{\con{\me_2 \comp \me_1}}"'] \ar[rr, "\anyL{\me_1}"] \pbsquare{drr}
+                        && {\anyL{\sigma_2}} 
+                            \ar[d, "\anyL{\me_2}"]
+            \\
+            {\anyL{\sigma_{\con{\me_2 \comp \me_1'}}}}
+                \ar[r, dashed, "\vh"] \ar[rrr, bend right=30, "\anyL{\uncon{\me_2 \comp \me_1'}}"']
+                & {\anyL{\sigma_{\con{\me_2 \comp \me_1}}}}
+                    \ar[rr, "\anyL{\uncon{\me_2 \comp \me_1}}"]
+                        && {\anyL{\sigma_3}}
+        \end{tikzcd}
+    \end{center}
+    The right square is a pullback by \cref{lem:dcon-pres-prop-equiv}, and the left square is a pullback by \cref{lem:pullback-iso-mono}. 
+    As a result by pullback pasting the outer square is a pullback giving us that $\me_2$ preserves the disconnectivity of $\me_1'$.
+\end{proof}
+
+\Cref{lem:dcon-pres-data-agn} leads us to a definition of disconnectivity preservation w.r.t. morphisms in $\tempC$.
+
+\begin{definition}[Disconnectedness Preserving Morphisms w.r.t. $\tempC$]
+    We say that $\me_2 : \sigma_2 \to \sigma_3$ preserves the disconnectivity of $\sigma_1 \xrto{\rho_1} \sigma_2$ living in $\tempC$, 
+    if for all $\mvarM_{\rho_1} : \dheapF(\concL{\sigma_2} \ominus \concL{\rho_1}, \anyL{\sigma_2})$,
+        $\me_2$ preserves the disconnectivity of $\pair{\rho_1}{\mvarM_{\rho_1}}$.
+\end{definition}
+
+\begin{lemma}[Disconnectedness Preservation and L.I.C.]
+    For a span $\sigma_1 \xfrom{\tinstU\me_1} \sigma \xrto{\rho_2} \sigma_2$ in $\tempC$,
+    the induced morphism in $\tinstC$, $\ext^{\rho_2}{\me_1}$, given by \cref{lem:lic-exist} and \cref{rem:lic-T-data},
+    satisfies: $\ext^{\rho_2}{\me_1}$ preserves the disconnectivity of $\rho_2$.
+\end{lemma}
+\begin{proof}
+    For some $\mvarM_{\rho_2} : \dheapF(\concL{\sigma_2} \ominus \concL{\rho_2}, \anyL{\sigma_2})$, and $\me_2 = \pair{\rho_2}{\mvarM_{\rho_2}}$,
+    we have by \cref{lem:ligu-rmono-exist} that
+    \begin{tikzcd}
+        & {\sigma}
+            \ar[dl, "\me_1"'] \ar[dr, -rmonotip, "\me_2"]
+    \\
+    {\sigma_1}
+        \ar[dr, "\ext^{\tinstU\me_1}\me_2"']
+            && {\sigma_2}
+                \ar[dl, "\ext^{\tinstU\me_2}\me_1"]
+    \\
+        & {\sigma_1 \liplus\sigma \sigma_2}
+    \end{tikzcd}
+    with data given by \cref{rem:lic-T-data} commutes in $\tinstC$. 
+    Since this is a L.I.G.U. we have by \cref{lem:ligu-dcon} that $\ext^{\tinstU\me_2}\me_1$ preserves the disconnectivity of $\me_2$.
+\end{proof}

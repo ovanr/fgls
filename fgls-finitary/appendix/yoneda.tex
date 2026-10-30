@@ -1,0 +1,89 @@
+
+\subsection{Yoneda Lemmas}
+
+\begin{lemma}[Restricted Yoneda Embedding preserves Coequalizers]\label{lem:ryoneda-coeqz}
+    The yoneda embedding $\yoneda : \mcatC \to \fsreprC\mcatC$ preserves coequalizers.
+\end{lemma}
+\begin{proof}
+    Given a coequalizing diagram 
+    \begin{tikzcd}{\vA} \ar[r, yshift=3pt, "\vf"] \ar[r, yshift=-3pt, "\vg"'] & {\vB} \ar[r, "\ve"] & {\vC}\end{tikzcd}
+    we show that 
+    \begin{tikzcd}{\yoneda\vA} \ar[r, yshift=3pt, "\yoneda\vf"] \ar[r, yshift=-3pt, "\yoneda\vg"'] & {\yoneda\vB} \ar[r, "\yoneda\ve"] & {\yoneda\vC}\end{tikzcd}
+    is also coequalizing.
+
+    Consider a $\yoneda\vB \xto\alpha \Gamma$ s.t. $\alpha \comp \yoneda\vf = \alpha \comp \yoneda\vg$.
+    By yoneda, $\alpha : \Gamma\vB$ is a morphism $\vB \xto{\check\alpha} \vC'$ for some $\vC' \in \Gamma$ s.t. $\check\alpha \comp \vf = \check\alpha \comp \vg$
+    and so we have a unique $\vC \xto\vh \vC'$, which by yoneda a morphism  $\yoneda\vC \to \Gamma$.
+    Uniqueness follows directly from uniqueness in the base category.
+\end{proof}
+
+\begin{lemma}[Restricted Yoneda Embedding preserves Pushouts]\label{lem:ryoneda-pushouts}
+    The yoneda embedding $\yoneda : \mcatC \to \fsreprC\mcatC$ preserves pushouts.
+\end{lemma}
+\begin{proof}
+    Given a pushout diagram 
+    \begin{tikzcd}
+        {\vA} \ar[r, "\vg"] \ar[d, "\vf"'] 
+            & {\vC} \ar[d, "\inj_2"] 
+        \\
+        {\vB} \ar[r, "\inj_1"']
+            & {\vB \liplus\vA \vC} \posquare{ul}
+    \end{tikzcd}
+    we show that 
+    \begin{tikzcd}
+        {\yoneda\vA} \ar[r, "\yoneda\vg"] \ar[d, "\yoneda\vf"'] 
+            & {\yoneda\vC} \ar[d, "\yoneda(\inj_2)"] 
+        \\
+        {\yoneda\vB} \ar[r, "\yoneda(\inj_1)"']
+            & {\yoneda(\vB \liplus\vA \vC)}
+    \end{tikzcd}
+    is also a pushout.
+
+    Consider a $\yoneda\vB \xto\alpha \Gamma, \yoneda\vC \xto\beta \Gamma$ s.t. $\alpha \comp \yoneda\vf = \beta \comp \yoneda\vg$.
+    By yoneda, we have morphisms $\vB \xto{\check\alpha} \vD$ and $\vC \xto{\check\beta} \vD$ 
+    s.t. $\check\alpha \comp \vf = \check\beta \comp \vg$,
+    and so we have a unique $\vB \liplus\vA \vC \xto\vh \vD$, which by yoneda is a morphism $\yoneda(\vB \liplus\vA \vC) \to \Gamma$.
+    Uniqueness follows directly from uniqueness in the base category.
+\end{proof}
+
+\begin{lemma}\label{lem:fsreprC-mono}
+    A $\alpha : \Gamma_1 \to \Gamma_2 \in \fsreprC\mcatC$ is mono iff it is component-wise injective.
+\end{lemma}
+\begin{proof}
+    The $\from$ direction is clear.
+    For $\to$, consider $\inj_\vi(\vf_\vi : \vC \to \vC_\vi) \neq \inj_{\vj}(\vf_\vj : \vC \to \vC_\vj)$.
+    We want to show that
+    \[ \alpha(\inj_\vi(\vf_\vi)) = \Gamma_2(\vf_\vi)(\alpha(\inj_\vi1_{\vC_\vi})) \neq \Gamma_2(\vf_\vj)(\alpha(\inj_{\vj}1_{\vC_\vj})) =  \alpha(\inj_\vj(\vf_\vj)) \] 
+    so assume $\Gamma_2(\vf_\vi)(\alpha(\inj_\vi1)) = \Gamma_2(\vf_\vj)(\alpha(\inj_\vj1))$
+    and we show a contradiction.
+
+    We have that $\indF\alpha(\vi) = \indF\alpha(\vj)$ and
+    \begin{center}
+        \begin{tikzcd}
+            & {\vC}
+                \arrow[dl, "\vf_\vi"'] \arrow[dr, "\vf_\vj"]
+        \\
+            {\vC_\vi}
+                \arrow[dr, "\alpha_\vi"']
+                    && {\vC_\vj}
+                        \arrow[dl, "\alpha_\vj"]
+        \\ 
+            & {\vC_{\alpha(\vi)}}
+        \end{tikzcd}
+    \end{center}
+
+    We have morphisms $\inj_\vi(\vf_\vi),\, \inj_\vj(\vf_\vj) : \yoneda\vC \to \Gamma_1$.
+    And by copairing we have morphisms $\copair1{\inj_\vi(\vf_\vi)}, \copair1{\inj_\vj(\vf_\vj)} : \Gamma_1 + \yoneda\vC \to \Gamma_1$.
+    
+    The assumption $\inj_\vi(\vf_\vi) \neq \inj_{\vj}(\vf_\vj)$, gives us exactly that they two copairing morphisms are not equal.
+    Notice also that $\alpha \comp \copair1{\inj_\vi(\vf_\vi)} = \alpha \comp \copair1{\inj_\vj(\vf_\vj)}$ by construction.
+
+    But $\alpha$ being mono gives us that $\copair1{\inj_\vi(\vf_\vi)} = \copair1{\inj_\vj(\vf_\vj)}$ which is a contradiction.
+\end{proof}
+
+\begin{corollary}\label{lem:fsreprC-base-mono}
+    If $\alpha : \Sigma_1 \to \Sigma_2 \in \fsreprC\mcatC$ is mono then every $\alpha(\inj_\vi(1_{\vC_\vi}))$ for $\vC_\vi \in \Sigma$ is mono.
+\end{corollary}
+\begin{proof}
+    Immediate from \cref{lem:fsreprC-mono}.
+\end{proof}

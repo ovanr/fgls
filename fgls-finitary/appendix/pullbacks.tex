@@ -1,0 +1,122 @@
+
+\subsection{Pullback Lemmas}
+
+\begin{lemma}[Pullbacks and mono post-composition]\label{lem:pullback-mono-post-comp}
+    Let $\vk$ be mono. Then every square of the form 
+    \begin{arrow-diagram}
+        {} \ar[d, "\pi_2"'] \ar[r, "\pi_1"] & {} \ar[d, "\vf"] \\
+        {} \ar[r, "\vg"'] & {}
+    \end{arrow-diagram}
+    is a pullback square iff
+    \begin{arrow-diagram}
+        {} \ar[dd, "\pi_2"'] \ar[rr, "\pi_1"] && {} \ar[d, "\vf"] \\
+        {}                                    && {} \ar[d, "\vk"] \\
+        {} \ar[r, "\vg"'] & {} \ar[r, "\vk"']  &  {}
+    \end{arrow-diagram}
+    is a pullback square.
+\end{lemma}
+\begin{proof} \nl
+    $\to$) Take $\vk \comp \vf \comp \kappa_1 = \vk \comp \vg \comp \kappa_2$.
+           From $\vk$ being mono we have $\vf \comp \kappa_1 = \vg \comp \kappa_2$. 
+           The induced morphism from the pullback on the left is exactly the one we need.
+    \nl
+    $\from$) Take $\vf \comp \kappa_1 = \vg \comp \kappa_2$ which gives us $\vk \comp \vf \comp \kappa_1 = \vk \comp \vg \comp \kappa_2$.
+              The induced morphism from the pullback on the right is exactly the one we need.
+\end{proof}
+
+\begin{lemma}[Pullbacks and isos]\label{lem:pullback-iso-mono}
+    A square
+    \begin{arrow-diagram}
+        {} \ar[d, "\pi_2"'] \ar[r, "\pi_1"] & {} \ar[d, "\vf"] \\
+        {} \ar[r, "\vg"'] & {}
+    \end{arrow-diagram}
+    where $\pi_2$ is iso and $\vf$ is mono, is a pullback square.
+\end{lemma}
+\begin{proof}
+    For $\vg \comp \vk = \vf \comp \vl$, define the unique morphism $\vh = \inv^{\pi_2} \comp \vk$.
+    Then $\vk = \pi_2 \comp \inv^{\pi_2} \comp \vk$ and $\vl = \pi_1 \comp \inv^{\pi_2} \comp \vk$ by post-composition with monomorphism $\vf$.
+    $\vh$ is unique by $\pi_2$ being mono.
+\end{proof}
+
+\begin{lemma}[Pullbacks with Initial Objects]\label{lem:pullback-initial-obj}
+    Given a category with a strict initial object and a diagram
+    \begin{tikzcd}
+        {0} \ar[r, "?_\vA"] \ar[d, "?_\vB"']
+            & {A} \ar[r, "\vh"] \ar[d, "\vf"]
+                & {D} \ar[d, "\vk"]
+        \\
+        {B} \ar[r, "\vg"]
+            & {C} \ar[r, "\vl"]
+                & {E}
+    \end{tikzcd}
+    where the outer square is a pullback, we have that
+    \begin{tikzcd}
+        {0} \ar[r, "?_\vA"] \ar[d, "?_\vB"']
+            & {A} \ar[d, "\vf"]
+        \\
+        {B} \ar[r, "\vg"]
+            & {C}
+    \end{tikzcd} is also a pullback.
+\end{lemma}
+\begin{proof}
+    Consider $\vf \comp \phi = \vg \comp \xi$. 
+    Then $\vk \comp \vh \comp \phi = \vl \comp \vf \comp \phi = \vl \comp \vg \comp \xi$ and so we have a morphism into $0$ which by stictness of the initial object, $\phi$, and $\xi$ must be the initial morphisms.
+\end{proof}
+
+\begin{lemma}[Pullback preserved along factoring]\label{lem:pullback-factoring}
+    Given a pullback
+    \begin{tikzcd}
+        {\vA \pltimes\vC \vB} \ar[r, "\proj_2"] \ar[d, "\proj_1"] \pbsquare{dr}
+            & {\vB} \ar[d, "\vg"]
+        \\
+        {\vA} \ar[r, "\vf"]
+            & {\vC}
+    \end{tikzcd}
+    and a factoring of $\proj_2$ as 
+    \begin{tikzcd}
+            & {\vB'} \ar[d, "\vl"]
+        \\
+        {\vA \pltimes\vC \vB} \ar[ur, "\vk"] \ar[r, "\proj_2"]
+            & {\vB}
+    \end{tikzcd} where $\vl$ is mono, then 
+    \begin{tikzcd}
+        {\vA \pltimes\vC \vB} \ar[r, "\vk"] \ar[d, "\proj_1"]
+            & {\vB'} \ar[d, "\vg \comp \vl"]
+        \\
+        {\vA} \ar[r, "\vf"]
+            & {\vC}
+    \end{tikzcd} is a pullback.
+\end{lemma}
+\begin{proof}
+    Consider $\vg \comp \vl \comp \vp_2 = \vf \comp \vp_1$. 
+    We get a unique morphism $\vh$ s.t. $\vp_1 = \proj_1 \comp \vh$ and $\vl \comp \vk \comp \vh = \vl \comp \vp_2$
+    which by $\vl$ being mono, we have $\vk \comp \vh = \vp_2$ and uniqueness follows from the pullback.
+\end{proof}
+
+\begin{lemma}[Monos and Coparallel map in extensive categories]\label{lem:monos-coparallel-extensive}
+    Given an extensive category $\mcatC$, and morphisms $\vf : \vA \to \vB, \vg : \vA' \to \vB' \in \mcatC$, 
+    we have that the coparallel map $\vf + \vg : \vA + \vA' \to \vB + \vB'$ is mono iff $\vf,\vG$ are.
+\end{lemma}
+\begin{proof}
+    For $\to$) direction, extensiveness gives us the pullbacks
+    \begin{center}
+        \begin{tikzcd}
+            {\vA} \ar[r, "\inj_\vA"] \ar[d, "\vf"] \pbsquare{dr}
+                & {\vA + \vA'}
+                    \ar[d, dashed, "\vf + \vg"]
+                    & {\vA'} 
+                        \ar[l, "\inj_{\vA'}"'] \pbsquare{dl} \ar[d, "\vg"]
+            \\
+            {\vB} \ar[r, "\inj_\vB"]
+                & {\vB + \vB'}
+                    & {\vB'} 
+                        \ar[l, "\inj_{\vB'}"]
+        \end{tikzcd}
+    \end{center}
+    which imply $\vf$ and $\vg$ are mono.
+
+    For $\from$, extensiveness gives us that for every $\vA'$, $\vB'$, we have an equivalence of categories
+    \[ \sliceC\mcatC{\vA'} \times \sliceC\mcatC{\vB'} \equivC \sliceC\mcatC{\vA' + \vB'} \]
+    given by the coparallel map.
+    Since equivalences preserve monos, the coparallel map will also be mono.
+\end{proof}

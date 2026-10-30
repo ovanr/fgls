@@ -1,0 +1,36 @@
+
+\section{Background}
+
+\subsection{Full-Ground Local State}
+
+The monad for Full-Ground local state is as follows~\cite{kammar2017monad}:
+\[\begin{array}{rcl}
+    \monFLS & : & \funC\worldC\setC \to \funC\worldC\setC \\ 
+    (\monFLS\vX)\vw & \eqdef & \underbrace{
+        \End{\vw \injto \vw' \in \commaC\vw\vU} 
+            \heapF\vw' \to 
+            \overbrace{\Coend{\vw' \injto \vw'' \in \commaC{\vw'}\vU} (\vX\vU)\vw'' \times \heapF\vw''}^{\vP(\vX\vU\times\heapF)\vw'}
+        }_{\vU_*(\Exp{\vP(\vX\vU \times \heapF)}\heapF)\vw}
+\end{array}\]
+The monad's action on objects can be described as taking the right Kan extension along the forgetful functor $\vU$ of the functor $\Exp{\vP(\vX\vU \times \heapF)}\heapF$.
+In this case $\vP : \funC\initC\setC \to \funC\initC\setC$ is the so-called hiding monad and $\heapF : \initC \to \setC$ represents heaps ($\initC$ has objects worlds and morphisms as initialisation data).
+
+\begin{center}
+\begin{tikzcd}
+    {\initC} \arrow[rr, "\vU"] & & {\worldC} && {\funC\worldC\setC} \arrow[rr, "\vU^*", shift left=3] & \perp & {\funC\initC\setC} \arrow[ll, "\vU_*", shift left=3] \arrow[loop, distance=2em, in=35, out=325, "\vP"'] \\
+\end{tikzcd}
+\end{center}
+
+\subsection{Finitary Monads}
+
+\begin{itemize}
+    \item A monad is said to be finitary if its underlying endofunctor preserves $\omega$-filtered colimits.
+    \item An $\omega$-filtered colimit is a colimit over an $\omega$-filtered category.
+    \item An $\omega$-filtered category is a category $\mcatC$ that satisfies all of the following conditions: 
+        \begin{itemize}
+            \item There exists at least one object in $\mcatC$.
+            \item For any two objects $\vC, \vD \in \mcatC$, there exists an object $\vE$ and two morphisms $\vf : \vC \to \vE$, $\vg : \vD \to \vE$.
+            \item For any two parallel morphisms $\vf,\vg : \vC \to \vD$, there exists a morphism $\vh : \vD \to \vE$ such that $\vh \comp \vf = \vh \comp \vg$.
+        \end{itemize}
+\end{itemize}
+

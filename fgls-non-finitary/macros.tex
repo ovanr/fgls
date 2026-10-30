@@ -1,0 +1,574 @@
+% ------------------------
+% 1. Misc
+% ========================
+
+% Colors and Highlighting.
+\colorlet{LightLavender}{Lavender!20!}
+\colorlet{Gray}{gray!100!}
+\colorlet{LightGray}{gray!40!}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\gray}[1]{\textcolor{Gray}{#1}}
+\newcommand{\red}[1]{\textcolor{Red}{#1}}
+\newcommand{\graym}[1]{\gray{\ensuremath{#1}}}
+\newcommand{\note}[1]{\\\red{#1}\\}
+\newcommand{\borderedbox}[1]{\fbox{#1}}
+
+\newcommand{\paragraphit}[1]{\noindent\textit{#1.}}
+
+\newcommand{\orpheas}[1]{\red{\textit{Orpheas: }#1}}
+
+% Writing
+\newcommand{\eg}{e.g.,\xspace}
+\newcommand{\ie}{i.e.,\xspace}
+\newcommand{\slab}[1]{\textrm{#1}}
+
+% Spacing
+\newcommand{\spac}{\,}
+
+% Other
+\def\nop{}
+\def\dash{-}
+
+% Tikz Styles for heaplets
+\tikzstyle{ptr}=[draw, semithick, {Circle[]}-{Triangle[scale=0.8]}, shorten <=-1mm]
+\tikzstyle{dptr}=[draw, semithick, {Circle[]}-{Triangle[scale=0.8]}, shorten <=-1mm, color=red]
+\tikzstyle{pricell}=[draw,minimum size=1.6em, outer sep=0pt, label={[shift={(-15pt,-5pt)},color=black]#1}]
+\tikzstyle{mpricell}=[draw,minimum size=1.6em, outer sep=0pt, label={[shift={(15pt,-5pt)},color=black]#1}]
+\tikzstyle{pubcell}=[draw,minimum size=1.6em, outer sep=0pt, label={[shift={(-15pt,-5pt)},color=blue]#1}]
+\tikzstyle{brace}=[draw,decorate,decoration={brace,amplitude=5pt,raise=5ex}]
+\tikzstyle{labbrace}=[midway,xshift=3.5em,yshift=1pt]
+\tikzstyle{mbrace}=[draw,decorate,decoration={brace,amplitude=5pt,mirror,raise=6ex}]
+\tikzstyle{lambrace}=[midway,xshift=-4em]
+
+% Tikz arrow movements
+\def\north{(0,0.55)}
+\def\west{(-0.5,0)}
+\def\wwest{(-0.75,0)}
+\def\east{(0.5,0)}
+\def\eeast{(0.75,0)}
+\def\south{(0,-0.55)}
+
+% ------------------------
+% 2. Mathematics.
+% ========================
+
+% Misc
+\newcommand{\eqdef}{:=}
+\newcommand{\inddef}{::=}
+\newcommand{\where}{\;\mathit{where}\;}
+\def\iso{\cong}
+\newcommand{\img}[1]{\mathsf{Im}(#1)}
+\newcommand{\inv}[1]{{#1}^{-1}}
+\renewcommand{\vec}{\overline}
+\def\xto{\xrightarrow}
+\def\injto{\rightarrowtail}
+\def\inclto{\hookrightarrow}
+\def\xinclto{\xhookrightarrow}
+\def\surjo{\twoheadrightarrow}
+\def\bito{\leftrightarrow}
+\newcommand{\minfun}{\mathsf{min}\spac}
+\newcommand{\Succ}{\mathit{S}\,}
+\newcommand{\Proof}{\noindent\textit{Proof:}\;}
+\newcommand{\suchthat}{\textit{s.t.}}
+\newcommand{\syntax}[1]{\;\ulcorner{\hspace{-1pt}#1\hspace{-1pt}}\urcorner\;}
+
+% Term list.
+\newcommand{\tlist}[2]{{#1}_1,...,{#1}_{#2}}
+\newcommand{\tlistr}[2]{(#1)_{#2}}
+\newcommand{\tsetr}[2]{\{#1\}_{#2}}
+
+% Common metavariables.
+% -- Vectors of binders.
+\newcommand{\vxs}{\vec\x}
+\newcommand{\vys}{\vec\y}
+% -- Variables.
+\newcommand{\va}{\mathit{a}}
+\newcommand{\vb}{\mathit{b}}
+\newcommand{\vc}{\mathit{c}}
+\newcommand{\vd}{\mathit{d}}
+\newcommand{\ve}{\mathit{e}}
+\newcommand{\vf}{\mathit{f}}
+\newcommand{\vg}{\mathit{g}}
+\newcommand{\vh}{\mathit{h}}
+\newcommand{\vi}{\mathit{i}}
+\newcommand{\vj}{\mathit{j}}
+\newcommand{\vk}{\mathit{k}}
+\newcommand{\vl}{\mathit{l}}
+\newcommand{\vm}{\mathit{m}}
+\newcommand{\vn}{\mathit{n}}
+\newcommand{\vo}{\mathit{o}}
+\newcommand{\vp}{\mathit{p}}
+\newcommand{\vq}{\mathit{q}}
+\newcommand{\vr}{\mathit{r}}
+\newcommand{\vs}{\mathit{s}}
+\newcommand{\vt}{\mathit{t}}
+\newcommand{\vu}{\mathit{u}}
+\newcommand{\vv}{\mathit{v}}
+\newcommand{\vw}{\mathit{w}}
+\newcommand{\vx}{\mathit{x}}
+\newcommand{\vy}{\mathit{y}}
+\newcommand{\vz}{\mathit{z}}
+\newcommand{\vA}{\mathit{A}}
+\newcommand{\vB}{\mathit{B}}
+\newcommand{\vC}{\mathit{C}}
+\newcommand{\vD}{\mathit{D}}
+\newcommand{\vE}{\mathit{E}}
+\newcommand{\vF}{\mathit{F}}
+\newcommand{\vG}{\mathit{G}}
+\newcommand{\vH}{\mathit{H}}
+\newcommand{\vI}{\mathit{I}}
+\newcommand{\vJ}{\mathit{J}}
+\newcommand{\vK}{\mathit{K}}
+\newcommand{\vL}{\mathit{L}}
+\newcommand{\vM}{\mathit{M}}
+\newcommand{\vN}{\mathit{N}}
+\newcommand{\vO}{\mathit{O}}
+\newcommand{\vP}{\mathit{P}}
+\newcommand{\vQ}{\mathit{Q}}
+\newcommand{\vR}{\mathit{R}}
+\newcommand{\vS}{\mathit{S}}
+\newcommand{\vT}{\mathit{T}}
+\newcommand{\vU}{\mathit{U}}
+\newcommand{\vV}{\mathit{V}}
+\newcommand{\vW}{\mathit{W}}
+\newcommand{\vX}{\mathit{X}}
+\newcommand{\vY}{\mathit{Y}}
+\newcommand{\vZ}{\mathit{Z}}
+% Conventional metavariables.
+\newcommand{\var}{\mathit{x}}
+\newcommand{\Var}{\mathit{X}}
+\newcommand{\val}{\mathit{V}}
+\newcommand{\wal}{\mathit{W}}
+\newcommand{\vop}{\mathit{op}}
+\newcommand{\compM}{\mathit{M}}
+\newcommand{\compN}{\mathit{N}}
+\newcommand{\pvarA}{\mathit{a}}
+\newcommand{\pvarB}{\mathit{b}}
+\newcommand{\pvarC}{\mathit{c}}
+\newcommand{\pvarD}{\mathit{d}}
+\newcommand{\ubar}[1]{\hat{#1}}
+
+% Maps.
+\newcommand{\mapbinding}{\mapsto}
+\newcommand{\mapempty}{\varnothing}
+\newcommand{\maplookup}[2]{#1(#2)}
+\newcommand{\mapupdate}[2]{[{#1} \mapbinding {#2}]}
+\newcommand{\Dom}[1]{\mathit{Dom}(#1)}
+
+% Lists.
+\newcommand{\concatOp}{+\hspace{-4pt}+\spac}
+\newcommand{\listCons}{;}
+\newcommand{\listSing}[1]{[#1]}
+\newcommand{\listTwo}[2]{[#1; #2]}
+\newcommand{\listApp}{\concatOp}
+\newcommand{\listNil}{[]}
+\newcommand{\card}[1]{|#1|}
+
+% Sets
+\newcommand{\singSet}[1]{\{ #1 \}}
+\newcommand{\emptySet}{\emptyset}
+\newcommand{\powerSet}[1]{\mathcal{P}(#1)}
+\newcommand{\terminalSet}{\singSet{*}}
+\newcommand{\downsetsml}[1]{{#1\downarrow}}
+\newcommand{\downset}[1]{{#1\hspace{-2pt}\downarrow}}
+\newcommand{\setDiff}{\setminus}
+
+% -----------------------------------
+% 3. Parametrised Algebraic theories.
+% ===================================
+
+\newcommand{\algtyped}[3]{#1 \vdash #2 : #3}
+\newcommand{\algeqtyped}[3]{#1 \vdash #2 \equiv #3}
+\newcommand{\ptyped}[3]{#1 \mid #2 \vdash #3}
+\newcommand{\peqtyped}[4]{#1 \mid #2 \vdash & #3 \equiv #4}
+
+\newcommand{\sorts}[1]{\underbar{$#1$}_{\mathsf{s}}}
+\newcommand{\supp}[1]{\underbar{$#1$}}
+\newcommand{\MatchContSing}[2]{\kw{match}\spac #1 \To\spac #2 }
+\newcommand{\MatchCont}[4]{\kw{match}\spac #1 \To\spac #2 ; #3 \To\spac #4}
+\newcommand{\MatchContVec}[2]{\kw{match}\spac \{ #2 \}_{#1}}
+\newcommand{\MatchContVert}[4]{
+\begin{array}[t]{@{}l}
+    \kw{match} \\
+    \quad #1 \To \spac #2; \\
+    \quad #3 \To \spac #4
+\end{array}}
+\newcommand{\MatchContThreeVert}[6]{
+    \begin{array}[t]{@{}l}
+    \kw{match} \\
+    \quad #1 \To \spac #2; \\
+    \quad #3 \To \spac #4; \\
+    \quad #5 \To \spac #6
+\end{array}}
+
+\def\Mod{\mathfrak{M}}
+\def\Param{\mathfrak{p}}
+
+\def\eqOp{\ensuremath{?_=}}
+\newcommand{\eqOpArg}[2]{?_{#1 = #2}}
+\def\eqOpVerb{\mathit{eq}}
+\def\newOp{\ensuremath{\nu}}
+\def\readOp{\mathit{r}}
+\def\writeOp{\mathit{w}}
+\def\newOpMA{\newOp_{\triple{\vw_1}{\vw_2}{\vh}}}
+\def\newOpMB{\newOp_{\triple{\vw_1'}{\vw_2'}{\vh'}}}
+\def\newOpME{\newOp_{\triple\listNil\listNil\mapempty}}
+\def\writeOpMA{\writeOp^\vC_{\tup{\vw}{\vd}}}
+\def\writeOpMB{\writeOp^\vC_{\tup{\vw'}{\vd'}}}
+\def\writeOpMC{\writeOp^\vC_{\tup{\vw_1}{\vd_1}}}
+\def\writeOpMD{\writeOp^\vC_{\tup{\vw_2}{\vd_2}}}
+\newcommand{\eqTerm}[4]{#3 \,?_{#1 = #2}\, #4}
+\newcommand{\eqTermVerb}[4]{\eqOpVerb(#1, #2, #3, #4)}
+\newcommand{\newTerm}[2]{\newOp_{#1}{#2}.\spac}
+\newcommand{\readTerm}[3]{\readOp(#1, #2, #3)}
+\newcommand{\writeTerm}[3]{\writeOp_{#1}(#2, #3)}
+
+% ------------------------
+% 4. Programming Language.
+% ========================
+
+\newcommand{\kw}[1]{{\rm {\bf #1}}}
+\newcommand{\weaken}[2]{\prescript{#1}{}{\hspace{-1pt}#2}}
+
+\def\colLinkedList{\mathrm{linked\_list}}
+\def\colData{\mathrm{data}}
+\def\lamref{\lambda_\mathsf{ref}}
+
+% Identifiers.
+\newcommand{\ident}[1]{\ensuremath{\mathit{#1}}\xspace}
+% Abstraction.
+\newcommand{\Lam}[1]{\lambda#1.\spac}
+\newcommand{\LamT}[2]{\lambda(#1 \,: #2).\spac}
+\newcommand{\LamTwo}[2]{\lambda#1\spac#2.\spac}
+\newcommand{\LamTwoT}[4]{\lambda(#1 \spac: #2)\spac(#3 \spac: #4).\spac}
+\newcommand{\LamThree}[3]{\lambda#1\spac#2\spac#3.\spac}
+\newcommand{\LamFour}[4]{\lambda#1\spac#2\spac#3\spac#4.\spac}
+% Application.
+\newcommand{\App}{\spac}
+\newcommand{\BApp}[1]{(#1)}
+% Return
+\newcommand{\Ret}{\kw{return}\spac}
+% Do
+\newcommand{\revto}{\leftarrow}
+\newcommand{\Do}[2]{\kw{do}\spac\mathit{#1}\revto{#2}\spac\kw{in}\spac}
+\newcommand{\DoT}[3]{\kw{do}\spac(\mathit{#1} : #2)\revto{#3}\spac\kw{in}\spac}
+\newcommand{\DoInVertical}[3]{
+\begin{array}[t]{@{}l}
+    \kw{do}\spac\mathit{#1}\revto{#2}\spac\kw{in}                                \\
+    #3
+\end{array}}
+\newcommand{\DoVerticalIn}[3]{
+\begin{array}[t]{@{}l}
+    \kw{do}\spac\mathit{#1}\revto{#2}                                            \\
+    \kw{in}\spac{#3}
+\end{array}}
+% Thunks
+\newcommand{\Thunk}{\kw{thunk}\spac}
+\newcommand{\Force}{\kw{force}\spac}
+% Operation Call
+\newcommand{\OCall}[3]{{#1}\BApp{{#2};{#3}}}
+\newcommand{\Kont}[1]{{#1}.}
+% If-Then
+\newcommand{\IfThenElse}[2]{\kw{if}\spac{#1}\spac\kw{then}\spac{#2}\spac\kw{else}\spac}
+% Pairs
+\newcommand{\Unit}{()}
+\newcommand{\VPair}[2]{( #1 , #2 )}
+\newcommand{\Pair}[2]{\langle #1 , #2 \rangle}
+\newcommand{\Fst}{\kw{fst}\spac}
+\newcommand{\Snd}{\kw{snd}\spac}
+\newcommand{\Split}[3]{\kw{split}\spac{#1}\spac\kw{as}\spac\Pair{#2}{#3}.\spac}
+\newcommand{\SplitVertical}[4]{
+\begin{array}[t]{@{}l}
+\kw{split}\spac{#1}\spac\{ \\
+    \qquad \Pair{#2}{#3}. \spac #4 \\
+\}
+\end{array}}
+% Variants
+\newcommand{\InjL}{\kw{inl}\spac}
+\newcommand{\InjR}{\kw{inr}\spac}
+\newcommand{\Case}[5]{\kw{case}\spac{#1}\spac\{ #2.\spac #3 ; #4. \space #5 \}}
+\newcommand{\CaseVertical}[5]{
+\begin{array}[t]{@{}l}
+    \kw{case}\spac{#1}\spac \\
+    \quad#2. \spac #3 \\
+    \quad#4. \spac #5
+\end{array}}
+\newcommand{\Absurd}[1]{\kw{case}\spac{#1}\{\}}
+
+% ------------------------
+% 5. Types.
+% ========================
+
+% Keywords.
+\newcommand{\typekw}[1]{\textsf{#1}}
+
+% Programming-language Kinds.
+\newcommand{\Type}{\mathsf{Type}}
+\newcommand{\Comp}{\mathsf{Comp}}
+\newcommand{\Signature}{\mathsf{Signature}}
+
+% Kind variables
+\newcommand{\kvarK}{\kappa}
+
+% Type variables
+\newcommand{\tvarA}{\alpha}
+\newcommand{\tkvarA}[1]{\tvarA^{#1}}
+\newcommand{\tvarB}{\beta}
+\newcommand{\tvarC}{\gamma}
+\newcommand{\tkvarC}[1]{\tvarC^{#1}}
+\newcommand{\tvarsA}{\vec\alpha}
+
+% Kind metavariables
+\newcommand{\kmvarK}{K}
+\newcommand{\kmvarP}{\hat\kmvarK}
+
+% Value type metavariables
+\newcommand{\vtmvarA}{A}
+\newcommand{\vtmvarB}{B}
+\newcommand{\vtmvarC}{C}
+\newcommand{\vtmvarD}{D}
+
+% Computation type metavariables
+\newcommand{\ctype}[1]{\underline{\textnormal{#1}}}
+\newcommand{\ctmvarA}{\ctype\vtmvarA}
+\newcommand{\ctmvarB}{\ctype\vtmvarB}
+\newcommand{\ctmvarC}{\ctype\vtmvarC}
+\newcommand{\ctmvarD}{\ctype\vtmvarD}
+
+\newcommand{\tmvarT}{T}
+
+% Signature meta-variables
+\newcommand{\smvarS}{\Sigma}
+\newcommand{\smvarT}{\smvarS'}
+
+% Signatures
+\newcommand{\sig}{\mid}
+\newcommand{\sigNil}{\cdot}
+\newcommand{\sigPlus}{\uplus}
+
+% Value types
+\newcommand{\tyZ}{\typekw{0}}
+\newcommand{\tyUnit}{\typekw{1}}
+\newcommand{\tyBool}{\typekw{B}}
+\newcommand{\tyNat}{\typekw{N}}
+\newcommand{\tyRef}[1]{\typekw{ref}_{#1}}
+\newcommand{\tyParam}{\pi}
+\newcommand{\tyU}{\typekw{U}\spac}
+\newcommand{\tySum}{\spac\typekw{$+$}\spac}
+\newcommand{\tyProd}{\spac\typekw{$\times$}\spac}
+
+% Computation types
+\newcommand{\tyF}{\typekw{F}}
+\newcommand{\tyFun}{\rightarrow}
+\newcommand{\tyCProd}{\spac\typekw{$\&$}\spac}
+
+% ------------------------
+% 6. Typing Judgments
+% ========================
+
+\newcommand{\parctx}{\Delta}
+\newcommand{\parctxB}{\parctx'}
+\newcommand{\valctx}{\Gamma}
+\newcommand{\valctxB}{\valctx'}
+\newcommand{\ctxPlus}{+}
+\newcommand{\ctxNil}{\cdot}
+
+\newcommand{\Vars}[1]{\mathsf{Var}\spac#1}
+\newcommand{\FVars}[1]{\mathsf{FreeVar}\spac#1}
+
+\newcommand{\ctyped}[4]{#1 \mid #2 \vdash_{\mathsf{c}} #3 : #4}
+\newcommand{\vtyped}[4]{#1 \mid #2 \vdash_{\mathsf{v}} #3 : #4}
+\newcommand{\eqtyped}[5]{#1 \mid #2 \vdash_{\mathsf{c}} #3 = #4 : #5}
+
+\newcommand{\RULEDEF}[2]{\hypertarget{#1}{{(#2)}}\xspace}
+\newcommand{\RULE}[2]{\hyperlink{#1}{(#2)}\xspace}
+
+\newcommand{\nameTVar}{T-Var}
+\newcommand{\nameTThunk}{T-Thunk}
+\newcommand{\nameTInjL}{T-Injl}
+\newcommand{\nameTInjR}{T-Injr}
+\newcommand{\nameTUnit}{T-Unit}
+\newcommand{\nameTVPair}{T-VPair}
+\newcommand{\nameTApp}{T-App}
+\newcommand{\nameTLam}{T-Lam}
+\newcommand{\nameTForce}{T-Force}
+\newcommand{\nameTReturn}{T-Ret}
+\newcommand{\nameTDo}{T-Do}
+\newcommand{\nameTPair}{T-Pair}
+\newcommand{\nameTFst}{T-Fst}
+\newcommand{\nameTSnd}{T-Snd}
+\newcommand{\nameTSplit}{T-Split}
+\newcommand{\nameTAbsurd}{T-Absurd}
+\newcommand{\nameTCase}{T-Case}
+\newcommand{\nameTSig}{T-Sig}
+
+% ------------------------
+% 7. Semantics
+% ========================
+
+\newcommand{\ectx}{\mathit{E}}
+\newcommand{\typeEctx}{\mathsf{ECtx}}
+\newcommand{\typeBool}{\mathbb{B}}
+\newcommand{\hole}{[\,]}
+
+\newcommand{\Subst}[2]{[#1 / #2]}
+\newcommand{\SubstTwo}[4]{[#1 / #2, #3 / #4]}
+\newcommand{\stepsto}{\rightarrow}
+\newcommand{\lstepsto}[4]{\xrightarrow{ #1(#2)_{#3} \rightsquigarrow {#4}}}
+\newcommand{\lterminates}[2]{\downarrow_{#1(#2)}}
+\newcommand{\Stepsto}{\Downarrow}
+
+\newcommand{\sem}[1]{[\![#1]\!]}
+\newcommand{\semV}[2]{\sem{#1}_{#2}}
+
+\newcommand{\interp}[1]{\llparenthesis#1\rrparenthesis}
+
+\newcommand{\inferRuleSem}[2]{\left\llbracket\begin{array}{c}\inferrule[]{#1}{#2}\end{array}\right\rrbracket}
+
+\newcommand{\typeVal}{\mathsf{Val}}
+\newcommand{\typeLoc}{\mathbb{L}}
+\newcommand{\typeSort}{\mathsf{Sort}}
+\newcommand{\typeType}{\mathsf{Type}}
+
+\newcommand{\cType}{\mathsf{ctype}\,}
+
+% Category Theory
+\newcommand{\funmvarT}{T}
+\newcommand{\funmvarF}{F}
+\newcommand{\funmvarG}{G}
+
+\newcommand{\vTCl}{\mathsf{T}}
+
+\newcommand{\mcatC}{\pazocal{C}}
+\newcommand{\mcatD}{\pazocal{D}}
+\newcommand{\mcatJ}{\pazocal{J}}
+\newcommand{\finC}{\mathsf{Fin}}
+\newcommand{\finOneC}{\mathsf{Fin}_1}
+\newcommand{\injC}{\mathsf{Inj}}
+\newcommand{\surC}{\mathsf{Surj}}
+\newcommand{\pshC}[1]{\widehat{#1}}
+\newcommand{\algC}[1]{{#1}\mathsf{-Alg}}
+\newcommand{\ctxC}{\mathsf{Ctx}}
+\newcommand{\worldC}{\mathbb{W}}
+\newcommand{\dworldC}{\underline\worldC}
+\newcommand{\initC}{\mathbb{E}}
+\newcommand{\dinitC}{\underline\initC}
+\newcommand{\dinitCiso}{\mathsf{core}(\initC)}
+\def\initInclF{\underline\vJ}
+\newcommand{\allocsC}{\mathsf{alloc}}
+\newcommand{\allocC}[1]{\mathsf{alloc}(#1)}
+\newcommand{\setC}{\mathsf{Set}}
+\newcommand{\catC}{\mathsf{Cat}}
+\newcommand{\funC}[2]{[#1, #2]}
+\newcommand{\opC}[1]{{#1}^{\mathsf{op}}}
+\newcommand{\objC}[1]{\mathsf{Obj}({#1})}
+\newcommand{\commaC}[2]{{#1}/{#2}}
+\newcommand{\Ran}[2]{\mathrm{Ran}_{#1}\,{#2}}
+\newcommand{\colimit}[1]{\mathit{colimit}\,{#1}}
+\newcommand\meduplus[1]{\scalebox{0.8}{$\displaystyle\biguplus_{#1}$}}
+\newcommand\quotient[2]{{^{#1}}\hspace{-3pt}\Big/{_{#2}}}
+\newcommand\disunion[1]{\displaystyle\meduplus{#1}}
+\newcommand\quot[1]{q_{#1}}
+\def\repr{\mathit{repr}}
+\newcommand{\hideMon}{P}
+\newcommand{\dhideMon}{\underline\hideMon}
+\newcommand{\dhideMonSk}{\underline{\mathbb{P}}}
+\newcommand{\embed}[2]{\mathrm{embed}^{#1}_{#2}}
+\def\monFLSfin{\monFLSCtx^{\mathsf{fin}}}
+\newcommand\stencilF[1]{\mathcal{S}_{#1}}
+\newcommand\stencilRebase[1]{\mathcal{S}^{#1}}
+\newcommand{\templateExt}[1]{{#1}^*}
+
+
+\newcommand{\homF}[3]{{#1}({#2}, {#3})}
+\newcommand{\diagF}[1]{\Delta_{#1}}
+\newcommand{\extF}[2]{(#1 + #2)}
+\newcommand{\extFNB}[2]{#1 + #2}
+\newcommand{\extNat}[2]{{\mathsf{ext}^{#2}_{#1}}}
+\def\cov{\mathsf{cov}}
+\def\ev{\mathsf{ev}}
+\newcommand{\actV}[2]{\mathsf{act}^{#1}_{#2}}
+\newcommand{\resV}[2]{\mathsf{res}^{#1}_{#2}}
+\newcommand{\rebaseF}[1]{\coeC{\stencilRebase{#1}}}
+\newcommand{\comp}{\circ}
+\newcommand{\bind}{\ensuremath{\gg\!\!=}}
+\newcommand{\st}{\mathit{t}}
+\newcommand{\id}{\mathit{id}}
+\newcommand{\dist}{\mathit{dist}}
+
+\newcommand{\alg}[2]{\Pair{#1}{#2}}
+\newcommand{\car}[1]{|{#1}|}
+\newcommand{\algMor}[1]{\mathit{alg}_{#1}}
+\newcommand{\eval}{\mathsf{eval}}
+
+\newcommand{\Coprod}[1]{\coprod_{#1}\spac}
+\newcommand{\Prod}[1]{\prod_{#1}\spac}
+\newcommand{\Exp}[2]{{#1}^{#2}}
+\newcommand{\End}[1]{\displaystyle{\int_{#1}}\spac}
+\newcommand{\Coend}[1]{\displaystyle{\int^{\ensuremath{#1}}}\spac}
+\newcommand{\coendInj}[2]{\vq_{#1}#2}
+\newcommand{\un}[1]{\langle{#1}\rangle}
+\newcommand{\tup}{\Pair}
+\newcommand{\triple}[3]{\langle #1,#2,#3 \rangle}
+\newcommand{\quadruple}[4]{\langle #1,#2,#3,#4 \rangle}
+\newcommand{\proj}[1]{\pi_{#1}}
+\newcommand{\braid}[2]{\mathit{B}_{#1,#2}}
+\newcommand{\curry}[1]{\lambda_{#1}}
+\newcommand{\projOne}{\pi_{1}}
+\newcommand{\projTwo}{\pi_{2}}
+\newcommand{\projThree}{\pi_{3}}
+\newcommand{\projFour}{\pi_{4}}
+\newcommand{\projFive}{\pi_{5}}
+\newcommand{\inj}[1]{\mathit{inj}_{#1}}
+\newcommand{\inl}{\mathit{inl}}
+\newcommand{\inr}{\mathit{inr}}
+\newcommand{\fork}[2]{[{#1},{#2}]}
+\newcommand{\unit}{\eta}
+\newcommand{\counit}{\varepsilon}
+\newcommand{\mul}{\mu}
+\newcommand{\ext}[1]{{#1}^*}
+
+\newcommand{\reprFinF}[2]{\homF\finC{#1}{#2}}
+\newcommand{\coPshFin}{\funC\finC\setC}
+\newcommand{\algopmvarOp}{\mathsf{op}}
+\newcommand{\CStirling}[2]{\mathsf{CStirling}_{#1}#2}
+\newcommand{\monFLS}{\pazocal{T}}
+\newcommand{\monFLSCtx}{\monFLS_{\mathrm{Ctx}}}
+\def\monFLSCtx{\monFLS_{\mathsf{C}}}
+\def\heapF{\mathbbm{H}}
+\def\dheapF{\underline\heapF}
+
+\def\readEnd{\End{\tup{\vw'}{\vd' : \sem{\phi(\vC)}(\vw')} \in \allocC\vC}}
+\def\readEndSht{\End{\tup{\vw'}{\vd'} \in \allocC\vC}}
+\def\readEndShtt{\End{\tup{\vw'}{\vd'}}}
+\newcommand{\xeq}[1]{\overset{#1}{=}}
+\newcommand{\swap}[2]{\mathrm{c}_{#1,#2}}
+\newcommand{\heapUnion}{\cup}
+\newcommand{\heapDisunion}{\uplus}
+\newcommand{\heapDisunionR}[1]{\uplus_{#1}}
+\newcommand{\heapDisunionL}[1]{\prescript{}{#1}\uplus}
+\newcommand{\heapDisunionLR}[2]{\hspace{-1pt}\prescript{}{#1}{\heapDisunion}_{\ThisStyle{\raisebox{-1.5pt}{$\SavedStyle #2$}}}}
+\newcommand{\ucup}[1]{\overset{#1}\cup}
+\newcommand{\countFun}{\ensuremath{\mathit{count}}\xspace}
+\newcommand{\iprod}[3]{{#1} \oplus_{#2} {#3}}
+\newcommand{\compl}[1]{{#1}^{\mathsf{c}}}
+\def\coeC{\oint}
+\newcommand{\maxC}[1]{\coeC\hspace{-8pt}\coeC{#1}}
+
+
+% ------------------------
+% 8. Logic
+% ========================
+
+\newcommand{\All}[1]{\forall #1.\spac}
+\newcommand{\AllTwo}[2]{\forall #1,#2.\spac}
+\newcommand{\ExistsU}[1]{\exists! #1.\spac}
+\newcommand{\Exists}[1]{\exists #1.\spac}
+\newcommand{\ExistsTwo}[2]{\exists #1, #2.\spac}
+\newcommand{\ExistsThree}[3]{\exists #1, #2, #3.\spac}
+\newcommand{\LAnd}{\wedge}
+\newcommand{\LOr}{\vee}
+\newcommand{\nat}{\mathbb{N}}
+\newcommand{\klstar}[1]{{#1}^*}
+\newcommand{\To}{\Rightarrow}
+\newcommand{\Iff}{\Leftrightarrow}

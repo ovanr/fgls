@@ -1,0 +1,9 @@
+PWD /home/ovr/repos/PAT/fgls-finitary/theory
+INPUT /usr/share/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT cat-fam-TI.tex
+OUTPUT cat-fam-TI.log
+INPUT /usr/share/texmf-dist/fonts/map/fontname/texfonts.map
+INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
+OUTPUT cat-fam-TI.pdf
+INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map

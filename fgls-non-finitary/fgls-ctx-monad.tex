@@ -1,0 +1,103 @@
+
+\section{FGLS Monad on [Ctx,Set]}
+\label{sec:fgls-ctx}
+
+There is an inclusion functor $\vJ : \worldC \inclto \ctxC$ which by precomposition extends to a functor $\vJ^* : \funC\ctxC\setC \to \funC\worldC\setC$ and further an adjunction
+\begin{tikzcd}
+    {\funC\ctxC\setC} \arrow[rr, "\vJ^*", shift left=3] & \perp & {\funC\worldC\setC} \arrow[ll, "\vJ_*", shift left=3]
+\end{tikzcd}
+by taking the right Kan extension along $\vJ$.
+The idea behind $\vJ_*$ is that while locations $\vl_1, \vl_2$ in $\worldC$ represent distinct locations, variables $\va, \vb$ in $\ctxC$ represent non-distinct aliases to locations.
+To recover this aliasing, $\vJ_*$ considers all the possible ways this aliasing can happen.
+                                
+The $\vJ_* \vdash \vJ_*$ adjunction gives us a way to extend the full-ground monad $\monFLS$ to $\ctxC$ presheaves as:
+    \[ \vX \mapsto \vJ_* (\monFLS(\vX\vJ)) : \funC\ctxC\setC \to \funC\ctxC\setC \]
+
+\noindent
+We shall now give an explicit definition of this monad using the following theorem:
+\begin{theorem}\label{thm:ran-coslice-ends}
+    Let $\vF : \mcatC \to \mcatD, \vA,\vB : \mcatC \to \setC$.
+    We will show that:
+        \[ \Ran\vF{\Exp\vB\vA}(\vD) \iso \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp{\vB\vC}{\vA\vC} \]
+\end{theorem}
+\begin{proof}
+\begin{align*}
+    \Ran\vF{\Exp\vB\vA}(\vD) \iso & \End{\vC \in \mcatC} \homF\mcatD\vD{\vF\vC} \to \Exp\vB\vA\vC        & \tag{\text{\cite{kelly2022basic} 4.24}} \\
+                             \iso & \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp\vB\vA\vC         & \tag{\cref{adx:coslice-ends-proof}} \\
+                             \iso & \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp{\vB\vC}{\vA\vC}  & \tag{\cref{adx:coslice-end-exponent-proof}}
+\end{align*}
+\end{proof}
+
+\paragraph{The Monad}
+
+Notice that:
+\[ \vJ_* (\monFLS(\vX\vJ)) = \vJ_*\vU_*(\Exp{\vP(\vX\vJ\vU)}\heapF) = \Ran{\vJ\vU}{(\Exp{\vP(\vX\vJ\vU)}\heapF)} \]
+We express the FGLS monad on $\funC\ctxC\setC$ using this observation and \cref{thm:ran-coslice-ends} as:
+
+\[\begin{array}{rcl}
+    \monFLSCtx & : & \funC\ctxC\setC \to \funC\ctxC\setC \\
+    \monFLSCtx\vX & \eqdef & \End{\rho : \vw \to \vw' \in \commaC\vw{\vJ\vU}} \heapF\vw' \to \Coend{\rho' : \vw' \to \vw'' \in \commaC{\vw'}\vU} (\vX\vJ\vU)(\vw'') \times \heapF\vw''
+\end{array}\]
+
+\begin{theorem}
+    The $\monFLSCtx$ monad is non-finitary.
+\end{theorem}
+\begin{proof}
+    Follows directly from the non-finitary proof of $\monFLS$.
+\end{proof}
+
+\paragraph{Naturality-style}
+\label{sec:fgls-ctx-natural}
+
+We can give an alternative description of $\monFLSCtx$ using natural transformations by observing the action of the End.
+Intuitively, its action is that every $\vf_{\rho_2}$ computation can be factored through a computation $\vf_{\rho_1}$ that requires a smaller starting heap followed by an extension of the result in a compatible way.
+This forbids $\vf$ from using locations that are not \emph{reachable} from $\vw$ while at the same time allowing it to be called in all compatible future worlds.
+
+Recall that the End quantifies over all morphisms $\rho : \vw \to \vw'$, and thus gives an $\rho$-ary product: 
+\[ \phi \in \Prod{\vw \xto\rho \vw' \in \objC{\commaC\vw{\vJ\vU}}} \heapF\vw' \to \vP(\vX\vJ\vU \times \heapF)\vw' \]
+such that the following coherence condition holds:
+
+for every initialisation of the form:
+ \begin{tikzcd} & {\vw} \arrow[dl, "\rho_1"'] \arrow[dr, "\rho_2"] & \\ 
+               {\vw_1} \arrow[rr, "\vJ\vU\varepsilon"] && {\vw_2} 
+ \end{tikzcd} and heap $\vh : \heapF\vw_1$
+we have: \[\vP(\vX\vJ\vU\times\heapF)(\varepsilon)(\phi_{\rho_1}(\vh)) = \phi_{\rho_2}(\heapF(\varepsilon)\vh)\]
+
+\noindent
+ If we compare this data with the data of the following natural tranformations we see that they are isomorphic:
+\[\begin{array}{c}
+ \End{\rho : \vw \to \vw' \in \commaC\vw{\vJ\vU}}\heapF\vw' \to \vP(\vX\vJ\vU \times \heapF)\vw' \iso
+    \homF{\funC\initC\setC}{\homF\ctxC\vw{\vJ\vU(\dash)} \times \heapF}{\vP(\vX\vJ\vU \times \heapF)}
+\end{array}\]
+
+We can go further and define the functorial action, unit and join of the FGLS monad in terms of this naturality style
+which will be used in \cref{sec:finitary-monad} to define the finitary monad.
+
+\paragraph{Functorial action}
+
+\[\begin{array}{r@{\,}c@{\,}l}
+    \monFLSCtx\vX(\vf : \vw \to \vw') & : & \monFLSCtx\vX\vw \to \monFLSCtx\vX\vw' \\
+    \phi & \mapsto &  \homF\ctxC{\vw'}{\vJ\vU(\dash)} \times \heapF \xto{(\dash \comp \vf) \times 1} 
+                      \homF\ctxC\vw{\vJ\vU(\dash)} \times \heapF \xto\phi \vP(\vX\vJ\vU \times \heapF)
+\end{array}\]
+
+\paragraph{Unit of Monad}
+
+\[\begin{array}{r@{\,}c@{\,}l}
+    \eta_\vX & : & \vX \To \monFLSCtx\vX \\
+    \vx : \vX\vw & \mapsto & \homF\ctxC\vw{\vJ\vU(\dash)} \times \heapF \xto{\vX(\dash)(\vx) \times 1} \vX\vJ\vU \times \heapF 
+                                                                                          \xto{\eta^\vP_{\vX\vJ\vU \times \heapF}} \vP(\vX\vJ\vU \times \heapF)
+\end{array}\]
+
+where $\vX(\dash)(\vx) : \homF\ctxC\vw{\vJ\vU(\dash)} \To \vX\vJ\vU$ is defined as $\vf \mapsto \vX(\vf)(\vx)$.
+
+\paragraph{Join of Monad}
+
+\[\begin{array}{r@{\,}c@{\,}l}
+    \mu_\vX & : & \Exp\monFLSCtx2\vX \to \monFLSCtx\vX \\
+    \phi & \mapsto & \homF\ctxC\vw{\vJ\vU(\dash)} \times \heapF \xto\phi \vP(\monFLSCtx\vX\vJ\vU \times \heapF) \xto{\vP(\eval)} \Exp\vP2(\vX\vJ\vU \times \heapF)
+    \xto{\mu^\vP_{\vX\vJ\vU \times \heapF}} \vP(\vX\vJ\vU \times \heapF)
+\end{array}\]
+
+where $\eval : (\monFLSCtx\vX)\vJ\vU \times \heapF \To \vP(\vX\vJ\vU \times \heapF)$ is defined as $\tup\phi\vh_\vw \mapsto \phi_\vw\tup{1_\vw}\vh$.
+

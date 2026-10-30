@@ -1,0 +1,232 @@
+\appendix
+
+\section{Appendix}
+
+\subsection{Hiding Monad on Heaplets}
+\label{adx:heaplet-hiding-mon}
+
+Recall the action of $\dhideMon$ on objects:
+\[\begin{array}{r@{\,}@{\,}l@{\,}l@{\,}}
+    \dhideMon          &:&\funC\dinitC\setC \to \funC\dinitC\setC \\
+    (\dhideMon\vA)(\rho : \vw^- \injto \vw^+)  &=& \Coend{\vw^- \injto \vw' \in \commaC{\vw^-}\vU} 
+                                                             \vA(\vi^{\vw' \inclto \vw' \oplus \vw^+ \ominus \rho})
+\end{array}\]
+The action on morphism $\varepsilon = 
+\begin{tikzcd}
+    {\vw_1^+} \arrow[rr, "{\vU_2\varepsilon}"] && {\vw_2^+} \\
+    {\vw_1^-} \arrow[u, "{\rho}"] \arrow[rr, "{\vU_1\varepsilon}"'] && {\vw_2^-} \arrow[u, "{\sigma}"'] \\
+\end{tikzcd}, \vh_\varepsilon : \dheapF(\vw_2^- \ominus \vU_1\varepsilon, \vw_2^+)$ is given as:
+
+\[\begin{array}{r@{\,}@{\,}l@{\,}l@{\,}}
+    \dhideMon\vA(\varepsilon) &:& \dhideMon\vA\rho \to \dhideMon\vA\sigma \\
+    \quot{\vw_1^- \xrightarrow{\rho'} \vw'}\va & \mapsto&
+        \quot{\vw_2^- \xrightarrow{(\vU_1\varepsilon)^*\rho'} \rho' \oplus_{\vw_1^-} \vU_1\varepsilon}\vA(\varepsilon')(\va)
+\end{array}\]
+
+Where $(\vU_1\varepsilon)^*\rho'$ comes from:
+\begin{tikzcd}
+    {\vw_1^-} \arrow[d, "\rho'"'] \arrow[rr, "{\vU_1\varepsilon}"] && {\vw_2^-} \arrow[d, "{(\vU_1\varepsilon)^*\rho'}"] \\
+    {\vw'} \arrow[rr, "{(\rho')^*\vU_1\varepsilon}"'] && {\rho' \oplus_{\vw_1^-} \vU_1\varepsilon}
+\end{tikzcd}
+
+and $\varepsilon'$ is:
+\begin{tikzcd}
+    {\vw' \oplus (\vw_1^+ \ominus \rho)} \arrow[rrr, "{[(\rho')^*\vU_1\varepsilon, \psi \comp \vU_2\varepsilon \comp \compl\rho]}"] &&& 
+        {\rho' \oplus_{\vw_1^-} \vU_1\varepsilon \oplus \vw_2^+ \ominus \sigma} \\
+    {\vw'} \arrow[u, hook] \arrow[rrr, "{(\rho')^*\vU_1\varepsilon}"] &&& 
+        {\rho' \oplus_{\vw_1^-} \vU_1\varepsilon} \arrow[u, hook]
+\end{tikzcd}, $\dheapF(\iso, \psi)(\eta_\varepsilon)$
+
+where $\psi$ is given by: 
+\[ \vw_2^+ \xrightarrow\iso \vw_1^- \oplus (\vw_2^- \ominus \vU_1\varepsilon) \oplus (\vw_2^+ \ominus \sigma)
+           \inclto \rho' \oplus_{\vw_1^-} \vU_1\varepsilon \oplus \vw_2^+ \ominus \sigma
+\]
+
+We will often consider the action of $\dhideMon\vA(\varepsilon)$ as two parts: 
+\begin{itemize}
+    \item An action between elements of the equivalence classes (does not satisfy functoriality): 
+        \[ \begin{array}{r@{\,}c@{\,}l}
+            \dhideMonSk\vA(\varepsilon : \rho \to \sigma) & : & \Coprod{\vw_1^- \injto \vw'} \vA(\inl^{\vw' \to \vw' \oplus (\vw_1^+ \ominus \rho)}) \to
+                                                                \Coprod{\vw_2^- \injto \vw'} \vA(\inl^{\vw' \to \vw' \oplus (\vw_2^+ \ominus \sigma)}) \\
+            \dhideMonSk\vA(\varepsilon)(\inj{\rho'}\va) &  =  & \inj{\vU_1\varepsilon*\rho'}\vA(\varepsilon')(\va)
+        \end{array}\]
+    \item A quotienting step given by the coend to make it functorial: 
+            \[ \dhideMon\vA(\varepsilon)(\quot{\rho'}\va) = [\underline{\mathbb{P}}\vA(\varepsilon)(\inj{\rho'}\va)] \]
+\end{itemize}
+
+% \subsection{Heaplet Compatibility}
+% \label{adx:heaplet-compatibility}
+
+% We say that $\tup{\vw \xrightarrow\rho \vw^- \xrightarrow{\rho^+} \vw^+}{\vh' : \dheapF(\vw^-,\vw^+)}$ is compatible with:
+% \[ \tup{{\ubar\vw}^- \xrightarrow{\sigma^+} {\ubar\vw}^+ \xleftarrow\sigma \vw^+}{\ubar\vh : \dheapF(\ubar\vw^-, \ubar\vw^+)} \]
+% when the following conditions are met:
+% \begin{itemize}
+%     \item For all their shared locations, $\vh'$ and $\ubar\vh$ store the same values, that is, we have:
+%             \[ \dheapF(\nu_*, \sigma)(\vh') = \dheapF(\ext\nu, 1_{\ubar\vw^+})(\ubar\vh) \]
+
+%         Where $\nu_*, \ext\nu$ come from the following pullback diagram:
+%         \begin{center}
+%             \begin{tikzcd}
+%                 {\vv} \arrow[d, "{\nu_*}"'] \arrow[rr, "{\ext\nu}"] && {\ubar\vw^-} \arrow[d, "{\sigma^+}"] \\
+%                 {\vw^-} \arrow[r, "{\rho^+}"] & {\vw^+} \arrow[r, "{\sigma}"] & {\ubar\vw^+} \\
+%             \end{tikzcd}
+%         \end{center}
+%     \item The part of heap $\ubar\vh$ that is not shared with $\vh'$ does not have references to locations $\vw^- \ominus \rho$ (representing the newly allocated locations):
+
+%           There exists a $\eta_{\varepsilon_1} : \dheapF(\ubar\vw^- \ominus \nu^*, \ubar\vw^+ \ominus \tau)$ where $\tau$ is:
+%             \[ \vw^- \ominus \rho \xrightarrow{\compl\rho} \vw^- \xrightarrow{\rho^+} \vw^+ \xrightarrow\sigma \ubar\vw^+ \]
+%           such that $\dheapF(1, \compl\tau)(\eta_{\varepsilon_1}) = \dheapF(\compl{\ext\nu}, 1)(\ubar\vh)$.
+% \end{itemize}
+
+% % The above data give us the following morphisms in $\dinitC$:
+% % \[\begin{array}{lcr}
+% %     \varepsilon_1 : 1_\vv \to \sigma^+ = \triple{\ext\nu}{\sigma^+ \comp \ext\nu}{\dheapF(1, \compl\tau)(\eta_{\varepsilon_1})} & \text{ and } &
+% %     \varepsilon_2 : 1_\vv \to \rho^+ = \triple{\nu_*}{\rho^+ \comp \nu_*}{\dheapF(\compl{\nu_*}, 1)(\vh')}
+% % \end{array}\]
+
+% The above data give us the following heaplets:
+% \[\begin{array}{lcr}
+%     \eta_{\varepsilon_1} : \dheapF(\ubar\vw^- \ominus \nu^*, \ubar\vw^+ \ominus \tau) & \text{ and } &
+%     \eta_{\varepsilon_2} = \dheapF(\compl{\nu_*}, 1)(\vh') : \dheapF(\vw^- \ominus \nu_*, \vw^+)
+% \end{array}\]
+
+\subsection{End related lemmas}
+\label{adx:end-lemmas}
+
+Unless otherwise specified let $\vA,\vB,\vG : \mcatC \to \setC$, $\vF : \mcatC \to \mcatD$  and the following morphisms in $\commaC\vD\vF$:
+\begin{center}
+\begin{tikzcd}
+    {\vF\vC}
+        \arrow[rr, "{\vF\vh}"]
+    &&
+    {\vF\vC'}
+    \\
+    &
+    {\vD}
+        \arrow[ul, "\vf"]
+        \arrow[ur, "\vg"']
+\end{tikzcd}
+\end{center}
+
+\begin{lemma}\label{adx:coslice-ends-proof}
+    \[ \End{\vC \in \mcatC} \Exp{\vG\vC}{\homF\mcatD\vD{\vF\vC}} \iso \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \vG\vC \]
+\end{lemma}
+\begin{proof}
+    The morphism $\End{\vC \in \mcatC} \Exp{\vG\vC}{\homF\mcatD\vD{\vF\vC}} \dashrightarrow \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \vG\vC$ is from the following wedge:
+    \begin{center}
+        \begin{tikzcd}
+            & {\End{\vC \in \mcatC} \Exp{\vG\vC}{\homF\mcatD\vD{\vF\vC}}}
+                \arrow[dl, "\proj\vC"']
+                \arrow[dr, "\proj{\vC'}"]
+        \\
+            {\Exp{\vG\vC}{\homF\mcatD\vD{\vF\vC}}}
+                \arrow[dd, "{\dash(\vf)}"]
+                \arrow[dr, "{\vG\vh \comp \dash}"]
+            &&
+            {\Exp{\vG{\vC'}}{\homF\mcatD\vD{\vF{\vC'}}}}
+                \arrow[dd, "{\dash(\vg)}"]
+                \arrow[dl, "{\Lam\vk \dash(\vF\vh \comp \vk)}"']
+        \\
+            &
+                {\Exp{\vG{\vC'}}{\homF\mcatD\vD{\vF\vC}}}
+                    \arrow[dr, "{\dash(\vf)}"]
+            &
+        \\
+            {\vG\vC}
+                \arrow[rr, "{\vG\vh}"]
+            &&
+            {\vG{\vC'}}
+        \end{tikzcd}
+    \end{center}
+    The morphism $\End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \vG\vC \dashrightarrow \End{\vC \in \mcatC} \Exp{\vG\vC}{\homF\mcatD\vD{\vF\vC}} $ is from the following wedge:
+    \begin{center}
+        \begin{tikzcd}
+            &
+                {\End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \vG\vC}
+                    \arrow[dl, "{\Lam\vf \proj\vf(\dash)}"']
+                    \arrow[dr, "{\Lam\vg \proj\vg(\dash)}"]
+                    \arrow[dd, "{\Lam\vk \proj{\vF\vh \comp \vk}(\dash)}"]
+        \\
+            {\Exp{\vG\vC}{\homF\mcatD\vD{\vF\vC}}}
+                \arrow[dr, "{\vG\vh \comp \dash}"]
+            &&
+            {\Exp{\vG{\vC'}}{\homF\mcatD\vD{\vF{\vC'}}}}
+                \arrow[dl, "{\Lam\vk \dash(\vF\vh \comp \vk)}"]
+        \\
+            &
+                {\Exp{\vG{\vC'}}{\homF\mcatD\vD{\vF\vC}}}
+        \end{tikzcd}
+    \end{center}
+    It follows directly that these two induced morphisms are inverses, and thus the two ends are isomorphic.
+\end{proof}
+
+\begin{lemma}\label{adx:coslice-end-exponent-proof}
+    \[ \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp\vB\vA\vC \iso \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp{\vB\vC}{\vA\vC} \]
+\end{lemma}
+\begin{proof}
+
+The morphism  $\End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp\vB\vA\vC \dashrightarrow \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp{\vB\vC}{\vA\vC}$ is from the following wedge:
+\begin{center}
+    \begin{tikzcd}
+    & {\End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp\vB\vA\vC}
+        \arrow[dl, "{\proj\vf}"']
+        \arrow[dr, "{\proj\vg}"]
+    \\
+    {\Exp\vB\vA\vC}
+        \arrow[d, "{\Lam\va (\dash)_\vC\tup{1_\vC}\va}"]
+        \arrow[rr, "{(\Lam{\tup\vk\va} (\dash)_{\hat\vC}\tup{\vk \comp \vh}\va)_{\hat\vC \in \mcatC}}"]
+        &&
+    {\Exp\vB\vA{\vC'}}
+        \arrow[d, "{\Lam{\va'} (\dash)_{\vC'}\tup{1_{\vC'}}{\va'}}"]
+    \\
+    {\Exp{\vB\vC}{\vA\vC}}
+        \arrow[dr, "{\vB\vh \comp \dash}"]
+        &&
+    {\Exp{\vB\vC'}{\vA\vC'}}
+        \arrow[dl, "{\dash \comp \vA\vh}"]
+    \\
+    &
+    {\Exp{\vB\vC'}{\vA\vC}}
+    \end{tikzcd}
+\end{center}
+
+The morphism  $\End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp{\vB\vC}{\vA\vC} \dashrightarrow \End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp\vB\vA\vC$ is from the following wedge:
+\begin{center}
+    \begin{tikzcd}
+        &
+        {\End{\vf : \vD \to \vF\vC \in \commaC\vD\vF} \Exp{\vB\vC}{\vA\vC}}
+            \arrow[dl, "{(\Lam{\tup\vk\va} \proj{\vF\vk \comp \vf} (\dash)(\va))_{\hat\vC \in \mcatC}}"']
+            \arrow[dr, "{(\Lam{\tup\vk\va} \proj{\vF\vk \comp \vg} (\dash)(\va))_{\hat\vC \in \mcatC}}"]
+    \\
+        {\Exp\vB\vA\vC}
+        \arrow[rr, "{\Exp\vB\vA\vh = (\Lam{\tup\vk\va} (\dash)_{\hat\vC}\tup{\vk \comp \vh}\va)_{\hat\vC \in \mcatC}}"']
+    &&
+        {\Exp\vB\vA{\vC'}}
+    \end{tikzcd}
+\end{center}
+    which commutes by:
+\begin{tikzcd}
+    {\vF{\hat\vC}}
+        \arrow[rr, no head, Rightarrow, no head]
+    &&
+    {\vF{\hat\vC}}
+    \\
+    {\vF{\vC'}}
+        \arrow[u, "{\vF\vk}"]
+    &&
+    \\
+    {\vF\vC}
+        \arrow[u, "{\vF\vh}"]
+        \arrow[rr, "{\vF\vh}"]
+    &&
+    {\vF\vC'}
+        \arrow[uu, "{\vF\vk}"]
+    \\
+    &
+    {\vD}
+        \arrow[ul, "\vf"]
+        \arrow[ur, "\vg"']
+\end{tikzcd}
+\end{proof}
+\noindent
+That the end projections form a natural transformation and that the two induced morphisms are inverses is not hard to prove.
